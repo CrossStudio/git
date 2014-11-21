@@ -11,7 +11,7 @@ public class Game {
 	private Deck newDeck;
 	
 	/*
-	 * Козырь
+	 * Козырь в данной игре
 	 */
 	private Suit trump;
 	
