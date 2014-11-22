@@ -9,7 +9,7 @@ public enum CardValue {
 		this.numVal = numVal;
 	}
 	
-	public int getNumVal(){
+	public int getNumValue(){
 		return numVal;
 	}
 	

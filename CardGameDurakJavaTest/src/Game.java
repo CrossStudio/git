@@ -1,6 +1,7 @@
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Game {
 	
@@ -53,7 +54,7 @@ public class Game {
 		case 3:
 			return Suit.HEARTS;
 		default:
-			return null;
+			return getTrump();
 		}
 	}
 	
@@ -69,8 +70,18 @@ public class Game {
 			for (int i = 0; i < 6; ++i){
 				player.addCardToHand(newDeck.drawCard());
 			}
-			System.out.println(player.cardsOnHand);
+			sortCardsOnHands(player);
+			
 		}
+		
+	}
+
+	private void sortCardsOnHands(Player player) {
+		Card[] tempArray = new Card[player.cardsOnHand.size()];
+		player.cardsOnHand.toArray(tempArray);
+		Arrays.sort(tempArray, new CardComparator());
+		player.cardsOnHand = new ArrayList<>(Arrays.asList(tempArray));
+		System.out.println(player.cardsOnHand);
 		
 	}
 	
