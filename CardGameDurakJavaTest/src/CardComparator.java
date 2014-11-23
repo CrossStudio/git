@@ -25,8 +25,6 @@ public class CardComparator implements Comparator{
 			else{
 				return 0;
 			}
-		}
-		
-	}
-	
+		}		
+	}	
 }

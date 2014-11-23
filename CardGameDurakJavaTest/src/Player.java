@@ -1,6 +1,8 @@
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Player {
 
@@ -18,5 +20,9 @@ public class Player {
 	
 	public Card playCard(Card playedCard){
 		return playedCard;
+	}
+	
+	public void sortCardsOnHands() {
+		Collections.sort(this.cardsOnHand, new CardComparator());		
 	}
 }

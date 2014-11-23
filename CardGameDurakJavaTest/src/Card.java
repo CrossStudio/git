@@ -7,8 +7,7 @@ public class Card{
 	private CardValue value;
 	
 	public Suit getSuit(){
-		return suit;
-		
+		return suit;		
 	}
 	
 	public CardValue getValue(){
@@ -25,21 +24,13 @@ public class Card{
 	}
 	
 	public boolean beats(Card cardToBeat, Suit trump){
-		if (this.getSuit().getNumValue() == cardToBeat.getSuit().getNumValue()){
-			if (this.getValue().getNumValue() > cardToBeat.getValue().getNumValue()){
-				return true;
-			}
-			else {
-				return false;
-			}
+		if (this.getSuit().equals(cardToBeat.getSuit())){
+			return this.getValue().getNumValue() > cardToBeat.getValue().getNumValue();	
 		}
 		else if (this.getSuit().equals(trump)){
 			return true;
 		}
-		else {
-			return false;
-		}
-	}
-
-	
+		
+		return false;		
+	}	
 }

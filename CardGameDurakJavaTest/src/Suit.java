@@ -5,6 +5,8 @@ public enum Suit {
 	
 	private int numValue;
 	
+	public static final int size = Suit.values().length;
+	
 	Suit(int numValue){
 		this.numValue = numValue;
 	}

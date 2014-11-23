@@ -14,12 +14,16 @@ public class Game {
 	/*
 	 * Козырь в данной игре
 	 */
-	private Suit trump;
+	private Suit trumpSuit;
+	
+	/*
+	 * Last trump cards
+	 */
+	private Card trumpCard;
 	
 	public Game(ArrayList<Player> players, CardGame game){
 		this.players = players;
-		this.game = game;
-		this.trump = getTrump();
+		this.game = game;		
 		
 		switch(game){
 		case DURAK:
@@ -40,27 +44,9 @@ public class Game {
 		Game newGame = new Game(playersInGame,CardGame.DURAK);
 		newGame.playGame();
 		
-	}
+	}	
 	
-	private Suit getTrump(){
-		int cardSuit = ((int)(Math.random() * 4));
-		switch(cardSuit){
-		case 0:
-			return Suit.SPADES;
-		case 1:
-			return Suit.CLUBS;
-		case 2:
-			return Suit.DIAMONDS;
-		case 3:
-			return Suit.HEARTS;
-		default:
-			return getTrump();
-		}
-	}
-	
-	private void playGame() {
-		
-		newDeck.shuffleCardsInDeck();
+	private void playGame() {	
 		givePlayersTheirCards();
 	}
 
@@ -68,24 +54,16 @@ public class Game {
 		
 		for (Player player : players){
 			for (int i = 0; i < 6; ++i){
-				player.addCardToHand(newDeck.drawCard());
+				player.addCardToHand(newDeck.draw());
 			}
-			sortCardsOnHands(player);
-			
+			player.sortCardsOnHands();			
 		}
 		
-	}
-
-	private void sortCardsOnHands(Player player) {
-		Card[] tempArray = new Card[player.cardsOnHand.size()];
-		player.cardsOnHand.toArray(tempArray);
-		Arrays.sort(tempArray, new CardComparator());
-		player.cardsOnHand = new ArrayList<>(Arrays.asList(tempArray));
-		System.out.println(player.cardsOnHand);
-		
-	}
-	
-	
-	
-	
+		// Get next card from deck
+		this.trumpCard = newDeck.draw();
+		// Save trump card suit
+		this.trumpSuit = this.trumpCard.getSuit();
+		// Put card at the beginning of the deck 
+		this.newDeck.getCards().add(0, this.trumpCard);		
+	}		
 }
