@@ -1,26 +1,33 @@
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Game {
 	
-	private ArrayList<Player> players = new ArrayList<Player>();
+	/**
+	 * Players participating in current game
+	 */
+	private static ArrayList<Player> players = new ArrayList<Player>();
+	
+	/**
+	 * Turns completed in this game
+	 */
+	private ArrayList<Turn> turns = new ArrayList<Turn>();
 	
 	private CardGame game;
 	
-	private Deck newDeck;
+	private static Deck newDeck;
 	
 	/*
-	 * Козырь в данной игре
+	 * Current trump card
 	 */
-	private Suit trumpSuit;
+	private static Card trumpCard;
 	
-	/*
-	 * Last trump cards
+	/**
+	 * Create a new game
+	 * @param players - players in current game
+	 * @param game - type of card game
 	 */
-	private Card trumpCard;
-	
 	public Game(ArrayList<Player> players, CardGame game){
 		this.players = players;
 		this.game = game;		
@@ -37,20 +44,36 @@ public class Game {
 
 		Player vasia = new Player();
 		Player petia = new Player();
+		Player kolia = new Player();
+		Player gena = new Player();
 		ArrayList<Player> playersInGame = new ArrayList<Player>();
 		playersInGame.add(vasia);
 		playersInGame.add(petia);
+		playersInGame.add(kolia);
+		playersInGame.add(gena);
 		
 		Game newGame = new Game(playersInGame,CardGame.DURAK);
 		newGame.playGame();
 		
 	}	
 	
+	/**
+	 * Start a new game 
+	 */
 	private void playGame() {	
-		givePlayersTheirCards();
+		firstDraw();
+		setMoveOrder();
+
+	}
+	
+	public static Card getTrump(){
+		return trumpCard;
 	}
 
-	private void givePlayersTheirCards() {
+	/**
+	 * Give each player 6 cards and assign a trump suit
+	 */
+	private static void firstDraw() {
 		
 		for (Player player : players){
 			for (int i = 0; i < 6; ++i){
@@ -60,10 +83,73 @@ public class Game {
 		}
 		
 		// Get next card from deck
-		this.trumpCard = newDeck.draw();
-		// Save trump card suit
-		this.trumpSuit = this.trumpCard.getSuit();
+		trumpCard = newDeck.draw();
+		System.out.println("Trump: " + trumpCard);
 		// Put card at the beginning of the deck 
-		this.newDeck.getCards().add(0, this.trumpCard);		
-	}		
+		newDeck.getCards().add(0, trumpCard);		
+	}
+	
+	/**
+	 * Arranges move order of players based on the smallest trump card they have
+	 * on their hands
+	 */
+	private void setMoveOrder(){
+		Card smallestTrump = trumpCard;
+		Player firstPlayer = null;
+		for (Player player : players){
+			for (Card card : player.cardsOnHand){
+				if (card.getSuit().equals(trumpCard.getSuit())){
+					if (smallestTrump.equals(trumpCard)){
+						smallestTrump = card;
+						firstPlayer = player;
+					}
+					else if (card.getValue().getNumValue() < smallestTrump.getValue().getNumValue()){
+						smallestTrump = card;
+						firstPlayer = player;
+					}
+				}
+			}
+		}
+		if (smallestTrump.equals(trumpCard)){
+			firstPlayer = players.get((int)(Math.random()*players.size()));
+		}
+		rearrangePlayers(firstPlayer);
+		System.out.println(players);
+
+	}
+
+	/**
+	 * Arrange players' move order starting from the indicated player
+	 * @param firstPlayer - player to move first
+	 */
+	private void rearrangePlayers(Player firstPlayer) {
+		ArrayList<Player> dummyPlayersList = new ArrayList<Player>();
+		dummyPlayersList.addAll(players.subList(players.indexOf(firstPlayer), players.size()));
+		for (Player player : players){
+			if (player.equals(firstPlayer)){
+				break;
+			}
+			else {
+				dummyPlayersList.add(player);
+			}
+		}
+		players = dummyPlayersList;
+	}
+	
+	/**
+	 * Check if the game is over
+	 * @return - true if the game is over, false - otherwise
+	 */
+	private boolean gameOver(){
+		int playersWithCards = players.size();
+		for (Player player : players){
+			if (player.cardsOnHand.size() == 0){
+				playersWithCards--;
+			}
+		}
+		if (playersWithCards < 2){
+			return true;
+		}
+		return false;
+	}
 }
