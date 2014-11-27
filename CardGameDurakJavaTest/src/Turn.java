@@ -13,14 +13,17 @@ public class Turn {
 	
 	private int cardsDefended;
 	
-	public Turn (ArrayList<Player> players){
-		this.mainPlayer = mainPlayer;
-		this.defendingPlayer = defendingPlayer;
-		for (Player player : players){
-			if (!player.amIDefending()){
-				this.attackingPlayers.add(player);
-			}
+	public Turn (Player attackPlayer){
+		ArrayList<Player> players = Game.getPlayers();
+		this.mainPlayer = attackPlayer;
+		if (players.indexOf(attackPlayer) < players.size() - 1){
+			this.defendingPlayer = players.get(players.indexOf(attackPlayer)+1);
 		}
+		else {
+			this.defendingPlayer = players.get(0);
+		}
+		
+		mainPlayer.attackWith(mainPlayer.cardsOnHand.get((int)(Math.random()*mainPlayer.cardsOnHand.size())));
 	}
 	
 	public int getCardsPlayed(){

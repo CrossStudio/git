@@ -2,12 +2,14 @@
 
 import java.util.ArrayList;
 
-public class Game {
+public abstract class Game {
 	
 	/**
 	 * Players participating in current game
 	 */
 	private static ArrayList<Player> players = new ArrayList<Player>();
+	
+	private static int playerThatMoves;
 	
 	/**
 	 * Turns completed in this game
@@ -16,29 +18,12 @@ public class Game {
 	
 	private CardGame game;
 	
-	private static Deck newDeck;
+	private static Deck newDeck = new Deck(DeckSize.THIRTY_SIX);
 	
 	/*
 	 * Current trump card
 	 */
 	private static Card trumpCard;
-	
-	/**
-	 * Create a new game
-	 * @param players - players in current game
-	 * @param game - type of card game
-	 */
-	public Game(ArrayList<Player> players, CardGame game){
-		this.players = players;
-		this.game = game;		
-		
-		switch(game){
-		case DURAK:
-			newDeck = new Deck(DeckSize.THIRTY_SIX);
-			break;
-		default: break;
-		}
-	}
 
 	public static void main (String[] a){
 
@@ -46,25 +31,43 @@ public class Game {
 		Player petia = new Player();
 		Player kolia = new Player();
 		Player gena = new Player();
-		ArrayList<Player> playersInGame = new ArrayList<Player>();
-		playersInGame.add(vasia);
-		playersInGame.add(petia);
-		playersInGame.add(kolia);
-		playersInGame.add(gena);
+
+		players.add(vasia);
+		players.add(petia);
+		players.add(kolia);
+		players.add(gena);
 		
-		Game newGame = new Game(playersInGame,CardGame.DURAK);
-		newGame.playGame();
+		playGame();
 		
 	}	
 	
 	/**
 	 * Start a new game 
 	 */
-	private void playGame() {	
+	private static void playGame() {
 		firstDraw();
 		setMoveOrder();
-
+		while (!gameOver()){
+				startNewTurn(playerThatMoves);
+			}
+		}
+	/**
+	 * Returns players participating in game
+	 * @return ArrayList of players
+	 */
+	public static ArrayList<Player> getPlayers(){
+		return players;
 	}
+	
+	/**
+	 * Starts a new turn 
+	 * @param playerNumber - player's order in move queue
+	 */
+	private static void startNewTurn(int playerNumber) {
+		new Turn(players.get(playerNumber));
+		
+	}
+
 	
 	public static Card getTrump(){
 		return trumpCard;
@@ -93,7 +96,7 @@ public class Game {
 	 * Arranges move order of players based on the smallest trump card they have
 	 * on their hands
 	 */
-	private void setMoveOrder(){
+	private static void setMoveOrder(){
 		Card smallestTrump = trumpCard;
 		Player firstPlayer = null;
 		for (Player player : players){
@@ -122,7 +125,7 @@ public class Game {
 	 * Arrange players' move order starting from the indicated player
 	 * @param firstPlayer - player to move first
 	 */
-	private void rearrangePlayers(Player firstPlayer) {
+	private static void rearrangePlayers(Player firstPlayer) {
 		ArrayList<Player> dummyPlayersList = new ArrayList<Player>();
 		dummyPlayersList.addAll(players.subList(players.indexOf(firstPlayer), players.size()));
 		for (Player player : players){
@@ -140,7 +143,7 @@ public class Game {
 	 * Check if the game is over
 	 * @return - true if the game is over, false - otherwise
 	 */
-	private boolean gameOver(){
+	private static boolean gameOver(){
 		int playersWithCards = players.size();
 		for (Player player : players){
 			if (player.cardsOnHand.size() == 0){

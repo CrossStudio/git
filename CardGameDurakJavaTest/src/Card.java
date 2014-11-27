@@ -20,6 +20,13 @@ public class Card{
 		return beaten;
 	}
 	
+	/**
+	 * This card gets beaten
+	 */
+	public void isBeaten(){
+		this.beaten = true;
+	}
+	
 	public Card (Suit suit, CardValue value){
 		this.suit = suit;
 		this.value = value;

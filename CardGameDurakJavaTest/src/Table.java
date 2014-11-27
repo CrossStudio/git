@@ -4,9 +4,14 @@ import java.util.ArrayList;
 public abstract class Table {
 	
 	/**
-	 * Cards currently in-play on the table
+	 * Attacking cards currently on the table
 	 */
-	private static ArrayList<Card> cards = new ArrayList<Card>();
+	private static ArrayList<Card> attackCards = new ArrayList<Card>();
+	
+	/**
+	 * Defending cards currently on the table
+	 */
+	private static ArrayList<Card> defenceCards = new ArrayList<Card>();
 	
 	/**
 	 * Cards currently in discard
@@ -14,26 +19,27 @@ public abstract class Table {
 	private static ArrayList<Card> discardPile = new ArrayList<Card>();
 	
 	/**
-	 * Place new card onto table
+	 * Place new attacking card onto table
 	 * @param card - card to be put onto table
 	 */
-	public void addCard(Card card){
-		cards.add(card);
+	public static void addAttackCard(Card card){
+		attackCards.add(card);
 	}
 	
 	/**
-	 * Gets cards currently on the table
-	 * @return cards currently on the table
+	 * Place new defending card onto table, beat the appropriate attacking card
+	 * @param card card to be put onto table
 	 */
-	public static ArrayList<Card> getCardsOnTable(){
-		return cards;
+	public static void addDefenceCard(Card defenceCard, Card attackCard){
+		defenceCards.add(defenceCard);
+		attackCards.get(attackCards.indexOf(attackCard)).isBeaten();
 	}
 	
 	/**
 	 * Move all cards currently in-play to discard
 	 * and clear the table
 	 */
-	public void discard(){
+	public static void discard(){
 		moveCardsToDiscardPile();
 		clear();
 	}
@@ -41,17 +47,42 @@ public abstract class Table {
 	/**
 	 * Add cards to discard
 	 */
-	private void moveCardsToDiscardPile() {
-		discardPile.addAll(cards);
+	private static void moveCardsToDiscardPile() {
+		discardPile.addAll(attackCards);
+		discardPile.addAll(defenceCards);
 	}
 
 	/**
 	 * Clear the table
 	 */
-	private void clear(){
-		cards.clear();
+	private static void clear(){
+		attackCards.clear();
+		defenceCards.clear();
 	}
 	
+	/**
+	 * Returns all cards that are currently on table
+	 * @return ArrayList of cards on table
+	 */
+	public static ArrayList<Card> getAllCardsOnTable(){
+		ArrayList<Card> allCards = new ArrayList<Card>();
+		allCards.addAll(attackCards);
+		allCards.addAll(defenceCards);
+		return allCards;
+	}
 	
+	/**
+	 * Returns all unbeaten cards that are currently on table
+	 * @return ArrayList of unbeaten attacking cards on table
+	 */
+	public static ArrayList<Card> getUnbeatenCards(){
+		ArrayList<Card> dummyAttackCards = new ArrayList<Card>();
+		for (Card card : attackCards){
+			if (!card.getBeaten()){
+				dummyAttackCards.add(card);
+			}
+		}
+		return dummyAttackCards;
+	}
 
 }
