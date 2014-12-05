@@ -2,43 +2,90 @@ package filesystem;
 
 import java.util.ArrayList;
 
-public class Directory {
-	
-	private static ArrayList<String> availablePaths = new ArrayList<String>();
-	
-	static {
-		if (!availablePaths.contains("c:\\")){
-			availablePaths.add("c:\\");
-		}
-	}
+
+public class Directory{
 	
 	private String name;
 	
 	private String path;
 	
-	private ArrayList<Directory> directories = new ArrayList<Directory>();
+	private String fullPath;
+	
+	private ArrayList<Directory> subDirectories = new ArrayList<Directory>();
 	
 	private ArrayList<File> files = new ArrayList<File>();
 	
+	static {
+		new Directory();
+	}
+	
+	/**
+	 * Initialises file system by creating a root directory "c:\"
+	 */
+	private Directory(){
+		this.name = "";
+		this.path = "c:\\";
+		this.fullPath = this.path + this.name;
+		FileSystem.currentSystem.add(this);
+	}
+	
 	public Directory (String name, String path){
-		if (checkPath(path)){
-			this.path = path;
-		}
-		else {
-			System.out.println("No such path in the system");
-			return;
-		}
-		if (checkName(name, path)){
-			this.name = name;
-		}
-		else {
-			System.out.println("Such directory already exists");
-			return;
-		}
-		availablePaths.add(this.getPath() + this.getName());
-		System.out.println("\"" + this + "\" created");
+		this.name = name + "\\";
+		this.path = path;
+		this.fullPath = this.path + this.name;
 	}
 
+	/**
+	 * Create new directory at a given location
+	 * @param dir - intended location of the directory to be created
+	 */
+	public static void createNewDir(Directory dir){
+		
+		if (Directory.checkPath(dir.getPath())){
+			if (Directory.checkName(dir.getFullPath())){
+				addSubDir(dir);
+			}
+			else {
+				System.out.println("Such directory already exists");
+				return;
+			}
+		}
+		else {
+			System.out.println(dir.getPath());
+			System.out.println("No such path \"" + dir.getPath() + "\" in the system");
+			return;
+		}
+		System.out.println("\"" + dir + "\" created");
+	}
+	/**
+	 * Add new sub-Directory to the parent directory
+	 * @param subDir - sub-Directory to add
+	 */
+	private static void addSubDir(Directory subDir){
+		for (Directory dir : FileSystem.currentSystem){
+			if (dir.getFullPath().equals(subDir.getPath())){
+				dir.subDirectories.add(subDir);
+				System.out.println("\"" + subDir + "\" sub-directory added");
+				FileSystem.currentSystem.add(subDir);
+				break;
+			}
+		}
+	}
+	
+	/**
+	 * Remove sub-Directory from its parent
+	 * @param subDir - sub-Directory to be removed
+	 */
+	public static void removeSubDir(Directory subDir){
+		for (Directory dir : FileSystem.currentSystem){
+			if (dir.getFullPath().equals(subDir.getPath())){
+				dir.subDirectories.remove(subDir);
+				FileSystem.currentSystem.remove(subDir);
+				break;
+			}
+		}
+	}
+	
 	/**
 	 * @return the name
 	 */
@@ -50,8 +97,9 @@ public class Directory {
 	 * @param name the name to set
 	 */
 	public void rename(String name) {
-		if (checkName(name, path)){
+		if (checkName(fullPath)){
 			this.name = name;
+			this.fullPath = this.path + this.name;
 		}
 		else {
 			System.out.println("Such directory already exists");
@@ -67,20 +115,47 @@ public class Directory {
 	}
 
 	/**
+	 * 
+	 * @return the full path
+	 */
+	public String getFullPath(){
+		return fullPath;
+	}
+	
+	public ArrayList<Directory> getSubDirectories(){
+		return subDirectories;
+	}
+	
+	/**
+	 * Move the directory
 	 * @param path the path to set
 	 */
 	public void moveTo(String path) {
-		if (checkPath(path)){
-			this.path = path;
+		if (checkPath(this.fullPath)){
+			if (checkPath(path)){
+				if (checkName(path + this.name)){
+					removeSubDir(this);		
+					System.out.println("Directory " + this.fullPath + " moved to " + path);
+					this.path = path;
+					this.fullPath = this.path + this.name;
+					addSubDir(this);
+				}
+				else{
+					System.out.println("Such directory already exists");
+				}
+			}
+			else {
+				System.out.println("No such path \"" + this.getPath() + "\" in the system");
+				return;
+			}
 		}
 		else {
-			System.out.println("No such path in the system");
-			return;
+			System.out.println("No such directory \"" + this.fullPath + "\" to move");
 		}
 	}
 	
 	public String toString(){
-		return path + name;
+		return fullPath;
 	}
 	
 	/**
@@ -88,9 +163,12 @@ public class Directory {
 	 * @param path - path to be checked for existence
 	 * @return true if such path exists, false otherwise
 	 */
-	private boolean checkPath(String path){
-		if (availablePaths.contains(path)){
-			return true;
+	protected static boolean checkPath(String path){
+		for (Directory dir : FileSystem.currentSystem){
+			if (dir.getFullPath().equals(path)){
+				
+				return true;
+			}
 		}
 		return false;
 	}
@@ -101,18 +179,23 @@ public class Directory {
 	 * @param path - directory path where new directory is to be created
 	 * @return true if there is no directory in such path with such name, false otherwise
 	 */
-	private boolean checkName(String name, String path){
-		if (!availablePaths.contains(path + name)){
-			return true;
+	protected static boolean checkName(String fullPath){
+		for (Directory dir : FileSystem.currentSystem){
+			if (dir.getFullPath().equals(fullPath)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean equals(Object o){
+		if (o != null && o.getClass() == this.getClass()){
+			if (this.name == ((Directory) (o)).name &&
+					this.path == ((Directory) (o)).path){
+				return true;
+			}
 		}
 		return false;
 	}
-	
-	/**
-	 * 
-	 * @return all file system at the moment
-	 */
-	public static ArrayList<String> getWholeFileSystem(){
-		return availablePaths;
-	}
+
 }

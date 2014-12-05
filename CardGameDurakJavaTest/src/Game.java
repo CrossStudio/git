@@ -14,7 +14,7 @@ public abstract class Game {
 	/**
 	 * Turns completed in this game
 	 */
-	private ArrayList<Turn> turns = new ArrayList<Turn>();
+	//private ArrayList<Turn> turns = new ArrayList<Turn>();
 	
 	private CardGame game;
 	
@@ -47,10 +47,8 @@ public abstract class Game {
 	private static void playGame() {
 		firstDraw();
 		setMoveOrder();
-		while (!gameOver()){
-				startNewTurn(playerThatMoves);
-			}
-		}
+
+	}
 	/**
 	 * Returns players participating in game
 	 * @return ArrayList of players
@@ -58,16 +56,6 @@ public abstract class Game {
 	public static ArrayList<Player> getPlayers(){
 		return players;
 	}
-	
-	/**
-	 * Starts a new turn 
-	 * @param playerNumber - player's order in move queue
-	 */
-	private static void startNewTurn(int playerNumber) {
-		new Turn(players.get(playerNumber));
-		
-	}
-
 	
 	public static Card getTrump(){
 		return trumpCard;

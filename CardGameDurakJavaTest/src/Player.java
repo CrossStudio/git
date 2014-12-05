@@ -16,6 +16,17 @@ public class Player {
 	public ArrayList<Card> cardsOnHand = new ArrayList<Card>();
 	
 	/**
+	 * Cards that the player used for attack this turn
+	 */
+	public ArrayList<Card> currentCardsAttackedWith = new ArrayList<Card>();
+	
+	
+	/**
+	 * Cards that the player used for defence this turn
+	 */
+	public ArrayList<Card> currentCardsDefendedWith = new ArrayList<Card>();
+	
+	/**
 	 * Get player's number (order in move queue)
 	 * @return - player's number (order in move queue)
 	 */
@@ -46,5 +57,6 @@ public class Player {
 	public void attackWith(Card attackCard){
 		Table.addAttackCard(attackCard);
 	}
+
 
 }
