@@ -9,8 +9,6 @@ public abstract class Game {
 	 */
 	private static ArrayList<Player> players = new ArrayList<Player>();
 	
-	private static int playerThatMoves;
-	
 	/**
 	 * Turns completed in this game
 	 */

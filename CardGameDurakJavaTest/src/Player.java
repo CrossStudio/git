@@ -16,6 +16,11 @@ public class Player {
 	public ArrayList<Card> cardsOnHand = new ArrayList<Card>();
 	
 	/**
+	 * Cards currently available for attack
+	 */
+	public ArrayList<Card> cardsAvailableForAttack = new ArrayList<Card>();
+	
+	/**
 	 * Cards that the player used for attack this turn
 	 */
 	public ArrayList<Card> currentCardsAttackedWith = new ArrayList<Card>();
@@ -56,7 +61,41 @@ public class Player {
 	 */
 	public void attackWith(Card attackCard){
 		Table.addAttackCard(attackCard);
+		currentCardsAttackedWith.add(attackCard);
+		removeCardFromHand(attackCard);
 	}
 
+	private void removeCardFromHand(Card cardToRemove) {
+		cardsOnHand.remove(cardToRemove);
+	}
+
+	public void defendWith(Card defenceCard, Card attackCard){
+		Table.addDefenceCard(defenceCard, attackCard);
+		currentCardsDefendedWith.add(defenceCard);
+		removeCardFromHand(defenceCard);
+	}
+	
+	public void setCardsAvailableForAttack(){
+		
+	}
+	
+	public class ArtificialIntelligence{
+		
+		/**
+		 * Randomizer of attack (in case it is this player's move)
+		 */
+		public void randomFirstAttack(){
+			int randomAttackCardNum = (int)(Math.random() * cardsOnHand.size());
+			Card attackCard = cardsOnHand.get(randomAttackCardNum);
+			attackWith(attackCard);
+		}
+		/**
+		 * Randomizer of attack (in case it is not this player's move and he is not defending)
+		 */
+		public void randomSecondaryAttack(){
+			
+			attackWith(attackCard);
+		}
+	}
 
 }
