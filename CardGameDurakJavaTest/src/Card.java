@@ -33,7 +33,7 @@ public class Card{
 	}
 	
 	public String toString(){
-		return "This card is " + suit + " " + value;
+		return suit + " " + value;
 	}
 	
 	/**
@@ -44,12 +44,14 @@ public class Card{
 	 */
 	public boolean beats(Card cardToBeat, Suit trump){
 		if (this.getSuit().equals(cardToBeat.getSuit())){
-			return this.getValue().getNumValue() > cardToBeat.getValue().getNumValue();	
+			if (this.getValue().getNumValue() > cardToBeat.getValue().getNumValue()){
+				return true;	
+			}
 		}
 		else if (this.getSuit().equals(trump)){
 			return true;
 		}
-		
+		System.out.println(this + " cannot beat " + cardToBeat);
 		return false;		
 	}
 
