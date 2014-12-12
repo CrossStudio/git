@@ -23,8 +23,8 @@ public class Card{
 	/**
 	 * This card gets beaten
 	 */
-	public void isBeaten(){
-		this.beaten = true;
+	public void isBeaten(boolean beaten){
+		this.beaten = beaten;
 	}
 	
 	public Card (Suit suit, CardValue value){
@@ -51,7 +51,6 @@ public class Card{
 		else if (this.getSuit().equals(trump)){
 			return true;
 		}
-		System.out.println(this + " cannot beat " + cardToBeat);
 		return false;		
 	}
 

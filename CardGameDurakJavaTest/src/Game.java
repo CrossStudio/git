@@ -10,6 +10,10 @@ public abstract class Game {
 	 */
 	private static ArrayList<Player> players = new ArrayList<Player>();
 	
+	private static ArrayList<Player> attackingPlayers;
+	
+	private static Player defendingPlayer;
+	
 	/**
 	 * Turns completed in this game
 	 */
@@ -19,11 +23,30 @@ public abstract class Game {
 	
 	private static Deck newDeck = new Deck(DeckSize.THIRTY_SIX);
 	
-	/*
+	/**
 	 * Current trump card
 	 */
 	private static Card trumpCard;
+	
+	/**
+	 * 
+	 * @return current trump card
+	 */
+	public static Card getTrumpCard(){
+		return trumpCard;
+	}
 
+	/**
+	 * Sets trump card equal to the received parameter
+	 * @param trumpCard
+	 */
+	public static void setTrumpCard(){
+		trumpCard = newDeck.draw();
+		System.out.println("Trump: " + trumpCard);
+		// Put card at the beginning of the deck 
+		newDeck.getCards().add(0, trumpCard);
+	}
+	
 	public static void main (String[] a){
 
 		Player vasia = new Player("Vasia");
@@ -44,67 +67,83 @@ public abstract class Game {
 	 * Start a new game 
 	 */
 	private static void playGame() {
-		firstDraw();
+		for (Player player : players){
+			player.drawCards(newDeck);
+		}
+		setTrumpCard();
 		setMoveOrder();
-		playersMove();
+		while (!gameOver()){
+			playersMoves();
+		}
 
 	}
 	
 	/**
-	 * Lets players take their moves
+	 * Lets players make their moves
 	 */
-	private static void playersMove() {
-		
-		ArrayList<Player> attackingPlayers = new ArrayList<Player>();
-		ArrayList<Player.ArtificialIntelligence> attackingAIs = new ArrayList<Player.ArtificialIntelligence>();
-		
-		attackingPlayers.add(players.get(0));
-		
-		Player defendingPlayer = players.get(1);
-		//Create a defending AI for this turn
-		Player.ArtificialIntelligence defendingAI = defendingPlayer.new ArtificialIntelligence();
-		
-		//Create a first attack AI for this turn
-		attackingAIs.add(attackingPlayers.get(0).new ArtificialIntelligence());
-		
-		for (int i = 2; i < players.size(); ++i){
-			attackingPlayers.add(players.get(i));
-			attackingAIs.add(players.get(i).new ArtificialIntelligence());
+	private static void playersMoves() {
+		attackingPlayers = getAttackingPlayers();
+		defendingPlayer = players.get(1);
+		Player activeAttackingPlayer;
+		for (int i = 0; i < attackingPlayers.size(); i++){
+			activeAttackingPlayer = attackingPlayers.get(i);
+			while(!activeAttackingPlayer.getCardsToAttack().isEmpty()){
+				activeAttackingPlayer.randomAttack();
+				Card defendCard = defendingPlayer.getCardToDefend();
+				if (!defendingPlayer.isOverwhelmed()){
+					defendingPlayer.defendWith(defendCard, Table.getUnbeatenCards().get(0));
+					i = -1;
+				}
+			}
 		}
-		
-		attackingAIs.get(0).randomFirstAttack();
-		boolean allCardsBeaten = true;
-		
-		for (Player.ArtificialIntelligence ai : attackingAIs){
-			allCardsBeaten = defencePhase(defendingAI);
-			while(ai.randomSecondaryAttack());
-		}
-		if (!allCardsBeaten){
+		if (defendingPlayer.isOverwhelmed()){
 			defendingPlayer.flushTheTable();
+			finishTurn(attackingPlayers.get(1));
 		}
-		else {
-			System.out.println(defendingPlayer + " has defended successfully");
+		else{
+			finishTurn(defendingPlayer);
+		}
+	}
+	
+	private static void finishTurn(Player firstPlayer) {
+		Table.discard();
+		for (Player attackingPlayer : players){
+			attackingPlayer.drawCards(newDeck);
+		}
+		defendingPlayer.drawCards(newDeck);
+		checkPlayersInPlay();
+		rearrangePlayers(firstPlayer);
+	}
+	
+	
+
+	private static void checkPlayersInPlay() {
+		ArrayList<Player> playersToRemove = new ArrayList<Player>();
+		for (Player playerInPlay : players){
+			if (!playerInPlay.isPlaying()){
+				playersToRemove.add(playerInPlay);
+			}
+		}
+		for (Player player : playersToRemove){
+			players.remove(player);
 		}
 		
 	}
-	
+
 	/**
-	 * Defend against all the unbeaten cards currently on the table
-	 * @param ai - AI that shall defend
-	 * @return true if all cards have been defended, false - otherwise
+	 * 
+	 * @return ordered list of attacking players for this turn
 	 */
-	private static boolean defencePhase(Player.ArtificialIntelligence ai){
-		for (Card attackCard : Table.getUnbeatenCards()){
-			ai.defend();
+	private static ArrayList<Player> getAttackingPlayers() {
+		ArrayList<Player> attackingPlayers = new ArrayList<Player>();
+		attackingPlayers.add(players.get(0));
+		if (players.size() > 2){
+			attackingPlayers.add(players.get(2));
 		}
-		if (Table.getUnbeatenCards().isEmpty()){
-			return true;
-		}
-		else {
-			return false;
-		}
+		System.out.println("Attacking players: " + attackingPlayers);
+		return attackingPlayers;
 	}
-	
+
 	/**
 	 * Returns players participating in game
 	 * @return ArrayList of players
@@ -113,27 +152,12 @@ public abstract class Game {
 		return players;
 	}
 	
+	/**
+	 * 
+	 * @return trump card for this game
+	 */
 	public static Card getTrump(){
 		return trumpCard;
-	}
-
-	/**
-	 * Give each player 6 cards and assign a trump suit
-	 */
-	private static void firstDraw() {
-		
-		for (Player player : players){
-			for (int i = 0; i < 6; ++i){
-				player.addCardToHand(newDeck.draw());
-			}
-			player.sortCardsOnHands();			
-		}
-		
-		// Get next card from deck
-		trumpCard = newDeck.draw();
-		System.out.println("Trump: " + trumpCard);
-		// Put card at the beginning of the deck 
-		newDeck.getCards().add(0, trumpCard);		
 	}
 	
 	/**
@@ -161,8 +185,6 @@ public abstract class Game {
 			firstPlayer = players.get((int)(Math.random()*players.size()));
 		}
 		rearrangePlayers(firstPlayer);
-		System.out.println(players);
-
 	}
 
 	/**
@@ -181,6 +203,7 @@ public abstract class Game {
 			}
 		}
 		players = dummyPlayersList;
+		System.out.println(players);
 	}
 	
 	/**

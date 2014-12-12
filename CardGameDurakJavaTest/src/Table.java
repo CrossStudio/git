@@ -32,7 +32,7 @@ public abstract class Table {
 	 */
 	public static void addDefenceCard(Card defenceCard, Card attackCard){
 		defenceCards.add(defenceCard);
-		attackCards.get(attackCards.indexOf(attackCard)).isBeaten();
+		attackCards.get(attackCards.indexOf(attackCard)).isBeaten(true);
 	}
 	
 	/**
