@@ -1,22 +1,27 @@
 
-
 public enum Suit {
-	SPADES(0), CLUBS(1), DIAMONDS(2), HEARTS(3);
+	SPADES(0, "Spades"), CLUBS(1, "Clubs"), DIAMONDS(2, "Diamonds"), HEARTS(3, "Hearts");
 	
 	private int numValue;
+	private String stringValue;
 	
 	public static final int size = Suit.values().length;
 	
-	Suit(int numValue){
+	Suit(int numValue, String stringValue){
 		this.numValue = numValue;
+		this.stringValue = stringValue;
 	}
 	
 	public int getNumValue(){
 		return numValue;
 	}
 	
+	public String getStringValue(){
+		return stringValue;
+	}
+	
 	public String toString(){
-		return "" + numValue;
+		return stringValue;
 	}
 	
 	

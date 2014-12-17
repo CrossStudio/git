@@ -33,7 +33,7 @@ public class Card{
 	}
 	
 	public String toString(){
-		return suit + " " + value;
+		return value + " of " + suit;
 	}
 	
 	/**

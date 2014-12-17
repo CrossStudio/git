@@ -10,8 +10,14 @@ public abstract class Game {
 	 */
 	private static ArrayList<Player> players = new ArrayList<Player>();
 	
+	/**
+	 * Ordered list of players attacking this turn
+	 */
 	private static ArrayList<Player> attackingPlayers;
 	
+	/**
+	 * Player defending this turn
+	 */
 	private static Player defendingPlayer;
 	
 	/**
@@ -19,8 +25,9 @@ public abstract class Game {
 	 */
 	//private ArrayList<Turn> turns = new ArrayList<Turn>();
 	
-	private CardGame game;
-	
+	/**
+	 * Deck used in Durak game (36 cards)
+	 */
 	private static Deck newDeck = new Deck(DeckSize.THIRTY_SIX);
 	
 	/**
@@ -98,13 +105,23 @@ public abstract class Game {
 		}
 		if (defendingPlayer.isOverwhelmed()){
 			defendingPlayer.flushTheTable();
-			finishTurn(attackingPlayers.get(1));
+			if (players.size() >= 3){
+				finishTurn(attackingPlayers.get(1));
+			}
+			else {
+				finishTurn(attackingPlayers.get(0));
+			}
 		}
 		else{
 			finishTurn(defendingPlayer);
 		}
 	}
 	
+	/**
+	 * End current turn, have each player to draw cards from deck until they have 6 on hand
+	 * Change attacking and defending players
+	 * @param firstPlayer - player that will be first attacking player next turn
+	 */
 	private static void finishTurn(Player firstPlayer) {
 		Table.discard();
 		for (Player attackingPlayer : players){
@@ -116,7 +133,9 @@ public abstract class Game {
 	}
 	
 	
-
+	/**
+	 * Check players still in play and remove ones with no cards left
+	 */
 	private static void checkPlayersInPlay() {
 		ArrayList<Player> playersToRemove = new ArrayList<Player>();
 		for (Player playerInPlay : players){
@@ -193,16 +212,19 @@ public abstract class Game {
 	 */
 	private static void rearrangePlayers(Player firstPlayer) {
 		ArrayList<Player> dummyPlayersList = new ArrayList<Player>();
-		dummyPlayersList.addAll(players.subList(players.indexOf(firstPlayer), players.size()));
-		for (Player player : players){
-			if (player.equals(firstPlayer)){
-				break;
+		if (players.indexOf(firstPlayer) >= 0){
+			dummyPlayersList.addAll(players.subList(players.indexOf(firstPlayer), players.size()));
+			
+			for (Player player : players){
+				if (player.equals(firstPlayer)){
+					break;
+				}
+				else {
+					dummyPlayersList.add(player);
+				}
 			}
-			else {
-				dummyPlayersList.add(player);
-			}
+			players = dummyPlayersList;
 		}
-		players = dummyPlayersList;
 		System.out.println(players);
 	}
 	
