@@ -1,4 +1,7 @@
-package com.example.durak;
+import Card;
+import CardValue;
+import Suit;
+
 
 
 public class Card{
@@ -7,13 +10,25 @@ public class Card{
 	
 	private CardValue value;
 	
+	private boolean beaten = false;
+	
 	public Suit getSuit(){
-		return suit;
-		
+		return suit;		
 	}
 	
 	public CardValue getValue(){
 		return value;
+	}
+	
+	public boolean getBeaten(){
+		return beaten;
+	}
+	
+	/**
+	 * This card gets beaten
+	 */
+	public void isBeaten(boolean beaten){
+		this.beaten = beaten;
 	}
 	
 	public Card (Suit suit, CardValue value){
@@ -22,25 +37,25 @@ public class Card{
 	}
 	
 	public String toString(){
-		return "This card is " + suit + " " + value;
+		return value + " of " + suit;
 	}
 	
+	/**
+	 * Check whether this cards beats the other card
+	 * @param cardToBeat - card to be beaten (or not)
+	 * @param trump - current trump suit
+	 * @return - true if this card beats the other card, false if otherwise
+	 */
 	public boolean beats(Card cardToBeat, Suit trump){
-		if (this.getSuit().getNumValue() == cardToBeat.getSuit().getNumValue()){
+		if (this.getSuit().equals(cardToBeat.getSuit())){
 			if (this.getValue().getNumValue() > cardToBeat.getValue().getNumValue()){
-				return true;
-			}
-			else {
-				return false;
+				return true;	
 			}
 		}
 		else if (this.getSuit().equals(trump)){
 			return true;
 		}
-		else {
-			return false;
-		}
+		return false;		
 	}
 
-	
 }
