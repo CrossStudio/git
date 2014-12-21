@@ -207,7 +207,7 @@ public class Player {
 		if (!Table.getUnbeatenCards().isEmpty()){
 			Card attackCard = Table.getUnbeatenCards().get(0);
 			for (Card cardOnHand : cardsOnHand){
-				if (cardOnHand.beats(attackCard, Game.getTrump().getSuit())){
+				if (cardOnHand.beats(attackCard, GameActivity.getTrump().getSuit())){
 					return cardOnHand;
 				}
 			}

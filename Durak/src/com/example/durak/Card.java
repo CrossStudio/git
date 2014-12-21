@@ -1,9 +1,4 @@
-import Card;
-import CardValue;
-import Suit;
-
-
-
+package com.example.durak;
 public class Card{
 
 	private Suit suit;

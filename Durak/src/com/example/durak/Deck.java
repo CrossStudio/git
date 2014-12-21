@@ -1,3 +1,5 @@
+package com.example.durak;
+
 import java.util.Collections;
 import java.util.Stack;
 

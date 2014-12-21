@@ -1,0 +1,17 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlCard"
+    android:layout_width="60dp"
+    android:layout_height="100dp"
+    android:layout_margin="5dp"
+    android:background="#c9c" >
+
+    <TextView
+        android:id="@+id/tvCardValueAndSuit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Test text"
+        android:gravity="center_horizontal" />
+    
+</RelativeLayout>

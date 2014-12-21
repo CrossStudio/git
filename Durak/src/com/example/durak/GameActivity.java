@@ -1,15 +1,61 @@
 package com.example.durak;
 
-
 import java.util.ArrayList;
 
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public abstract class Game {
+public class GameActivity extends Activity {
+
+	static {
+		players = new ArrayList<Player>();
+		newDeck = new Deck(DeckSize.THIRTY_SIX);
+	}
+	
+	LayoutInflater inflater;
+	LinearLayout llCardsOnHand;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		inflater = getLayoutInflater();
+		llCardsOnHand = (LinearLayout) findViewById(R.id.llCardsOnHand);
+		
+		main();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 	
 	/**
 	 * Players participating in current game
 	 */
-	private static ArrayList<Player> players = new ArrayList<Player>();
+	private static ArrayList<Player> players;
 	
 	/**
 	 * Ordered list of players attacking this turn
@@ -29,7 +75,7 @@ public abstract class Game {
 	/**
 	 * Deck used in Durak game (36 cards)
 	 */
-	private static Deck newDeck = new Deck(DeckSize.THIRTY_SIX);
+	private static Deck newDeck;
 	
 	/**
 	 * Current trump card
@@ -55,7 +101,7 @@ public abstract class Game {
 		newDeck.getCards().add(0, trumpCard);
 	}
 	
-	public static void main (String[] a){
+	public void main (){
 
 		Player vasia = new Player("Vasia");
 		Player petia = new Player("Petia");
@@ -74,18 +120,32 @@ public abstract class Game {
 	/**
 	 * Start a new game 
 	 */
-	private static void playGame() {
+	private void playGame() {
 		for (Player player : players){
 			player.drawCards(newDeck);
 		}
 		setTrumpCard();
 		setMoveOrder();
+		UIShowPlayerCards();
 		while (!gameOver()){
+			
 			playersMoves();
 		}
 
 	}
 	
+	private void UIShowPlayerCards() {
+		ArrayList<Card> cardsOnHand = players.get(0).cardsOnHand;
+		int numOfCardsOnHand = cardsOnHand.size();
+		for (int i = 0; i < numOfCardsOnHand; i++){
+			View card = inflater.inflate(R.layout.card, llCardsOnHand, false);
+			TextView cardValueSuit = (TextView) card.findViewById(R.id.tvCardValueAndSuit);
+			cardValueSuit.setText(cardsOnHand.get(i)+"");
+			llCardsOnHand.addView(card);
+			Toast.makeText(this, cardsOnHand.get(i)+"", Toast.LENGTH_SHORT).show();
+		}
+	}
+
 	/**
 	 * Lets players make their moves
 	 */
@@ -245,4 +305,5 @@ public abstract class Game {
 		}
 		return false;
 	}
+	
 }
