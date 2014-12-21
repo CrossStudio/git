@@ -1,54 +1,50 @@
-package com.example.durak;
+import java.util.Collections;
+import java.util.Stack;
+
 
 public class Deck{
 	
-	private int totalNumberOfCardsInDeck;
+	/** Collection of cards */
+	Stack<Card> cards = new Stack<Card>();
 	
-	Card[] cardsInDeck;
-	
-	private int currentNumOfCards;
-	
-	public Deck(DeckSize deckSize){
-		totalNumberOfCardsInDeck = deckSize.getNumValue();
-		currentNumOfCards = totalNumberOfCardsInDeck;
-		cardsInDeck = new Card[totalNumberOfCardsInDeck];
-	}
-	
-	/**
-	 * Shuffles cards in deck instance
-	 */
-	public void shuffleCardsInDeck(){
-		
-		int counter = totalNumberOfCardsInDeck / 4;
-		while (counter > 0){
-			for(Suit suit : Suit.values()){
-				for (CardValue value : CardValue.values()){			
-					Card newCard = new Card(suit, value);
-					int randomIndex = getRandomIndex();
-					cardsInDeck[randomIndex] = newCard;
-					counter--;
-				}
+	public Deck(DeckSize deckSize){	
+		// Fill deck with all possible cards 
+		for(Suit suit : Suit.values()){
+			for (CardValue value : CardValue.values()){	
+				cards.add(new Card(suit, value));				
 			}
 		}
+		
+		this.shuffle();
+	}
+	
+	public Stack<Card> getCards()
+	{
+		return this.cards;
 	}
 	
 	/**
-	 * 
-	 * @return random integer between 0 and totalNumberOfCardsInDeck - 1
-	 * for this instance
+	 * Shuffle cards in a deck
 	 */
-	private int getRandomIndex(){
-		int randomIndex = (int)(Math.random()*totalNumberOfCardsInDeck);
-		if (cardsInDeck[randomIndex] == null){
-			return randomIndex;
-		}
-		return getRandomIndex();
+	public void shuffle()
+	{
+		Collections.shuffle(this.cards);
 	}
 	
-	public Card drawCard(){
-		int lastCardIndex = currentNumOfCards-1;
-		currentNumOfCards--;
-		return cardsInDeck[lastCardIndex];
+	/**
+	 * @return Return current number of cards in a deck
+	 */
+	public int getCardsLeft()
+	{
+		return cards.size();
 	}
 	
+	/**
+	 * Get top card from a deck 
+	 * @return Top card 
+	 */
+	public Card draw()
+	{
+		return this.cards.pop();
+	}	
 }
