@@ -1,8 +1,15 @@
 package com.example.durak;
 
 public enum CardValue {
-	SIX(6, "6"), SEVEN(7, "7"), EIGHT(8, "8"), NINE(9, "9"), TEN(10, "10"), JACK(11, "Jack"),
-	QUEEN(12, "Queen"), KING(13, "King"), ACE(14, "Ace");
+	SIX(6, "6"),
+	SEVEN(7, "7"),
+	EIGHT(8, "8"),
+	NINE(9, "9"),
+	TEN(10, "10"),
+	JACK(11, "Jack"),
+	QUEEN(12, "Queen"),
+	KING(13, "King"),
+	ACE(14, "Ace");
 	
 	private int numVal;
 	private String stringVal;
@@ -23,4 +30,5 @@ public enum CardValue {
 	public String toString(){
 		return stringVal;
 	}
+
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -139,8 +140,11 @@ public class GameActivity extends Activity {
 		int numOfCardsOnHand = cardsOnHand.size();
 		for (int i = 0; i < numOfCardsOnHand; i++){
 			View card = inflater.inflate(R.layout.card, llCardsOnHand, false);
-			TextView cardValueSuit = (TextView) card.findViewById(R.id.tvCardValueAndSuit);
-			cardValueSuit.setText(cardsOnHand.get(i)+"");
+			TextView cardValue = (TextView) card.findViewById(R.id.ivCardValue);
+			cardValue.setText(cardsOnHand.get(i)+"");
+			
+			ImageView cardSuit = (ImageView) card.findViewById(R.id.ivCardSuit);
+			cardSuit.setImageResource(cardsOnHand.get(i).getSuit().getResourceID());
 			llCardsOnHand.addView(card);
 			Toast.makeText(this, cardsOnHand.get(i)+"", Toast.LENGTH_SHORT).show();
 		}
