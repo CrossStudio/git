@@ -22,6 +22,7 @@ public class GameActivity extends Activity {
 	
 	LayoutInflater inflater;
 	LinearLayout llCardsOnHand;
+	LinearLayout llTable;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,8 @@ public class GameActivity extends Activity {
 		
 		inflater = getLayoutInflater();
 		llCardsOnHand = (LinearLayout) findViewById(R.id.llCardsOnHand);
+		llTable = (LinearLayout) findViewById(R.id.llTable);
+		llTable.setOnDragListener(new MyDragListener());
 		
 		main();
 	}
@@ -52,6 +55,8 @@ public class GameActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+
 	
 	/**
 	 * Players participating in current game
@@ -135,18 +140,21 @@ public class GameActivity extends Activity {
 
 	}
 	
+	/**
+	 * Draws player's cards on the screen
+	 */
 	private void UIShowPlayerCards() {
 		ArrayList<Card> cardsOnHand = players.get(0).cardsOnHand;
 		int numOfCardsOnHand = cardsOnHand.size();
 		for (int i = 0; i < numOfCardsOnHand; i++){
 			View card = inflater.inflate(R.layout.card, llCardsOnHand, false);
-			TextView cardValue = (TextView) card.findViewById(R.id.ivCardValue);
-			cardValue.setText(cardsOnHand.get(i)+"");
+			ImageView cardValue = (ImageView) card.findViewById(R.id.ivCardValue);
+			cardValue.setImageResource(cardsOnHand.get(i).getValueResID());
 			
 			ImageView cardSuit = (ImageView) card.findViewById(R.id.ivCardSuit);
 			cardSuit.setImageResource(cardsOnHand.get(i).getSuit().getResourceID());
 			llCardsOnHand.addView(card);
-			Toast.makeText(this, cardsOnHand.get(i)+"", Toast.LENGTH_SHORT).show();
+			card.setOnTouchListener(new MyOnTouchListener(cardsOnHand.get(i)));
 		}
 	}
 

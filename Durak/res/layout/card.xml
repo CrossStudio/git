@@ -1,26 +1,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rlCard"
-    android:layout_width="60dp"
-    android:layout_height="100dp"
+    android:layout_width="45dp"
+    android:layout_height="75dp"
     android:layout_margin="5dp"
     android:background="#c9c" >
 
-    <ImageView
-        android:id="@+id/ivCardValue"
-        android:layout_width="15dp"
-        android:layout_height="10dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:gravity="center_horizontal"
-        android:src="@drawable/ace_black" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/ivCardSuit"
-        android:layout_width="15dp"
-        android:layout_height="10dp"
-        android:layout_alignEnd="@+id/ivCardValue"
-        android:layout_alignTop="@+id/ivCardValue"
-        android:layout_toEndOf="@+id/ivCardValue"
-        android:src="@drawable/spades" />
+        <ImageView
+            android:id="@+id/ivCardValue"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_horizontal"
+            android:src="@drawable/ace_black" />
+
+   		<ImageView
+	        android:id="@+id/ivCardSuit"
+	        android:layout_width="15dp"
+	        android:layout_height="15dp"
+	        android:layout_alignEnd="@+id/ivCardValue"
+	        android:layout_alignTop="@+id/ivCardValue"
+	        android:layout_toEndOf="@+id/ivCardValue"
+	        android:src="@drawable/spades" />
+    </LinearLayout>
+    
     
 </RelativeLayout>
