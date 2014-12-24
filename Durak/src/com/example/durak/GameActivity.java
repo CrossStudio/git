@@ -56,7 +56,17 @@ public class GameActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-
+	/**
+	 * Human controlled player
+	 */
+	private Player humanPlayer;
+	
+	/**
+	 * @return human controlled player
+	 */
+	public Player getHumanPlayer(){
+		return humanPlayer;
+	}
 	
 	/**
 	 * Players participating in current game
@@ -97,8 +107,7 @@ public class GameActivity extends Activity {
 	}
 
 	/**
-	 * Sets trump card equal to the received parameter
-	 * @param trumpCard
+	 * Sets trump card
 	 */
 	public static void setTrumpCard(){
 		trumpCard = newDeck.draw();
@@ -109,12 +118,11 @@ public class GameActivity extends Activity {
 	
 	public void main (){
 
-		Player vasia = new Player("Vasia");
+		humanPlayer = new Player("XAM CROSS");
 		Player petia = new Player("Petia");
 		Player kolia = new Player("Kolia");
 		Player gena = new Player("Gena");
 
-		players.add(vasia);
 		players.add(petia);
 		players.add(kolia);
 		players.add(gena);
@@ -133,6 +141,8 @@ public class GameActivity extends Activity {
 		setTrumpCard();
 		setMoveOrder();
 		UIShowPlayerCards();
+		
+		//Play until the game is over
 		while (!gameOver()){
 			
 			playersMoves();
@@ -159,7 +169,7 @@ public class GameActivity extends Activity {
 	}
 
 	/**
-	 * Lets players make their moves
+	 * AI players make their moves on this turn
 	 */
 	private static void playersMoves() {
 		attackingPlayers = getAttackingPlayers();
@@ -316,6 +326,14 @@ public class GameActivity extends Activity {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Human controlled player attacks with chosen card
+	 * @param attackCard - card that human controlled player has chosen to attack
+	 */
+	public void humanPlayerAttack(Card attackCard){
+		humanPlayer.attackWith(attackCard);	
 	}
 	
 }

@@ -64,6 +64,9 @@ public class Player {
 		return playing;
 	}
 	
+	/**
+	 * Sets this player's status to "finished playing" (playing == false)
+	 */
 	public void finishedPlaying(){
 		playing = false;
 	}

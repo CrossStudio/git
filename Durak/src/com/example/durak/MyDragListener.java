@@ -44,7 +44,7 @@ public class MyDragListener implements OnDragListener {
 	private void putCardOntoTable(View view, Card draggedCard) {
 		LinearLayout llTable = (LinearLayout) view;
 		
-		Activity activity = (Activity)llTable.getContext();
+		GameActivity activity = (GameActivity)llTable.getContext();
 		LayoutInflater inflater = activity.getLayoutInflater();
 		View card = inflater.inflate(R.layout.card, llTable, false);
 		
@@ -57,6 +57,7 @@ public class MyDragListener implements OnDragListener {
 		cardSuit.setImageResource(draggedCard.getSuit().getResourceID());
 		llTable.addView(card);
 		
+		activity.humanPlayerAttack(draggedCard);
 	}
 	
 }
