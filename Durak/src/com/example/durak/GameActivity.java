@@ -164,7 +164,7 @@ public class GameActivity extends Activity {
 			ImageView cardSuit = (ImageView) card.findViewById(R.id.ivCardSuit);
 			cardSuit.setImageResource(cardsOnHand.get(i).getSuit().getResourceID());
 			llCardsOnHand.addView(card);
-			card.setOnTouchListener(new MyOnTouchListener(cardsOnHand.get(i)));
+			card.setOnTouchListener(new MyOnTouchListener(cardsOnHand.get(i), card));
 		}
 	}
 
@@ -334,6 +334,32 @@ public class GameActivity extends Activity {
 	 */
 	public void humanPlayerAttack(Card attackCard){
 		humanPlayer.attackWith(attackCard);	
+	}
+	
+	/**
+	 * UI method that adds one chosen card to the table (if the conditions are met)
+	 * @param draggedCard - card to be put onto table
+	 */
+	public static void putCardOntoTable(View view, Card draggedCard, View draggedView) {
+		
+		LinearLayout llTable = (LinearLayout) view;
+		GameActivity activity = (GameActivity)llTable.getContext();
+		LinearLayout llCardsOnHand = (LinearLayout) activity.findViewById(R.id.llCardsOnHand);
+		
+		LayoutInflater inflater = activity.getLayoutInflater();
+		View card = inflater.inflate(R.layout.card, llTable, false);
+		
+		ImageView cardValue = (ImageView) card.findViewById(R.id.ivCardValue);
+		System.out.println(cardValue.getClass());
+		int cardValueId = draggedCard.getValueResID();
+		cardValue.setImageResource(cardValueId);
+		
+		ImageView cardSuit = (ImageView) card.findViewById(R.id.ivCardSuit);
+		cardSuit.setImageResource(draggedCard.getSuit().getResourceID());
+		llTable.addView(card);
+		llCardsOnHand.removeView(draggedView);
+		
+		activity.humanPlayerAttack(draggedCard);
 	}
 	
 }
