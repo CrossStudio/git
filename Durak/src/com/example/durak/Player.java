@@ -15,6 +15,11 @@ public class Player {
 	private boolean overwhelmed = false;
 	
 	/**
+	 * If player has an ability and willingness to attack with his next move
+	 */
+	private boolean mayAttackThisMove = true;
+	
+	/**
 	 * If player has already finished playing (has no cards left)
 	 */
 	private boolean playing = true;
@@ -54,6 +59,28 @@ public class Player {
 	 */
 	public boolean isOverwhelmed(){
 		return overwhelmed;
+	}
+	
+	/**
+	 * 
+	 * @return true if player is willing and able to attack with his next move
+	 */
+	public boolean getAbilityToAttackThisMove(){
+		return mayAttackThisMove;
+	}
+	
+	/**
+	 * Player is not willing or able to attack with his move
+	 */
+	public void noAttackThisMove(){
+		mayAttackThisMove = false;
+	}
+	
+	/**
+	 * Player is now able to attack with his next move
+	 */
+	public void mayAttackThisMove(){
+		mayAttackThisMove = true;
 	}
 	
 	/**
@@ -206,7 +233,7 @@ public class Player {
 	 * @return card which will be used to defend against the attacking card currently on the table
 	 */
 	public Card getCardToDefend() {
-		overwhelmed = false;
+		//overwhelmed = false;
 		if (!Table.getUnbeatenCards().isEmpty()){
 			Card attackCard = Table.getUnbeatenCards().get(0);
 			for (Card cardOnHand : cardsOnHand){
@@ -214,6 +241,9 @@ public class Player {
 					return cardOnHand;
 				}
 			}
+		}
+		else {
+			return null;
 		}
 		overwhelmed = true;
 		return null;

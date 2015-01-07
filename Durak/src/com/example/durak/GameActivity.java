@@ -8,10 +8,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+
 
 public class GameActivity extends Activity {
 
@@ -23,18 +23,26 @@ public class GameActivity extends Activity {
 	LayoutInflater inflater;
 	LinearLayout llCardsOnHand;
 	LinearLayout llTable;
+	Button btnPCDefenceMove;
+	Button btnPCAttackMove;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		btnPCDefenceMove = (Button) findViewById(R.id.btnPCDefenceMove);
+		btnPCDefenceMove.setOnClickListener(new DefendClickListener());
+		
+		btnPCAttackMove = (Button) findViewById(R.id.btnPCAttackMove);
+		btnPCAttackMove.setOnClickListener(new AttackClickListener());
+		
 		inflater = getLayoutInflater();
 		llCardsOnHand = (LinearLayout) findViewById(R.id.llCardsOnHand);
 		llTable = (LinearLayout) findViewById(R.id.llTable);
 		llTable.setOnDragListener(new MyDragListener());
 		
-		main();
+		startNewGame();
 	}
 
 	@Override
@@ -79,6 +87,11 @@ public class GameActivity extends Activity {
 	private static ArrayList<Player> attackingPlayers;
 	
 	/**
+	 * Current attacking player's index
+	 */
+	private static int attackingPlayerIndex;
+	
+	/**
 	 * Player defending this turn
 	 */
 	private static Player defendingPlayer;
@@ -116,8 +129,12 @@ public class GameActivity extends Activity {
 		newDeck.getCards().add(0, trumpCard);
 	}
 	
-	public void main (){
-
+	/**
+	 * Start a new game of Durak
+	 */
+	public void startNewGame (){
+		attackingPlayerIndex = 0;
+		
 		humanPlayer = new Player("XAM CROSS");
 		Player petia = new Player("Petia");
 		Player kolia = new Player("Kolia");
@@ -127,29 +144,37 @@ public class GameActivity extends Activity {
 		players.add(kolia);
 		players.add(gena);
 		
+		initiateGame();
 		playGame();
 		
 	}	
 	
 	/**
-	 * Start a new game 
+	 * Prepare the setting of a new game (give six cards to each player, determine move order)
 	 */
-	private void playGame() {
+	private void initiateGame() {
 		for (Player player : players){
 			player.drawCards(newDeck);
 		}
 		setTrumpCard();
 		setMoveOrder();
 		UIShowPlayerCards();
-		
+	}
+	
+	/**
+	 * Start a new game 
+	 */
+	private void playGame() {
+		attackingPlayers = getAttackingPlayers();
 		//Play until the game is over
-		while (!gameOver()){
+		/*
+		 * while (!gameOver()){
 			
 			playersMoves();
 		}
-
+		*/
 	}
-	
+
 	/**
 	 * Draws player's cards on the screen
 	 */
@@ -197,6 +222,72 @@ public class GameActivity extends Activity {
 		}
 		else{
 			finishTurn(defendingPlayer);
+		}
+	}
+	
+	/**
+	 * Make PC players attack with one card (if one of them has a card to attack with and is willing to do so)
+	 * starting with player who is the first attacker
+	 */
+	static void PCMakesAttackMove(){
+		Player curAttPlayer = attackingPlayers.get(attackingPlayerIndex);
+		boolean didAnyoneAttack = curAttPlayer.randomAttack();
+		if (!didAnyoneAttack){
+			curAttPlayer.noAttackThisMove();
+		}
+		/*
+		 * Check whether the player attacks with this move
+		 */
+		while (attackingPlayers.size() - 1 > attackingPlayerIndex && !didAnyoneAttack){
+			attackingPlayerIndex++;
+			curAttPlayer = attackingPlayers.get(attackingPlayerIndex);
+			didAnyoneAttack = curAttPlayer.randomAttack();
+			if (!didAnyoneAttack){
+				curAttPlayer.noAttackThisMove();
+			}
+		}
+		/*
+		 * After some attacker adds another card to the table everyone's ability to attack is rejuvenated
+		 */
+		if (didAnyoneAttack){
+			for (int i = 0; i < attackingPlayers.size(); i++){
+				attackingPlayers.get(i).mayAttackThisMove();
+			}
+		}
+		//Let first attacker make his next move
+		attackingPlayerIndex = 0;
+	}
+
+	/**
+	 * Make PC player defend one card on the table (if he has a card that he can defend with or is willing to do so)
+	 * In case he cannot or is not willing to defend the remaining cards on the table he flushes the table
+	 */
+	static void PCMakesDefenceMove(){
+		defendingPlayer = players.get(1);
+		Card defendCard = defendingPlayer.getCardToDefend();
+		if (!defendingPlayer.isOverwhelmed()){
+			if (defendCard != null)
+				defendingPlayer.defendWith(defendCard, Table.getUnbeatenCards().get(0));
+		}
+		else {
+			System.out.println(defendingPlayer + " is overwhelmed");
+			boolean mayAnyoneAttack = false;
+			/*
+			 * Check if any attacker may add another card to the table
+			 */
+			for (int i = 0; i < attackingPlayers.size(); i++){
+				if (attackingPlayers.get(i).getAbilityToAttackThisMove()){
+					System.out.println(attackingPlayers.get(i) + " may attack");
+					mayAnyoneAttack = true;
+				}
+			}
+			/*
+			 * If noone wants or is able to add any card to the table defender takes all cards on the table to his hand
+			 */
+			if (!mayAnyoneAttack){
+				System.out.println(defendingPlayer + " flushes the table");
+				defendingPlayer.flushTheTable();
+			}
 		}
 	}
 	
