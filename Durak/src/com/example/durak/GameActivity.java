@@ -235,7 +235,9 @@ public class GameActivity extends Activity {
 			//Check if defender is overwhelmed (cannot beat some of the attacking cards on the table)
 			if (!defendingPlayer.isOverwhelmed()){
 				if (defendCard != null) {
-					defendingPlayer.defendWith(defendCard, Table.getUnbeatenCards().get(0));
+					Card firstAttackCard = Table.getUnbeatenCards().get(0);
+					UIOperator.getInstance().UIDrawNewDefendCard(firstAttackCard, defendCard);
+					defendingPlayer.defendWith(defendCard, firstAttackCard);
 				}
 			}
 			else {
