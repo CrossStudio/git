@@ -20,13 +20,20 @@ public class GameActivity extends Activity {
 		newDeck = new Deck(DeckSize.THIRTY_SIX);
 	}
 	
-	static GameActivity activity;
+	private static GameActivity activity;
 	
-	GameActivity(){
+	public GameActivity(){
 		activity = this;
 	}
 	
-	LayoutInflater inflater;
+	public static synchronized GameActivity getInstance(){
+		if (activity == null){
+			activity = new GameActivity();
+		}
+		return activity;
+	}
+	
+	
 	LinearLayout llCardsOnHand;
 	LinearLayout llTable;
 	Button btnPCDefenceMove;
@@ -43,7 +50,6 @@ public class GameActivity extends Activity {
 		btnPCAttackMove = (Button) findViewById(R.id.btnPCAttackMove);
 		btnPCAttackMove.setOnClickListener(new AttackClickListener());
 		
-		inflater = getLayoutInflater();
 		llCardsOnHand = (LinearLayout) findViewById(R.id.llCardsOnHand);
 		llTable = (LinearLayout) findViewById(R.id.llTable);
 		llTable.setOnDragListener(new MyDragListener());
@@ -164,7 +170,7 @@ public class GameActivity extends Activity {
 		}
 		setTrumpCard();
 		setMoveOrder();
-		UIOperator.operator.UIShowPlayerCards();
+		UIOperator.getInstance().UIShowPlayerCards();
 	}
 	
 	/**
@@ -207,7 +213,7 @@ public class GameActivity extends Activity {
 		 * After some attacker adds another card to the table everyone's ability to attack is rejuvenated
 		 */
 		if (didAnyoneAttack){
-			UIOperator.operator.UIDrawNewAttackCard(Table.getUnbeatenCards().get(Table.getUnbeatenCards().size()-1));
+			UIOperator.getInstance().UIDrawNewAttackCard(Table.getUnbeatenCards().get(Table.getUnbeatenCards().size()-1));
 			for (int i = 0; i < attackingPlayers.size(); i++){
 				attackingPlayers.get(i).mayAttackThisMove();
 			}
