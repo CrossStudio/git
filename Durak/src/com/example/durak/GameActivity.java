@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -35,7 +36,7 @@ public class GameActivity extends Activity {
 	
 	
 	LinearLayout llCardsOnHand;
-	LinearLayout llTable;
+	GridLayout glTable;
 	Button btnPCDefenceMove;
 	Button btnPCAttackMove;
 	
@@ -51,8 +52,8 @@ public class GameActivity extends Activity {
 		btnPCAttackMove.setOnClickListener(new AttackClickListener());
 		
 		llCardsOnHand = (LinearLayout) findViewById(R.id.llCardsOnHand);
-		llTable = (LinearLayout) findViewById(R.id.llTable);
-		llTable.setOnDragListener(new MyDragListener());
+		glTable = (GridLayout) findViewById(R.id.glTable);
+		glTable.setOnDragListener(new MyDragListener());
 		
 		startNewGame();
 	}
@@ -277,6 +278,7 @@ public class GameActivity extends Activity {
 		else {
 			finishTurnWithFlush();
 		}
+		UIOperator.getInstance().UIClearTable();
 	}
 
 	/**

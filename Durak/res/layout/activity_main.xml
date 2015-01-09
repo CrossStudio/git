@@ -9,15 +9,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.durak.GameActivity" >
 
-    <LinearLayout
-        android:id="@+id/llTable"
+    <GridLayout
+        android:id="@+id/glTable"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/llButtons"
         android:layout_marginBottom="75dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:columnCount="4" >
 
-    </LinearLayout>
+    </GridLayout>
 
     <LinearLayout
         android:id="@+id/llCardsOnHand"

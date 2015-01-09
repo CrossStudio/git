@@ -1,11 +1,11 @@
 package com.example.durak;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -55,13 +55,13 @@ public class UIOperator {
 	 * @param attackCard - card to draw on the table
 	 */
 	void UIDrawNewAttackCard(Card attackCard){
-		RelativeLayout pairOfCards = (RelativeLayout) inflater.inflate(R.layout.pair_of_cards, activity.llTable, false);
+		RelativeLayout pairOfCards = (RelativeLayout) inflater.inflate(R.layout.pair_of_cards, activity.glTable, false);
 		
 		System.out.println("Attacking card: " + attackCard + ". Its id = " + pairOfCards.getId());
 		
 		UIPairsOfCards.add(attackCard);
 		
-		activity.llTable.addView(pairOfCards);
+		activity.glTable.addView(pairOfCards);
 		
 		View viewAttackCard = inflater.inflate(R.layout.card, pairOfCards, false);
 		ImageView cardValue = (ImageView) viewAttackCard.findViewById(R.id.ivCardValue);
@@ -72,11 +72,16 @@ public class UIOperator {
 		pairOfCards.addView(viewAttackCard);
 	}
 	
+	/**
+	 * Draws new defending card on the table passed as a parameter on top of the attacking card passed as a parameter
+	 * @param attackCard - to be defended
+	 * @param defendCard - to be placed on top of the appropriate attacking card
+	 */
 	void UIDrawNewDefendCard(Card attackCard, Card defendCard){
 		System.out.println(attackCard);
 		System.out.println(UIPairsOfCards.indexOf(attackCard));
 		if (UIPairsOfCards.indexOf(attackCard) != -1){
-			RelativeLayout pairOfCards = (RelativeLayout) activity.llTable.getChildAt(UIPairsOfCards.indexOf(attackCard));
+			RelativeLayout pairOfCards = (RelativeLayout) activity.glTable.getChildAt(UIPairsOfCards.indexOf(attackCard));
 			View viewDefendCard = inflater.inflate(R.layout.card, pairOfCards, false);
 			
 			ImageView cardValue = (ImageView) viewDefendCard.findViewById(R.id.ivCardValue);
@@ -92,5 +97,23 @@ public class UIOperator {
 			
 			pairOfCards.addView(viewDefendCard);
 		}
+	}
+	
+	/**
+	 * Remove all card views from the table
+	 */
+	void UIClearTable(){
+		activity.glTable.removeAllViews();
+		UIPairsOfCards.clear();
+	}
+	
+	void UIDisableDefendButton(){
+		Button btnDefendButton = (Button) activity.findViewById(R.id.btnPCDefenceMove);
+		btnDefendButton.setEnabled(false);
+	}
+	
+	void UIEnableDefendButton(){
+		Button btnDefendButton = (Button) activity.findViewById(R.id.btnPCDefenceMove);
+		btnDefendButton.setEnabled(true);
 	}
 }
