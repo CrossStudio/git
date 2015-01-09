@@ -4,17 +4,13 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.GetChars;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 
 public class GameActivity extends Activity {
@@ -22,6 +18,12 @@ public class GameActivity extends Activity {
 	static {
 		players = new ArrayList<Player>();
 		newDeck = new Deck(DeckSize.THIRTY_SIX);
+	}
+	
+	static GameActivity activity;
+	
+	GameActivity(){
+		activity = this;
 	}
 	
 	LayoutInflater inflater;
@@ -115,8 +117,6 @@ public class GameActivity extends Activity {
 	 */
 	private static Card trumpCard;
 	
-	private static ArrayList<Integer> UIPairsOfCardsIDs = new ArrayList<Integer>();
-	
 	/**
 	 * 
 	 * @return current trump card
@@ -164,7 +164,7 @@ public class GameActivity extends Activity {
 		}
 		setTrumpCard();
 		setMoveOrder();
-		UIShowPlayerCards();
+		UIOperator.operator.UIShowPlayerCards();
 	}
 	
 	/**
@@ -180,45 +180,7 @@ public class GameActivity extends Activity {
 		*/
 	}
 
-	/**
-	 * Draws player's cards on the screen
-	 */
-	private void UIShowPlayerCards() {
-		ArrayList<Card> cardsOnHand = players.get(0).cardsOnHand;
-		int numOfCardsOnHand = cardsOnHand.size();
-		for (int i = 0; i < numOfCardsOnHand; i++){
-			View card = inflater.inflate(R.layout.card, llCardsOnHand, false);
-			ImageView cardValue = (ImageView) card.findViewById(R.id.ivCardValue);
-			cardValue.setImageResource(cardsOnHand.get(i).getValueResID());
-			
-			ImageView cardSuit = (ImageView) card.findViewById(R.id.ivCardSuit);
-			cardSuit.setImageResource(cardsOnHand.get(i).getSuit().getResourceID());
-			llCardsOnHand.addView(card);
-			card.setOnTouchListener(new MyOnTouchListener(cardsOnHand.get(i), card));
-		}
-	}
 	
-	/**
-	 * Draws new attacking card on the table passed as a parameter
-	 * @param attackCard - card to draw on the table
-	 */
-	void UIDrawNewAttackCard(Card attackCard){
-		RelativeLayout pairOfCards = (RelativeLayout) inflater.inflate(R.layout.pair_of_cards, llTable, false);
-		llTable.addView(pairOfCards);
-		
-		UIPairsOfCardsIDs.add(pairOfCards.getId());
-		View viewAttackCard = inflater.inflate(R.layout.card, pairOfCards, false);
-		ImageView cardValue = (ImageView) viewAttackCard.findViewById(R.id.ivCardValue);
-		cardValue.setImageResource(attackCard.getValueResID());
-		
-		ImageView cardSuit = (ImageView) viewAttackCard.findViewById(R.id.ivCardSuit);
-		cardSuit.setImageResource(attackCard.getSuit().getResourceID());
-		pairOfCards.addView(viewAttackCard);
-	}
-	
-	void UIDrawNewDefendCard(Card attackCard, Card defendCard){
-		
-	}
 	
 	/**
 	 * Make PC players attack with one card (if one of them has a card to attack with and is willing to do so)
@@ -245,7 +207,7 @@ public class GameActivity extends Activity {
 		 * After some attacker adds another card to the table everyone's ability to attack is rejuvenated
 		 */
 		if (didAnyoneAttack){
-			UIDrawNewAttackCard(Table.getUnbeatenCards().get(Table.getUnbeatenCards().size()-1));
+			UIOperator.operator.UIDrawNewAttackCard(Table.getUnbeatenCards().get(Table.getUnbeatenCards().size()-1));
 			for (int i = 0; i < attackingPlayers.size(); i++){
 				attackingPlayers.get(i).mayAttackThisMove();
 			}
@@ -381,7 +343,7 @@ public class GameActivity extends Activity {
 	 * Returns players participating in game
 	 * @return ArrayList of players
 	 */
-	public static ArrayList<Player> getPlayers(){
+	public ArrayList<Player> getPlayers(){
 		return players;
 	}
 	
@@ -491,24 +453,6 @@ public class GameActivity extends Activity {
 		llCardsOnHand.removeView(draggedView);
 		
 		activity.humanPlayerAttack(draggedCard);
-	}
-	
-	public class AttackClickListener implements OnClickListener {
-
-		@Override
-		public void onClick(View v) {
-			PCMakesAttackMove();
-		}
-
-	}
-	
-	public class DefendClickListener implements OnClickListener {
-
-		@Override
-		public void onClick(View v) {
-			PCMakesDefenceMove();
-		}
-
 	}
 	
 }
