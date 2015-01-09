@@ -4,13 +4,17 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.GetChars;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 
 public class GameActivity extends Activity {
@@ -44,7 +48,7 @@ public class GameActivity extends Activity {
 		
 		startNewGame();
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -111,6 +115,8 @@ public class GameActivity extends Activity {
 	 */
 	private static Card trumpCard;
 	
+	private static ArrayList<Integer> UIPairsOfCardsIDs = new ArrayList<Integer>();
+	
 	/**
 	 * 
 	 * @return current trump card
@@ -165,7 +171,6 @@ public class GameActivity extends Activity {
 	 * Start a new game 
 	 */
 	private void playGame() {
-		attackingPlayers = getAttackingPlayers();
 		//Play until the game is over
 		/*
 		 * while (!gameOver()){
@@ -192,44 +197,34 @@ public class GameActivity extends Activity {
 			card.setOnTouchListener(new MyOnTouchListener(cardsOnHand.get(i), card));
 		}
 	}
-
+	
 	/**
-	 * AI players make their moves on this turn
+	 * Draws new attacking card on the table passed as a parameter
+	 * @param attackCard - card to draw on the table
 	 */
-	private static void playersMoves() {
-		attackingPlayers = getAttackingPlayers();
-		defendingPlayer = players.get(1);
-		Player activeAttackingPlayer;
-		for (int i = 0; i < attackingPlayers.size(); i++){
-			activeAttackingPlayer = attackingPlayers.get(i);
-			while(!activeAttackingPlayer.getCardsToAttack().isEmpty()){
-				activeAttackingPlayer.randomAttack();
-				Card defendCard = defendingPlayer.getCardToDefend();
-				if (!defendingPlayer.isOverwhelmed()){
-					defendingPlayer.defendWith(defendCard, Table.getUnbeatenCards().get(0));
-					i = -1;
-				}
-			}
-		}
-		if (defendingPlayer.isOverwhelmed()){
-			defendingPlayer.flushTheTable();
-			if (players.size() >= 3){
-				finishTurn(attackingPlayers.get(1));
-			}
-			else {
-				finishTurn(attackingPlayers.get(0));
-			}
-		}
-		else{
-			finishTurn(defendingPlayer);
-		}
+	void UIDrawNewAttackCard(Card attackCard){
+		RelativeLayout pairOfCards = (RelativeLayout) inflater.inflate(R.layout.pair_of_cards, llTable, false);
+		llTable.addView(pairOfCards);
+		
+		UIPairsOfCardsIDs.add(pairOfCards.getId());
+		View viewAttackCard = inflater.inflate(R.layout.card, pairOfCards, false);
+		ImageView cardValue = (ImageView) viewAttackCard.findViewById(R.id.ivCardValue);
+		cardValue.setImageResource(attackCard.getValueResID());
+		
+		ImageView cardSuit = (ImageView) viewAttackCard.findViewById(R.id.ivCardSuit);
+		cardSuit.setImageResource(attackCard.getSuit().getResourceID());
+		pairOfCards.addView(viewAttackCard);
+	}
+	
+	void UIDrawNewDefendCard(Card attackCard, Card defendCard){
+		
 	}
 	
 	/**
 	 * Make PC players attack with one card (if one of them has a card to attack with and is willing to do so)
 	 * starting with player who is the first attacker
 	 */
-	static void PCMakesAttackMove(){
+	void PCMakesAttackMove(){
 		Player curAttPlayer = attackingPlayers.get(attackingPlayerIndex);
 		boolean didAnyoneAttack = curAttPlayer.randomAttack();
 		if (!didAnyoneAttack){
@@ -250,6 +245,7 @@ public class GameActivity extends Activity {
 		 * After some attacker adds another card to the table everyone's ability to attack is rejuvenated
 		 */
 		if (didAnyoneAttack){
+			UIDrawNewAttackCard(Table.getUnbeatenCards().get(Table.getUnbeatenCards().size()-1));
 			for (int i = 0; i < attackingPlayers.size(); i++){
 				attackingPlayers.get(i).mayAttackThisMove();
 			}
@@ -262,53 +258,97 @@ public class GameActivity extends Activity {
 	 * Make PC player defend one card on the table (if he has a card that he can defend with or is willing to do so)
 	 * In case he cannot or is not willing to defend the remaining cards on the table he flushes the table
 	 */
-	static void PCMakesDefenceMove(){
+	void PCMakesDefenceMove(){
+		System.out.println("(Before assigning defender) players = " + players);
 		defendingPlayer = players.get(1);
 		Card defendCard = defendingPlayer.getCardToDefend();
-		if (!defendingPlayer.isOverwhelmed()){
-			if (defendCard != null)
-				defendingPlayer.defendWith(defendCard, Table.getUnbeatenCards().get(0));
-		}
-		else {
-			System.out.println(defendingPlayer + " is overwhelmed");
-			boolean mayAnyoneAttack = false;
-			/*
-			 * Check if any attacker may add another card to the table
-			 */
-			for (int i = 0; i < attackingPlayers.size(); i++){
-				if (attackingPlayers.get(i).getAbilityToAttackThisMove()){
-					System.out.println(attackingPlayers.get(i) + " may attack");
-					mayAnyoneAttack = true;
+		//Check if there are any unbeaten (not defended) attacking cards on the table
+		if (Table.getUnbeatenCards().size() > 0){
+			//Check if defender is overwhelmed (cannot beat some of the attacking cards on the table)
+			if (!defendingPlayer.isOverwhelmed()){
+				if (defendCard != null) {
+					defendingPlayer.defendWith(defendCard, Table.getUnbeatenCards().get(0));
 				}
 			}
-			/*
-			 * If noone wants or is able to add any card to the table defender takes all cards on the table to his hand
-			 */
-			if (!mayAnyoneAttack){
-				System.out.println(defendingPlayer + " flushes the table");
-				defendingPlayer.flushTheTable();
+			else {
+				System.out.println(defendingPlayer + " is overwhelmed");
+				boolean mayAnyoneAttack = false;
+				/*
+				 * Check if any attacker may add another card to the table
+				 */
+				for (int i = 0; i < attackingPlayers.size(); i++){
+					if (attackingPlayers.get(i).getAbilityToAttackThisMove()){
+						System.out.println(attackingPlayers.get(i) + " may attack");
+						mayAnyoneAttack = true;
+					}
+				}
+				/*
+				 * If noone wants or is able to add any card to the table defender takes all cards on the table to his hand
+				 */
+				if (!mayAnyoneAttack){
+					System.out.println(defendingPlayer + " flushes the table");
+					endTurn();
+				}
 			}
+		}
+		//There are no unbeaten cards on the table, turn ends with a discard and defending player may now attack
+		else {
+			endTurn();
 		}
 	}
 	
 	/**
-	 * End current turn, have each player to draw cards from deck until they have 6 on hand
-	 * Change attacking and defending players
-	 * @param firstPlayer - player that will be first attacking player next turn
+	 * End turn with a discard, if defender is successful, or with a flush, if otherwise
 	 */
-	private static void finishTurn(Player firstPlayer) {
+	private static void endTurn() {
+		if (Table.getUnbeatenCards().size() == 0){
+			finishTurnWithDiscard();
+		}
+		else {
+			finishTurnWithFlush();
+		}
+	}
+
+	/**
+	 * End current turn, have each attacking player draw cards from deck until they have 6 on hand
+	 * Change attackers and defender
+	 */
+	private static void finishTurnWithFlush() {
+		defendingPlayer.flushTheTable();
+		for (Player attackingPlayer : attackingPlayers){
+			attackingPlayer.drawCards(newDeck);
+		}
+		checkPlayersInPlay();
+		if (attackingPlayers.size() > 1){
+			System.out.println("First attacker will be = " + attackingPlayers.get(1));
+			rearrangePlayers(attackingPlayers.get(1));
+			System.out.println("First attacker is = " + attackingPlayers.get(0));
+		}
+		else {
+			rearrangePlayers(attackingPlayers.get(0));
+		}
+	}
+
+	/**
+	 * End current turn, have each player to draw cards from deck until they have 6 on hand
+	 * Change attackers and defender
+	 */
+	private static void finishTurnWithDiscard() {
 		Table.discard();
-		for (Player attackingPlayer : players){
+		for (Player attackingPlayer : attackingPlayers){
 			attackingPlayer.drawCards(newDeck);
 		}
 		defendingPlayer.drawCards(newDeck);
 		checkPlayersInPlay();
-		rearrangePlayers(firstPlayer);
+		System.out.println("First attacker will be = " + defendingPlayer);
+		rearrangePlayers(defendingPlayer);
+		System.out.println("First attacker will be = " + attackingPlayers.get(0));
 	}
 	
 	
 	/**
 	 * Check players still in play and remove ones with no cards left
+	 * The game is over if number of players still with cards on hand is 1 or 0
 	 */
 	private static void checkPlayersInPlay() {
 		ArrayList<Player> playersToRemove = new ArrayList<Player>();
@@ -320,7 +360,9 @@ public class GameActivity extends Activity {
 		for (Player player : playersToRemove){
 			players.remove(player);
 		}
-		
+		if (gameOver()){
+			System.out.println("GAME OVER!!111111");
+		}
 	}
 
 	/**
@@ -329,10 +371,8 @@ public class GameActivity extends Activity {
 	 */
 	private static ArrayList<Player> getAttackingPlayers() {
 		ArrayList<Player> attackingPlayers = new ArrayList<Player>();
-		attackingPlayers.add(players.get(0));
-		if (players.size() > 2){
-			attackingPlayers.add(players.get(2));
-		}
+		attackingPlayers.addAll(players);
+		attackingPlayers.remove(1);
 		System.out.println("Attacking players: " + attackingPlayers);
 		return attackingPlayers;
 	}
@@ -386,20 +426,20 @@ public class GameActivity extends Activity {
 	 */
 	private static void rearrangePlayers(Player firstPlayer) {
 		ArrayList<Player> dummyPlayersList = new ArrayList<Player>();
-		if (players.indexOf(firstPlayer) >= 0){
-			dummyPlayersList.addAll(players.subList(players.indexOf(firstPlayer), players.size()));
-			
-			for (Player player : players){
-				if (player.equals(firstPlayer)){
-					break;
-				}
-				else {
-					dummyPlayersList.add(player);
-				}
+		dummyPlayersList.addAll(players.subList(players.indexOf(firstPlayer), players.size()));
+		
+		for (Player player : players){
+			if (player.equals(firstPlayer)){
+				break;
 			}
-			players = dummyPlayersList;
+			else {
+				dummyPlayersList.add(player);
+			}
 		}
-		System.out.println(players);
+		players.clear();
+		players.addAll(dummyPlayersList);
+		attackingPlayers = getAttackingPlayers();
+		System.out.println("Order of movement: " + players);
 	}
 	
 	/**
@@ -451,6 +491,24 @@ public class GameActivity extends Activity {
 		llCardsOnHand.removeView(draggedView);
 		
 		activity.humanPlayerAttack(draggedCard);
+	}
+	
+	public class AttackClickListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			PCMakesAttackMove();
+		}
+
+	}
+	
+	public class DefendClickListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			PCMakesDefenceMove();
+		}
+
 	}
 	
 }

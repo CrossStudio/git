@@ -217,6 +217,7 @@ public class Player {
 	 */
 	public void flushTheTable() {
 		cardsOnHand.addAll(Table.getAllCardsOnTable());
+		Table.clear();
 		for (Card cardOnHand : cardsOnHand){
 			cardOnHand.isBeaten(false);
 		}

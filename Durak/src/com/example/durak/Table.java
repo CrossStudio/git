@@ -57,7 +57,7 @@ public abstract class Table {
 	/**
 	 * Clear the table
 	 */
-	private static void clear(){
+	public static void clear(){
 		attackCards.clear();
 		defenceCards.clear();
 	}
