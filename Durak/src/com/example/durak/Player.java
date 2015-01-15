@@ -10,6 +10,11 @@ public class Player {
 	private String name;
 
 	/**
+	 * If player is a human player
+	 */
+	private boolean isHuman = false;
+	
+	/**
 	 * If player was unable to beat some card on the table on his turn
 	 */
 	private boolean overwhelmed = false;
@@ -53,6 +58,21 @@ public class Player {
 		return name;
 	}
 
+	/**
+	 * 
+	 * @return true if this player is human, false otherwise
+	 */
+	public boolean amIHuman(){
+		return isHuman;
+	}
+	
+	/**
+	 * This player becomes human player
+	 */
+	public void setHuman(){
+		isHuman = true;
+	}
+	
 	/**
 	 * 
 	 * @return true if player could not beat all the cards he was attacked with on this turn

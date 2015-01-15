@@ -21,7 +21,7 @@ public class UIOperator {
 	private static ArrayList<Card> UIPairsOfCards = new ArrayList<Card>();
 	
 	public UIOperator(){
-		
+		inflater = activity.getLayoutInflater();
 	}
 	
 	public static synchronized UIOperator getInstance(){
@@ -34,9 +34,9 @@ public class UIOperator {
 	/**
 	 * Draws player's cards on the screen
 	 */
-	void UIShowPlayerCards() {
-		inflater = activity.getLayoutInflater();
-		ArrayList<Card> cardsOnHand = activity.getPlayers().get(0).cardsOnHand;
+	void UIShowPlayerCards(Player currentPlayer) {
+		
+		ArrayList<Card> cardsOnHand = currentPlayer.cardsOnHand;
 		int numOfCardsOnHand = cardsOnHand.size();
 		for (int i = 0; i < numOfCardsOnHand; i++){
 			View card = inflater.inflate(R.layout.card, activity.llCardsOnHand, false);
@@ -47,6 +47,39 @@ public class UIOperator {
 			cardSuit.setImageResource(cardsOnHand.get(i).getSuit().getResourceID());
 			activity.llCardsOnHand.addView(card);
 			card.setOnTouchListener(new MyOnTouchListener(cardsOnHand.get(i), card));
+		}
+	}
+	
+	/**
+	 * Redraws player's hand
+	 * @param currentPlayer - player whose hand should be redrawn
+	 */
+	void UIRefreshPlayerCards(Player currentPlayer){
+		UIClearPlayerHand();
+		UIShowPlayerCards(currentPlayer);
+	}
+	
+	/**
+	 * Removes all the cards from player's hand
+	 */
+	private void UIClearPlayerHand() {
+		activity.llCardsOnHand.removeAllViews();
+	}
+
+	/**
+	 * Enable player's hand for movement
+	 */
+	void UIEnablePlayerMove(Player currentPlayer){
+		UIRefreshPlayerCards(currentPlayer);
+	}
+	
+	/**
+	 * Disable player's hand
+	 */
+	void UIDisablePlayerMove(){
+		System.out.println("Disabling player's hand");
+		for (int i = 0; i < activity.llCardsOnHand.getChildCount(); i++){
+			activity.llCardsOnHand.getChildAt(i).setOnTouchListener(null);
 		}
 	}
 	

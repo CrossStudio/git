@@ -95,6 +95,11 @@ public class GameActivity extends Activity {
 	private static ArrayList<Player> players;
 	
 	/**
+	 * Curent player index
+	 */
+	private static int currentPlayerIndex = 0;
+	
+	/**
 	 * Ordered list of players attacking this turn
 	 */
 	private static ArrayList<Player> attackingPlayers;
@@ -153,14 +158,19 @@ public class GameActivity extends Activity {
 		Player kolia = new Player("Kolia");
 		Player gena = new Player("Gena");
 
+		players.add(humanPlayer);
+		humanPlayer.setHuman();
 		players.add(petia);
 		players.add(kolia);
 		players.add(gena);
 		
 		initiateGame();
-		playGame();
 		
 	}	
+	
+	private static Player getCurrentPlayer(){
+		return players.get(currentPlayerIndex);
+	}
 	
 	/**
 	 * Prepare the setting of a new game (give six cards to each player, determine move order)
@@ -171,23 +181,19 @@ public class GameActivity extends Activity {
 		}
 		setTrumpCard();
 		setMoveOrder();
-		UIOperator.getInstance().UIShowPlayerCards();
+		
+		showPlayersHand(humanPlayer);
+		if (players.get(0) != humanPlayer){
+			UIOperator.getInstance().UIDisablePlayerMove();
+		}
 	}
 	
 	/**
-	 * Start a new game 
+	 * Show player's hand on the screen
 	 */
-	private void playGame() {
-		//Play until the game is over
-		/*
-		 * while (!gameOver()){
-			
-			playersMoves();
-		}
-		*/
+	private void showPlayersHand(Player currentPlayer) {
+		UIOperator.getInstance().UIShowPlayerCards(currentPlayer);
 	}
-
-	
 	
 	/**
 	 * Make PC players attack with one card (if one of them has a card to attack with and is willing to do so)
@@ -271,7 +277,7 @@ public class GameActivity extends Activity {
 	/**
 	 * End turn with a discard, if defender is successful, or with a flush, if otherwise
 	 */
-	private static void endTurn() {
+	private void endTurn() {
 		if (Table.getUnbeatenCards().size() == 0){
 			finishTurnWithDiscard();
 		}
@@ -279,6 +285,13 @@ public class GameActivity extends Activity {
 			finishTurnWithFlush();
 		}
 		UIOperator.getInstance().UIClearTable();
+		UIOperator.getInstance().UIRefreshPlayerCards(humanPlayer);
+		if (getCurrentPlayer().amIHuman()){
+			UIOperator.getInstance().UIEnablePlayerMove(getCurrentPlayer());
+		}
+		else {
+			UIOperator.getInstance().UIDisablePlayerMove();
+		}
 	}
 
 	/**
@@ -437,32 +450,7 @@ public class GameActivity extends Activity {
 	 */
 	public void humanPlayerAttack(Card attackCard){
 		humanPlayer.attackWith(attackCard);	
-	}
-	
-	/**
-	 * UI method that adds one chosen card to the table (if the conditions are met)
-	 * @param draggedCard - card to be put onto table
-	 */
-	public static void putCardOntoTable(View view, Card draggedCard, View draggedView) {
-		
-		LinearLayout llTable = (LinearLayout) view;
-		GameActivity activity = (GameActivity)llTable.getContext();
-		LinearLayout llCardsOnHand = (LinearLayout) activity.findViewById(R.id.llCardsOnHand);
-		
-		LayoutInflater inflater = activity.getLayoutInflater();
-		View card = inflater.inflate(R.layout.card, llTable, false);
-		
-		ImageView cardValue = (ImageView) card.findViewById(R.id.ivCardValue);
-		System.out.println(cardValue.getClass());
-		int cardValueId = draggedCard.getValueResID();
-		cardValue.setImageResource(cardValueId);
-		
-		ImageView cardSuit = (ImageView) card.findViewById(R.id.ivCardSuit);
-		cardSuit.setImageResource(draggedCard.getSuit().getResourceID());
-		llTable.addView(card);
-		llCardsOnHand.removeView(draggedView);
-		
-		activity.humanPlayerAttack(draggedCard);
+		UIOperator.getInstance().UIRefreshPlayerCards(humanPlayer);
 	}
 	
 }

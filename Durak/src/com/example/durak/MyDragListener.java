@@ -25,7 +25,8 @@ public class MyDragListener implements OnDragListener {
 		case DragEvent.ACTION_DRAG_ENTERED:
 			break;
 		case DragEvent.ACTION_DROP:
-			GameActivity.putCardOntoTable(view, draggedCard, draggedView);
+			GameActivity.getInstance().humanPlayerAttack(draggedCard);
+			UIOperator.getInstance().UIDrawNewAttackCard(draggedCard);
 			break;
 		case DragEvent.ACTION_DRAG_EXITED:
 			break;
