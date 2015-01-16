@@ -16,6 +16,10 @@ import android.widget.LinearLayout;
 
 public class GameActivity extends Activity {
 
+	static final int FIRST_ATTACKING_PLAYER_INDEX = 0;
+	
+	static final int DEFENDING_PLAYER_INDEX = 1;
+
 	static {
 		players = new ArrayList<Player>();
 		newDeck = new Deck(DeckSize.THIRTY_SIX);
@@ -39,6 +43,7 @@ public class GameActivity extends Activity {
 	GridLayout glTable;
 	Button btnPCDefenceMove;
 	Button btnPCAttackMove;
+	Button btnEndMove;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,9 @@ public class GameActivity extends Activity {
 		
 		btnPCAttackMove = (Button) findViewById(R.id.btnPCAttackMove);
 		btnPCAttackMove.setOnClickListener(new AttackClickListener());
+		
+		btnEndMove = (Button) findViewById(R.id.btnEndMove);
+		btnEndMove.setOnClickListener(new EndMoveClickListener());
 		
 		llCardsOnHand = (LinearLayout) findViewById(R.id.llCardsOnHand);
 		glTable = (GridLayout) findViewById(R.id.glTable);
@@ -97,7 +105,7 @@ public class GameActivity extends Activity {
 	/**
 	 * Curent player index
 	 */
-	private static int currentPlayerIndex = 0;
+	static int currentPlayerIndex = FIRST_ATTACKING_PLAYER_INDEX;
 	
 	/**
 	 * Ordered list of players attacking this turn
@@ -108,6 +116,16 @@ public class GameActivity extends Activity {
 	 * Current attacking player's index
 	 */
 	private static int attackingPlayerIndex;
+	
+	/**
+	 * Has anyone attacked after a card was defended this turn 
+	 */
+	private boolean didAnyoneAttack = false;
+	
+	/**
+	 * May anyone attack this turn
+	 */
+	private boolean mayAnyoneAttack = true;
 	
 	/**
 	 * Player defending this turn
@@ -168,8 +186,16 @@ public class GameActivity extends Activity {
 		
 	}	
 	
-	private static Player getCurrentPlayer(){
+	/**
+	 * 
+	 * @return current Player (whose move it is)
+	 */
+	Player getCurrentPlayer(){
 		return players.get(currentPlayerIndex);
+	}
+	
+	void setCurrentPlayer(int indexOfCurrentPlayer){
+		currentPlayerIndex = indexOfCurrentPlayer;
 	}
 	
 	/**
@@ -181,11 +207,16 @@ public class GameActivity extends Activity {
 		}
 		setTrumpCard();
 		setMoveOrder();
-		
+		defendingPlayer = players.get(DEFENDING_PLAYER_INDEX);
+		defendingPlayer.noAttackThisMove();
 		showPlayersHand(humanPlayer);
-		if (players.get(0) != humanPlayer){
+		if (!players.get(0).amIHuman()){
 			UIOperator.getInstance().UIDisablePlayerMove();
 		}
+		else {
+			System.out.println("Its human's turn");
+		}
+		playersMove();
 	}
 	
 	/**
@@ -195,27 +226,67 @@ public class GameActivity extends Activity {
 		UIOperator.getInstance().UIShowPlayerCards(currentPlayer);
 	}
 	
+	void playersMove(){
+		if (defendingPlayer.isOverwhelmed()){
+			mayAnyoneAttack = false;
+			/*
+			 * Check if any attacker may add another card to the table
+			 */
+			for (int i = 0; i < players.size(); i++){
+				if (players.get(i).getAbilityToAttackThisMove()){
+					System.out.println(players.get(i) + " may attack");
+					mayAnyoneAttack = true;
+					setCurrentPlayer(i);
+					break;
+				}
+			}
+			/*
+			 * If noone wants or is able to add any card to the table defender takes all cards on the table to his hand
+			 */
+			if (mayAnyoneAttack){
+				if (!getCurrentPlayer().amIHuman()){
+					UIOperator.getInstance().UIDisablePlayerMove();
+					PCMakesAttackMove();
+				}
+				else {
+					System.out.println("Its human's turn");
+					UIOperator.getInstance().UIEnablePlayerMove(humanPlayer);
+				}
+			}
+			else {
+				System.out.println(defendingPlayer + " flushes the table");
+				endTurn();
+			}
+		}
+		if (currentPlayerIndex == DEFENDING_PLAYER_INDEX){
+			if (!defendingPlayer.amIHuman()){
+				UIOperator.getInstance().UIDisablePlayerMove();
+				PCMakesDefenceMove();
+			}
+			else {
+				System.out.println("Its human's turn");
+				UIOperator.getInstance().UIEnablePlayerMove(humanPlayer);
+			}
+		}
+		else {
+			if (!getCurrentPlayer().amIHuman()){
+				UIOperator.getInstance().UIDisablePlayerMove();
+				PCMakesAttackMove();
+			}
+			else {
+				System.out.println("Its human's turn");
+				UIOperator.getInstance().UIEnablePlayerMove(humanPlayer);
+			}
+		}
+	}
+	
 	/**
 	 * Make PC players attack with one card (if one of them has a card to attack with and is willing to do so)
 	 * starting with player who is the first attacker
 	 */
 	void PCMakesAttackMove(){
-		Player curAttPlayer = attackingPlayers.get(attackingPlayerIndex);
-		boolean didAnyoneAttack = curAttPlayer.randomAttack();
-		if (!didAnyoneAttack){
-			curAttPlayer.noAttackThisMove();
-		}
-		/*
-		 * Check whether the player attacks with this move
-		 */
-		while (attackingPlayers.size() - 1 > attackingPlayerIndex && !didAnyoneAttack){
-			attackingPlayerIndex++;
-			curAttPlayer = attackingPlayers.get(attackingPlayerIndex);
-			didAnyoneAttack = curAttPlayer.randomAttack();
-			if (!didAnyoneAttack){
-				curAttPlayer.noAttackThisMove();
-			}
-		}
+		Player curAttPlayer = getCurrentPlayer();
+		didAnyoneAttack = curAttPlayer.randomAttack();
 		/*
 		 * After some attacker adds another card to the table everyone's ability to attack is rejuvenated
 		 */
@@ -224,9 +295,12 @@ public class GameActivity extends Activity {
 			for (int i = 0; i < attackingPlayers.size(); i++){
 				attackingPlayers.get(i).mayAttackThisMove();
 			}
+			setCurrentPlayer(DEFENDING_PLAYER_INDEX);
 		}
-		//Let first attacker make his next move
-		attackingPlayerIndex = 0;
+		else {
+			curAttPlayer.noAttackThisMove();
+		}
+		playersMove();
 	}
 
 	/**
@@ -234,50 +308,31 @@ public class GameActivity extends Activity {
 	 * In case he cannot or is not willing to defend the remaining cards on the table he flushes the table
 	 */
 	void PCMakesDefenceMove(){
-		System.out.println("(Before assigning defender) players = " + players);
-		defendingPlayer = players.get(1);
-		Card defendCard = defendingPlayer.getCardToDefend();
+		Card defendCard = defendingPlayer.PCGetCardToDefend();
 		//Check if there are any unbeaten (not defended) attacking cards on the table
 		if (Table.getUnbeatenCards().size() > 0){
 			//Check if defender is overwhelmed (cannot beat some of the attacking cards on the table)
 			if (!defendingPlayer.isOverwhelmed()){
-				if (defendCard != null) {
-					Card firstAttackCard = Table.getUnbeatenCards().get(0);
-					UIOperator.getInstance().UIDrawNewDefendCard(firstAttackCard, defendCard);
-					defendingPlayer.defendWith(defendCard, firstAttackCard);
-				}
+				Card firstAttackCard = Table.getUnbeatenCards().get(0);
+				UIOperator.getInstance().UIDrawNewDefendCard(firstAttackCard, defendCard);
+				defendingPlayer.defendWith(defendCard, firstAttackCard);
 			}
 			else {
 				System.out.println(defendingPlayer + " is overwhelmed");
-				boolean mayAnyoneAttack = false;
-				/*
-				 * Check if any attacker may add another card to the table
-				 */
-				for (int i = 0; i < attackingPlayers.size(); i++){
-					if (attackingPlayers.get(i).getAbilityToAttackThisMove()){
-						System.out.println(attackingPlayers.get(i) + " may attack");
-						mayAnyoneAttack = true;
-					}
-				}
-				/*
-				 * If noone wants or is able to add any card to the table defender takes all cards on the table to his hand
-				 */
-				if (!mayAnyoneAttack){
-					System.out.println(defendingPlayer + " flushes the table");
-					endTurn();
-				}
 			}
+			currentPlayerIndex = FIRST_ATTACKING_PLAYER_INDEX;
 		}
 		//There are no unbeaten cards on the table, turn ends with a discard and defending player may now attack
 		else {
 			endTurn();
 		}
+		playersMove();
 	}
 	
 	/**
 	 * End turn with a discard, if defender is successful, or with a flush, if otherwise
 	 */
-	private void endTurn() {
+	void endTurn() {
 		if (Table.getUnbeatenCards().size() == 0){
 			finishTurnWithDiscard();
 		}
@@ -359,6 +414,9 @@ public class GameActivity extends Activity {
 		attackingPlayers.addAll(players);
 		attackingPlayers.remove(1);
 		System.out.println("Attacking players: " + attackingPlayers);
+		for (Player player : attackingPlayers){
+			player.mayAttackThisMove();
+		}
 		return attackingPlayers;
 	}
 
@@ -424,6 +482,7 @@ public class GameActivity extends Activity {
 		players.clear();
 		players.addAll(dummyPlayersList);
 		attackingPlayers = getAttackingPlayers();
+		defendingPlayer = players.get(1);
 		System.out.println("Order of movement: " + players);
 	}
 	
@@ -447,10 +506,32 @@ public class GameActivity extends Activity {
 	/**
 	 * Human controlled player attacks with chosen card
 	 * @param attackCard - card that human controlled player has chosen to attack
+	 * @return true if the attack was successful, false otherwise
 	 */
-	public void humanPlayerAttack(Card attackCard){
-		humanPlayer.attackWith(attackCard);	
-		UIOperator.getInstance().UIRefreshPlayerCards(humanPlayer);
+	public boolean humanPlayerAttack(Card attackCard){
+		ArrayList<Card> cardsAvailable = humanPlayer.getCardsToAttack();
+		if (cardsAvailable.contains(attackCard)){
+			humanPlayer.attackWith(attackCard);
+			UIOperator.getInstance().UIRefreshPlayerCards(humanPlayer);
+			return true;
+		}
+		else {
+			System.out.println("Cannot attack with this card: " + attackCard);
+			return false;
+		}
+	}
+	
+	public boolean humanPlayerDefend(Card defendCard, Card attackCard){
+		if (!defendingPlayer.isOverwhelmed()){
+			if (defendCard.beats(attackCard, getTrump().getSuit())){
+				defendingPlayer.defendWith(defendCard, attackCard);
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		return false;
 	}
 	
 }

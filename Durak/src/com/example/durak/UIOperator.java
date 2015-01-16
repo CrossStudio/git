@@ -103,6 +103,7 @@ public class UIOperator {
 		ImageView cardSuit = (ImageView) viewAttackCard.findViewById(R.id.ivCardSuit);
 		cardSuit.setImageResource(attackCard.getSuit().getResourceID());
 		pairOfCards.addView(viewAttackCard);
+		viewAttackCard.setOnDragListener(new MyDragListener());
 	}
 	
 	/**

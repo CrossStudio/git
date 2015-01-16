@@ -253,7 +253,7 @@ public class Player {
 	 * 
 	 * @return card which will be used to defend against the attacking card currently on the table
 	 */
-	public Card getCardToDefend() {
+	public Card PCGetCardToDefend() {
 		//overwhelmed = false;
 		if (!Table.getUnbeatenCards().isEmpty()){
 			Card attackCard = Table.getUnbeatenCards().get(0);

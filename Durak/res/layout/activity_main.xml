@@ -53,4 +53,11 @@
             android:text="Attack!" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btnEndMove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="End Move" />
+
 </RelativeLayout>
