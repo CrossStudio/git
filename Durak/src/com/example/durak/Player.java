@@ -291,5 +291,58 @@ public class Player {
 
 		System.out.println("Cards left in deck = " + newDeck.getCardsLeft());
 	}
+	
+	public void attackingAction() {
+		//If this player is PC controlled
+		if (!amIHuman()){
+			UIOperator.getInstance().UIDisablePlayerMove();
+			//If this PC player has successfully attacked
+			if (randomAttack()){
+				letDefenderMove();
+			}
+			else {
+				//If this player is NOT the last player
+				if (GameActivity.getInstance().currentPlayerIndex + 1 < GameActivity.getAttackingPlayers().size()){
+					//letNextAttackerMove();
+				}
+			}
+		}
+		//If this player is human controlled
+		else {
+			System.out.println("Its human's turn");
+			UIOperator.getInstance().UIEnablePlayerMove(this);
+		}
+	}
+
+	public void defensiveAction() {
+		//If this player is PC controlled
+		if (!amIHuman()){
+			UIOperator.getInstance().UIDisablePlayerMove();
+			GameActivity.getInstance().PCMakesDefenceMove();
+		}
+		//If this player is human controlled
+		else {
+			System.out.println("Its human's turn");
+			UIOperator.getInstance().UIEnablePlayerMove(this);
+		}
+	}
+
+	
+	private void letDefenderMove() {
+				
+	}
+	
+	public void lastAttackChance() {
+		//If this player is PC controlled
+		if (!amIHuman()){
+			UIOperator.getInstance().UIDisablePlayerMove();
+			randomAttack();
+		}
+		//If this player is human controlled
+		else {
+			System.out.println("Its human's turn");
+			UIOperator.getInstance().UIEnablePlayerMove(this);
+		}
+	}
 
 }
