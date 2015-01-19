@@ -15,6 +15,11 @@ public class Player {
 	private boolean isHuman = false;
 	
 	/**
+	 * If this player is a defending player
+	 */
+	private boolean defender = false;
+	
+	/**
 	 * If player was unable to beat some card on the table on his turn
 	 */
 	private boolean overwhelmed = false;
@@ -73,12 +78,24 @@ public class Player {
 		isHuman = true;
 	}
 	
+	public boolean isDefender(){
+		return defender;
+	}
+	
+	public void setDefender(boolean isDef){
+		defender = isDef;
+	}
+	
 	/**
 	 * 
 	 * @return true if player could not beat all the cards he was attacked with on this turn
 	 */
 	public boolean isOverwhelmed(){
 		return overwhelmed;
+	}
+	
+	public void notOverwhelmed(){
+		overwhelmed = false;
 	}
 	
 	/**
@@ -166,6 +183,7 @@ public class Player {
 		Table.addDefenceCard(defenceCard, attackCard);
 		currentCardsDefendedWith.add(defenceCard);
 		removeCardFromHand(defenceCard);
+		UIOperator.getInstance().UIDrawNewDefendCard(attackCard, defenceCard);
 		System.out.println(name + " defends: " + attackCard + " with: " + defenceCard);
 	}
 
@@ -195,15 +213,6 @@ public class Player {
 		return dummyList;
 	}
 
-
-	/**
-	 * Randomizer of attack (in case it is this player's move)
-	 */
-	public void randomFirstAttack(){
-		int randomAttackCardNum = (int)(Math.random() * cardsOnHand.size());
-		Card attackCard = cardsOnHand.get(randomAttackCardNum);
-		attackWith(attackCard);
-	}
 	/**
 	 * Randomizer of attack (in case it is not this player's move and he is not defending)
 	 */
@@ -215,6 +224,8 @@ public class Player {
 			randomAttackCardNum = (int)(Math.random() * dummyList.size());
 			attackCard = dummyList.get(randomAttackCardNum);
 			attackWith(attackCard);
+			//Draw the current attacking card
+			UIOperator.getInstance().UIDrawNewAttackCard(Table.getUnbeatenCards().get(Table.getUnbeatenCards().size()-1));
 			return true;
 		}
 		else {
@@ -228,8 +239,19 @@ public class Player {
 	 * @return true if some card was defended, false if this player cannot beat some card
 	 * on the table or if he has beaten all the cards
 	 */
-	public boolean defendAI(){
-		return false;
+	public boolean PCDefend(){
+		UIOperator.getInstance().UIDisablePlayerMove();
+		
+		Card defendCard = getCardToDefend();
+		Card attackCard = Table.getUnbeatenCards().get(0);
+		if (defendCard != null){
+			defendWith(defendCard, attackCard);
+			return true;
+		}
+		else {
+			System.out.println("Defender is overwhelmed");
+			return false;
+		}
 	}
 
 	/**
@@ -253,8 +275,7 @@ public class Player {
 	 * 
 	 * @return card which will be used to defend against the attacking card currently on the table
 	 */
-	public Card PCGetCardToDefend() {
-		//overwhelmed = false;
+	public Card getCardToDefend() {
 		if (!Table.getUnbeatenCards().isEmpty()){
 			Card attackCard = Table.getUnbeatenCards().get(0);
 			for (Card cardOnHand : cardsOnHand){
@@ -295,52 +316,67 @@ public class Player {
 	public void attackingAction() {
 		//If this player is PC controlled
 		if (!amIHuman()){
+			System.out.println("It's PC's turn");
 			UIOperator.getInstance().UIDisablePlayerMove();
 			//If this PC player has successfully attacked
 			if (randomAttack()){
-				letDefenderMove();
+				GameActivity.getInstance().letDefenderMove();
 			}
 			else {
-				//If this player is NOT the last player
+				//If this player is NOT the last attacking player
 				if (GameActivity.getInstance().currentPlayerIndex + 1 < GameActivity.getAttackingPlayers().size()){
-					//letNextAttackerMove();
+					GameActivity.getInstance().letNextAttackerMove();
+				}
+				//If this player is the last attacking player
+				else {
+					GameActivity.getInstance().endTurn();
 				}
 			}
 		}
 		//If this player is human controlled
 		else {
-			System.out.println("Its human's turn");
-			UIOperator.getInstance().UIEnablePlayerMove(this);
+			System.out.println("It's human's turn");
+			GameActivity.getInstance().letHumanMove();
 		}
 	}
 
 	public void defensiveAction() {
-		//If this player is PC controlled
-		if (!amIHuman()){
-			UIOperator.getInstance().UIDisablePlayerMove();
-			GameActivity.getInstance().PCMakesDefenceMove();
+		if (this.getCardToDefend() != null){
+			//If this player is PC controlled
+			if (!amIHuman()){
+				System.out.println("It's PC's turn");
+				PCDefend();
+				if (getCardsOnHand().isEmpty()){
+					GameActivity.getInstance().endTurn();
+					return;
+				}
+				GameActivity.currentPlayerIndex = -1;
+				GameActivity.getInstance().letNextAttackerMove();
+			}
+			//If this player is human controlled
+			else {
+				System.out.println("It's human's turn");
+				UIOperator.getInstance().UIEnablePlayerMove(this);
+			}
 		}
-		//If this player is human controlled
 		else {
-			System.out.println("Its human's turn");
-			UIOperator.getInstance().UIEnablePlayerMove(this);
+			System.out.println("Defender is overwhelmed");
+			GameActivity.currentPlayerIndex = -1;
+			GameActivity.getInstance().letNextAttackerMove();
 		}
-	}
-
-	
-	private void letDefenderMove() {
-				
 	}
 	
 	public void lastAttackChance() {
+		System.out.println("Entering lastAttackChance method");
 		//If this player is PC controlled
 		if (!amIHuman()){
+			System.out.println("It's PC's turn");
 			UIOperator.getInstance().UIDisablePlayerMove();
 			randomAttack();
 		}
 		//If this player is human controlled
 		else {
-			System.out.println("Its human's turn");
+			System.out.println("It's human's turn");
 			UIOperator.getInstance().UIEnablePlayerMove(this);
 		}
 	}

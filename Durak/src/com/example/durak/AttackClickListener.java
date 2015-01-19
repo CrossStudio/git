@@ -7,7 +7,7 @@ public class AttackClickListener implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		GameActivity.getInstance().PCMakesAttackMove();
+		//GameActivity.getInstance().PCMakesAttackMove();
 	}
 
 }

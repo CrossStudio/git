@@ -112,8 +112,6 @@ public class UIOperator {
 	 * @param defendCard - to be placed on top of the appropriate attacking card
 	 */
 	void UIDrawNewDefendCard(Card attackCard, Card defendCard){
-		System.out.println(attackCard);
-		System.out.println(UIPairsOfCards.indexOf(attackCard));
 		if (UIPairsOfCards.indexOf(attackCard) != -1){
 			RelativeLayout pairOfCards = (RelativeLayout) activity.glTable.getChildAt(UIPairsOfCards.indexOf(attackCard));
 			View viewDefendCard = inflater.inflate(R.layout.card, pairOfCards, false);

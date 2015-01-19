@@ -13,17 +13,7 @@ public class MyDragListener implements OnDragListener {
 
 	@Override
 	public boolean onDrag(View view, DragEvent event) {
-		
-		if (view.getClass() == GridLayout.class){
-			System.out.println("You dragged onto GridLayout");
-		}
-		else if (view.getClass() == ImageView.class){
-			System.out.println("You dragged onto ImageView");
-		}
-		else {
-			System.out.println("You dragged onto " + view.getClass());
-		}
-		
+
 		int action = event.getAction();
 		
 		ArrayList<Object> dataReceived = (ArrayList<Object>)event.getLocalState();
@@ -37,17 +27,15 @@ public class MyDragListener implements OnDragListener {
 		case DragEvent.ACTION_DRAG_ENTERED:
 			break;
 		case DragEvent.ACTION_DROP:
-			if (GameActivity.getInstance().getHumanPlayer().getAbilityToAttackThisMove()){
+			if (!GameActivity.getInstance().getHumanPlayer().isDefender()){
 				if (GameActivity.getInstance().humanPlayerAttack(draggedCard)){
 					UIOperator.getInstance().UIDrawNewAttackCard(draggedCard);
-					GameActivity.getInstance().setCurrentPlayer(GameActivity.DEFENDING_PLAYER_INDEX);
-					GameActivity.getInstance().playersMove();
+					GameActivity.getInstance().letDefenderMove();
 				}
 			}
 			else {
-				//view.getParent().
 				GameActivity.getInstance().humanPlayerDefend(draggedCard, Table.getUnbeatenCards().get(0));
-				GameActivity.getInstance().setCurrentPlayer(GameActivity.FIRST_ATTACKING_PLAYER_INDEX);
+				GameActivity.getInstance().letNextAttackerMove();
 			}
 			break;
 		case DragEvent.ACTION_DRAG_EXITED:

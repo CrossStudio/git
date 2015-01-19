@@ -7,14 +7,9 @@ public class EndMoveClickListener implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		if (GameActivity.currentPlayerIndex < GameActivity.getInstance().getPlayers().size() - 1){
-			GameActivity.getInstance().setCurrentPlayer(GameActivity.currentPlayerIndex + 1);
-			GameActivity.getInstance().playersMove();
+		if (GameActivity.getInstance().getCurrentPlayer().isDefender()){
+			GameActivity.getInstance().letNextAttackerMove();
 		}
-		else {
-			GameActivity.getInstance().endTurn();
-		}
-		
 	}
 
 }
