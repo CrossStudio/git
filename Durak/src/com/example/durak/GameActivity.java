@@ -123,14 +123,13 @@ public class GameActivity extends Activity {
 	private static ArrayList<Player> attackingPlayers;
 
 	/**
-	 * Has anyone attacked after a card was defended this turn 
-	 */
-	private boolean didAnyoneAttack = false;
-	
-	/**
 	 * Player defending this turn
 	 */
 	private static Player defendingPlayer;
+	
+	public static Player getDefendingPlayer(){
+		return defendingPlayer;
+	}
 	
 	/**
 	 * Deck used in Durak game (36 cards)
@@ -170,8 +169,8 @@ public class GameActivity extends Activity {
 		Player kolia = new Player("Kolia");
 		Player gena = new Player("Gena");
 
-		//players.add(humanPlayer);
-		//humanPlayer.setHuman();
+		players.add(humanPlayer);
+		humanPlayer.setHuman();
 		players.add(petia);
 		players.add(kolia);
 		players.add(gena);
@@ -185,7 +184,7 @@ public class GameActivity extends Activity {
 	 * @return current Player (whose move it is)
 	 */
 	Player getCurrentPlayer(){
-		return players.get(currentPlayerIndex);
+		return orderedPlayers.get(currentPlayerIndex);
 	}
 	
 	void setCurrentPlayer(int indexOfCurrentPlayer){
@@ -205,7 +204,7 @@ public class GameActivity extends Activity {
 		defendingPlayer.noAttackThisMove();
 		defendingPlayer.setDefender(true);
 		showPlayersHand(humanPlayer);
-		if (!players.get(0).amIHuman()){
+		if (!orderedPlayers.get(0).amIHuman()){
 			UIOperator.getInstance().UIDisablePlayerMove();
 		}
 		else {
@@ -228,7 +227,16 @@ public class GameActivity extends Activity {
 		//If defender is already overwhelmed (cannot beat all the attacking cards on the table)
 		if (defendingPlayer.isOverwhelmed()){
 			System.out.println("Defender is overwhelmed");
-			for (Player player : orderedPlayers) {
+			if (!currentPlayer.amIHuman()){
+				System.out.println("It's PC's turn");
+				currentPlayer.lastAttackChance();
+			}
+			else {
+				System.out.println("It's human's turn");
+				System.out.println("currentPlayer = " + currentPlayer);
+				UIOperator.getInstance().UIEnablePlayerMove(currentPlayer);
+			}
+			/*for (Player player : orderedPlayers) {
 				currentPlayer = player;
 				//If current active player is a defender
 				if (currentPlayer == defendingPlayer){
@@ -239,7 +247,7 @@ public class GameActivity extends Activity {
 					currentPlayer.lastAttackChance();
 				}
 			}
-			endTurn();
+			endTurn();*/
 		}
 		//If defender is not yet overwhelmed
 		else {
@@ -286,7 +294,8 @@ public class GameActivity extends Activity {
 	}
 	
 	public void letHumanMove() {
-		UIOperator.getInstance().UIEnablePlayerMove(humanPlayer);
+		System.out.println("currentPlayer = " + currentPlayer);
+		UIOperator.getInstance().UIEnablePlayerMove(currentPlayer);
 	}
 	
 	/**
@@ -308,16 +317,13 @@ public class GameActivity extends Activity {
 	}
 	
 	public boolean humanPlayerDefend(Card defendCard, Card attackCard){
-		if (!defendingPlayer.isOverwhelmed()){
-			if (defendCard.beats(attackCard, getTrump().getSuit())){
-				defendingPlayer.defendWith(defendCard, attackCard);
-				return true;
-			}
-			else {
-				return false;
-			}
+		if (defendCard.beats(attackCard, getTrump().getSuit())){
+			defendingPlayer.defendWith(defendCard, attackCard);
+			return true;
 		}
-		return false;
+		else {
+			return false;
+		}
 	}
 
 	/**
@@ -326,6 +332,7 @@ public class GameActivity extends Activity {
 	void endTurn() {
 		System.out.println("Entering endTurn method");
 		defendingPlayer.notOverwhelmed();
+		defendingPlayer.setDefender(false);
 		if (Table.getUnbeatenCards().size() == 0){
 			System.out.println("Finishing with discard");
 			Table.discard();
@@ -456,7 +463,7 @@ public class GameActivity extends Activity {
 	 * @return ArrayList of players
 	 */
 	public ArrayList<Player> getPlayers(){
-		return players;
+		return orderedPlayers;
 	}
 	
 	/**

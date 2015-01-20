@@ -22,7 +22,7 @@ public class Player {
 	/**
 	 * If player was unable to beat some card on the table on his turn
 	 */
-	private boolean overwhelmed = false;
+	public boolean overwhelmed = false;
 	
 	/**
 	 * If player has an ability and willingness to attack with his next move
@@ -368,17 +368,10 @@ public class Player {
 	
 	public void lastAttackChance() {
 		System.out.println("Entering lastAttackChance method");
-		//If this player is PC controlled
-		if (!amIHuman()){
-			System.out.println("It's PC's turn");
-			UIOperator.getInstance().UIDisablePlayerMove();
-			randomAttack();
-		}
-		//If this player is human controlled
-		else {
-			System.out.println("It's human's turn");
-			UIOperator.getInstance().UIEnablePlayerMove(this);
-		}
+		UIOperator.getInstance().UIDisablePlayerMove();
+		randomAttack();
+		GameActivity.getInstance().letNextAttackerMove();
+			
 	}
 
 }

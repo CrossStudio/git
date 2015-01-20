@@ -27,15 +27,33 @@ public class MyDragListener implements OnDragListener {
 		case DragEvent.ACTION_DRAG_ENTERED:
 			break;
 		case DragEvent.ACTION_DROP:
+			//If this is a move as an attacking player
 			if (!GameActivity.getInstance().getHumanPlayer().isDefender()){
-				if (GameActivity.getInstance().humanPlayerAttack(draggedCard)){
-					UIOperator.getInstance().UIDrawNewAttackCard(draggedCard);
-					GameActivity.getInstance().letDefenderMove();
+				System.out.println("Human player attacks");
+				//If this move is the last chance to attack the defender who is overwhelmed
+				if (GameActivity.getDefendingPlayer().isOverwhelmed()){
+					if (GameActivity.getInstance().humanPlayerAttack(draggedCard)){
+						UIOperator.getInstance().UIDrawNewAttackCard(draggedCard);
+					}
+				}
+				//If this is a general attacking move
+				else {
+					if (GameActivity.getInstance().humanPlayerAttack(draggedCard)){
+						UIOperator.getInstance().UIDrawNewAttackCard(draggedCard);
+						GameActivity.getInstance().letDefenderMove();
+					}
 				}
 			}
+			//If this is a move as a defending player
 			else {
-				GameActivity.getInstance().humanPlayerDefend(draggedCard, Table.getUnbeatenCards().get(0));
-				GameActivity.getInstance().letNextAttackerMove();
+				System.out.println("Human player defends");
+				if (GameActivity.getInstance().humanPlayerDefend(draggedCard, Table.getUnbeatenCards().get(0))){
+					GameActivity.currentPlayerIndex = -1;
+					GameActivity.getInstance().letNextAttackerMove();
+				}
+				else {
+					System.out.println("You cannot defend " + Table.getUnbeatenCards().get(0) + " with "+ draggedCard);
+				}
 			}
 			break;
 		case DragEvent.ACTION_DRAG_EXITED:
