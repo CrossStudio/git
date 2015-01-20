@@ -3,11 +3,14 @@ package com.example.durak;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 
 public class UIOperator {
 	
@@ -38,18 +41,56 @@ public class UIOperator {
 		
 		ArrayList<Card> cardsOnHand = currentPlayer.cardsOnHand;
 		int numOfCardsOnHand = cardsOnHand.size();
-		for (int i = 0; i < numOfCardsOnHand; i++){
-			View card = inflater.inflate(R.layout.card, activity.llCardsOnHand, false);
-			ImageView cardValue = (ImageView) card.findViewById(R.id.ivCardValue);
-			cardValue.setImageResource(cardsOnHand.get(i).getValueResID());
-			
-			ImageView cardSuit = (ImageView) card.findViewById(R.id.ivCardSuit);
-			cardSuit.setImageResource(cardsOnHand.get(i).getSuit().getResourceID());
-			activity.llCardsOnHand.addView(card);
-			card.setOnTouchListener(new MyOnTouchListener(cardsOnHand.get(i), card));
+		if (numOfCardsOnHand >= 12){
+			UIShowPlayerGroupOfCards(currentPlayer);
+		}
+		else {
+			for (int i = 0; i < numOfCardsOnHand; i++){
+				View card = inflater.inflate(R.layout.card, activity.llCardsOnHand, false);
+				ImageView cardValue = (ImageView) card.findViewById(R.id.ivCardValue);
+				cardValue.setImageResource(cardsOnHand.get(i).getValueResID());
+				
+				ImageView cardSuit = (ImageView) card.findViewById(R.id.ivCardSuit);
+				cardSuit.setImageResource(cardsOnHand.get(i).getSuit().getResourceID());
+				
+				LinearLayout.LayoutParams cardParams = (LinearLayout.LayoutParams) card.getLayoutParams();
+				if (i != 0){
+					cardParams.leftMargin = -45;
+				}
+				
+				activity.llCardsOnHand.setPadding(15, 0, 0, 0);
+				
+				activity.llCardsOnHand.addView(card);
+				card.setOnTouchListener(new MyOnTouchListener(cardsOnHand.get(i), card));
+			}
 		}
 	}
 	
+	private void UIShowPlayerGroupOfCards(Player currentPlayer) {
+		ArrayList<Card> cardsOnHand = currentPlayer.cardsOnHand;
+		int numOfCardsOnHand = cardsOnHand.size();
+		Suit suitAlreadyUsed = null;
+		for (int i = 0; i < numOfCardsOnHand; i++){
+			
+			View card = inflater.inflate(R.layout.card, activity.llCardsOnHand, false);
+			
+			if (suitAlreadyUsed != cardsOnHand.get(i).getSuit()){
+				ImageView cardValue = (ImageView) card.findViewById(R.id.ivCardValue);
+				cardValue.setVisibility(ImageView.INVISIBLE);
+				
+				ImageView cardSuit = (ImageView) card.findViewById(R.id.ivCardSuit);
+				cardSuit.setImageResource(cardsOnHand.get(i).getSuit().getResourceID());
+				LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) cardSuit.getLayoutParams();
+				params.gravity = Gravity.CENTER;
+				cardSuit.setLayoutParams(params);
+				suitAlreadyUsed = cardsOnHand.get(i).getSuit();
+				
+				activity.llCardsOnHand.addView(card);
+			}
+		}
+		
+	}
+
 	/**
 	 * Redraws player's hand
 	 * @param currentPlayer - player whose hand should be redrawn

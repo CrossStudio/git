@@ -12,20 +12,17 @@
 
         <ImageView
             android:id="@+id/ivCardValue"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="2dp"
             android:gravity="center_horizontal"
             android:src="@drawable/ace_black" />
 
    		<ImageView
 	        android:id="@+id/ivCardSuit"
-	        android:layout_width="15dp"
-	        android:layout_height="15dp"
-	        android:layout_alignEnd="@+id/ivCardValue"
-	        android:layout_alignTop="@+id/ivCardValue"
-	        android:layout_toEndOf="@+id/ivCardValue"
+	        android:layout_width="10dp"
+	        android:layout_height="10dp"
+	        android:layout_marginTop="2dp"
 	        android:src="@drawable/spades" />
     </LinearLayout>
     
