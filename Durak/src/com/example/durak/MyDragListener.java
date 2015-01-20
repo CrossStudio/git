@@ -48,6 +48,10 @@ public class MyDragListener implements OnDragListener {
 			else {
 				System.out.println("Human player defends");
 				if (GameActivity.getInstance().humanPlayerDefend(draggedCard, Table.getUnbeatenCards().get(0))){
+					if (GameActivity.getInstance().getHumanPlayer().getCardsOnHand().isEmpty()){
+						GameActivity.getInstance().endTurn();
+						return true;
+					}
 					GameActivity.currentPlayerIndex = -1;
 					GameActivity.getInstance().letNextAttackerMove();
 				}
