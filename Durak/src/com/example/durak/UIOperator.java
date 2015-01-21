@@ -56,16 +56,17 @@ public class UIOperator {
 				LinearLayout.LayoutParams cardParams = (LinearLayout.LayoutParams) card.getLayoutParams();
 				if (i != 0){
 					cardParams.leftMargin = -45;
-				}
-				
-				activity.llCardsOnHand.setPadding(15, 0, 0, 0);
-				
+				}				
 				activity.llCardsOnHand.addView(card);
 				card.setOnTouchListener(new MyOnTouchListener(cardsOnHand.get(i), card));
 			}
 		}
 	}
 	
+	/**
+	 * Draws group of player's cards (grouped by suits) if their number is more than 11
+	 * @param currentPlayer - player, whose cards will be drawn
+	 */
 	private void UIShowPlayerGroupOfCards(Player currentPlayer) {
 		ArrayList<Card> cardsOnHand = currentPlayer.cardsOnHand;
 		int numOfCardsOnHand = cardsOnHand.size();
@@ -80,8 +81,9 @@ public class UIOperator {
 				
 				ImageView cardSuit = (ImageView) card.findViewById(R.id.ivCardSuit);
 				cardSuit.setImageResource(cardsOnHand.get(i).getSuit().getResourceID());
-				LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) cardSuit.getLayoutParams();
-				params.gravity = Gravity.CENTER;
+				RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) cardSuit.getLayoutParams();
+				params.addRule(RelativeLayout.CENTER_IN_PARENT);
+				params.removeRule(RelativeLayout.RIGHT_OF);
 				cardSuit.setLayoutParams(params);
 				suitAlreadyUsed = cardsOnHand.get(i).getSuit();
 				
