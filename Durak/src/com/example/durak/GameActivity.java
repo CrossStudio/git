@@ -58,7 +58,7 @@ public class GameActivity extends Activity {
 		
 		llCardsOnHand = (LinearLayout) findViewById(R.id.llCardsOnHand);
 		glTable = (GridLayout) findViewById(R.id.glTable);
-		glTable.setOnDragListener(new MyDragListener());
+
 		
 		startNewGame();
 	}
@@ -201,6 +201,7 @@ public class GameActivity extends Activity {
 		defendingPlayer.noAttackThisMove();
 		defendingPlayer.setDefender(true);
 		showPlayersHand(humanPlayer);
+		btnEndMove.setEnabled(false);
 		if (!orderedPlayers.get(0).amIHuman()){
 			UIOperator.getInstance().UIDisablePlayerMove();
 		}
@@ -327,6 +328,7 @@ public class GameActivity extends Activity {
 	 * End turn with a discard, if defender is successful, or with a flush, if otherwise
 	 */
 	void endTurn() {
+		GameActivity.getInstance().btnEndMove.setEnabled(false);
 		System.out.println("Entering endTurn method");
 		defendingPlayer.notOverwhelmed();
 		defendingPlayer.setDefender(false);

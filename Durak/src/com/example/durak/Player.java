@@ -321,6 +321,7 @@ public class Player {
 			//If this PC player has successfully attacked
 			if (randomAttack()){
 				GameActivity.getInstance().letDefenderMove();
+				GameActivity.getInstance().btnEndMove.setEnabled(true);
 			}
 			else {
 				//If this player is NOT the last attacking player
@@ -338,6 +339,7 @@ public class Player {
 			System.out.println("It's human's turn");
 			GameActivity.getInstance().letHumanMove();
 		}
+		
 	}
 
 	public void defensiveAction() {
