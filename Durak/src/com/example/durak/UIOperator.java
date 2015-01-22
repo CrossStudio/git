@@ -15,6 +15,22 @@ public class UIOperator {
 	
 	LayoutInflater inflater;
 	
+	private static boolean expandedView = true;
+	
+	public boolean isViewExpanded(){
+		return expandedView;
+	}
+	
+	private static boolean oneSuitView = false;
+	
+	public void setOneSuitView(boolean oneSuitView){
+		this.oneSuitView = oneSuitView;
+	}
+	
+	public boolean isViewForOneSuit(){
+		return oneSuitView;
+	}
+	
 	private static GameActivity activity = GameActivity.getInstance();
 	
 	private static UIOperator operator;
@@ -40,10 +56,13 @@ public class UIOperator {
 		
 		ArrayList<Card> cardsOnHand = currentPlayer.cardsOnHand;
 		int numOfCardsOnHand = cardsOnHand.size();
+		UIClearPlayerHand();
 		if (numOfCardsOnHand >= 11){
+			expandedView = false;
 			UIShowPlayerGroupOfCards(currentPlayer);
 		}
 		else {
+			expandedView = true;
 			for (int i = 0; i < numOfCardsOnHand; i++){
 				CardView card = new CardView(activity, cardsOnHand.get(i));
 
@@ -83,8 +102,8 @@ public class UIOperator {
 
 				suitAlreadyUsed = cardsOnHand.get(i).getSuit();
 				
-				activity.llCardsOnHand.addView(card);
-				card.setOnTouchListener(new ExpandOnTouchListener(card));
+				activity.llGroupOfCards.addView(card);
+				card.setOnTouchListener(new MyOnTouchListener(null, card));
 			}
 		}
 		
@@ -104,6 +123,7 @@ public class UIOperator {
 	 */
 	private void UIClearPlayerHand() {
 		activity.llCardsOnHand.removeAllViews();
+		activity.llGroupOfCards.removeAllViews();
 	}
 
 	/**
@@ -194,7 +214,7 @@ public class UIOperator {
 	 */
 	public static void expandSuit(Suit suit) {
 		ArrayList<Card> cardsOnHand = activity.getHumanPlayer().cardsOnHand;
-		activity.llGroupOfCards.setVisibility(LinearLayout.VISIBLE);
+		operator.UIClearPlayerHand();
 		for (Card card : cardsOnHand){
 			if (card.getSuit() == suit){
 				CardView newCard = new CardView(activity, card);
@@ -205,10 +225,14 @@ public class UIOperator {
 				ImageView cardSuit = (ImageView) newCard.findViewById(R.id.ivCardSuit);
 				cardSuit.setImageResource(card.getSuit().getResourceID());
 				
-				activity.llGroupOfCards.addView(newCard);
-				newCard.setOnTouchListener(new CollapseOnTouchListener(card, newCard));
+				activity.llCardsOnHand.addView(newCard);
+				newCard.setOnTouchListener(new MyOnTouchListener(card, newCard));
 			}
 		}
-		
+	}
+	
+	public static void collapseSuits(){
+		operator.UIClearPlayerHand();
+		operator.UIShowPlayerCards(activity.getHumanPlayer());
 	}
 }
