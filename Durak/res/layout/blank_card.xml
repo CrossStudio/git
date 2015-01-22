@@ -1,0 +1,17 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlCard"
+    android:layout_width="45dp"
+    android:layout_height="75dp"
+    android:layout_margin="5dp"
+    android:background="@drawable/border" >
+
+   		<ImageView
+	        android:id="@+id/ivCardGroupSuit"
+	        android:layout_width="10dp"
+	        android:layout_height="10dp"
+	        android:layout_marginTop="2dp"
+	        android:src="@drawable/spades" 
+	        android:layout_centerInParent="true"/>
+    
+    
+</RelativeLayout>

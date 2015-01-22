@@ -41,6 +41,7 @@ public class GameActivity extends Activity {
 	Button btnPCDefenceMove;
 	Button btnPCAttackMove;
 	Button btnEndMove;
+	LinearLayout llGroupOfCards;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class GameActivity extends Activity {
 		btnEndMove.setOnClickListener(new EndMoveClickListener());
 		
 		llCardsOnHand = (LinearLayout) findViewById(R.id.llCardsOnHand);
+		llGroupOfCards = (LinearLayout) findViewById(R.id.llGroupOfCards);
 		glTable = (GridLayout) findViewById(R.id.glTable);
 		glTable.setOnDragListener(new MyDragListener());
 		

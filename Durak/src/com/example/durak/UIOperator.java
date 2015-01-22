@@ -3,14 +3,13 @@ package com.example.durak;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 
 public class UIOperator {
 	
@@ -41,23 +40,25 @@ public class UIOperator {
 		
 		ArrayList<Card> cardsOnHand = currentPlayer.cardsOnHand;
 		int numOfCardsOnHand = cardsOnHand.size();
-		if (numOfCardsOnHand >= 12){
+		if (numOfCardsOnHand >= 11){
 			UIShowPlayerGroupOfCards(currentPlayer);
 		}
 		else {
 			for (int i = 0; i < numOfCardsOnHand; i++){
-				View card = inflater.inflate(R.layout.card, activity.llCardsOnHand, false);
+				CardView card = new CardView(activity, cardsOnHand.get(i));
+
 				ImageView cardValue = (ImageView) card.findViewById(R.id.ivCardValue);
 				cardValue.setImageResource(cardsOnHand.get(i).getValueResID());
 				
 				ImageView cardSuit = (ImageView) card.findViewById(R.id.ivCardSuit);
 				cardSuit.setImageResource(cardsOnHand.get(i).getSuit().getResourceID());
 				
+				activity.llCardsOnHand.addView(card);
+				
 				LinearLayout.LayoutParams cardParams = (LinearLayout.LayoutParams) card.getLayoutParams();
 				if (i != 0){
 					cardParams.leftMargin = -45;
 				}				
-				activity.llCardsOnHand.addView(card);
 				card.setOnTouchListener(new MyOnTouchListener(cardsOnHand.get(i), card));
 			}
 		}
@@ -73,21 +74,17 @@ public class UIOperator {
 		Suit suitAlreadyUsed = null;
 		for (int i = 0; i < numOfCardsOnHand; i++){
 			
-			View card = inflater.inflate(R.layout.card, activity.llCardsOnHand, false);
+			CardView card = new CardView(activity,cardsOnHand.get(i).getSuit());
 			
 			if (suitAlreadyUsed != cardsOnHand.get(i).getSuit()){
-				ImageView cardValue = (ImageView) card.findViewById(R.id.ivCardValue);
-				cardValue.setVisibility(ImageView.INVISIBLE);
 				
-				ImageView cardSuit = (ImageView) card.findViewById(R.id.ivCardSuit);
+				ImageView cardSuit = (ImageView) card.findViewById(R.id.ivCardGroupSuit);
 				cardSuit.setImageResource(cardsOnHand.get(i).getSuit().getResourceID());
-				RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) cardSuit.getLayoutParams();
-				params.addRule(RelativeLayout.CENTER_IN_PARENT);
-				params.removeRule(RelativeLayout.RIGHT_OF);
-				cardSuit.setLayoutParams(params);
+
 				suitAlreadyUsed = cardsOnHand.get(i).getSuit();
 				
 				activity.llCardsOnHand.addView(card);
+				card.setOnTouchListener(new ExpandOnTouchListener(card));
 			}
 		}
 		
@@ -190,5 +187,29 @@ public class UIOperator {
 	void UIEnableDefendButton(){
 		Button btnDefendButton = (Button) activity.findViewById(R.id.btnPCDefenceMove);
 		btnDefendButton.setEnabled(true);
+	}
+
+	/**
+	 * Makes initial cardsOnHand invisible and draws only those cards that have suit as supplied in the parameter
+	 * @param suit - of cards to be displayed
+	 */
+	public static void expandSuit(Suit suit) {
+		ArrayList<Card> cardsOnHand = activity.getHumanPlayer().cardsOnHand;
+		activity.llGroupOfCards.setVisibility(LinearLayout.VISIBLE);
+		for (Card card : cardsOnHand){
+			if (card.getSuit() == suit){
+				CardView newCard = new CardView(activity, card);
+
+				ImageView cardValue = (ImageView) newCard.findViewById(R.id.ivCardValue);
+				cardValue.setImageResource(card.getValueResID());
+				
+				ImageView cardSuit = (ImageView) newCard.findViewById(R.id.ivCardSuit);
+				cardSuit.setImageResource(card.getSuit().getResourceID());
+				
+				activity.llGroupOfCards.addView(newCard);
+				newCard.setOnTouchListener(new CollapseOnTouchListener(card, newCard));
+			}
+		}
+		
 	}
 }
