@@ -13,33 +13,38 @@ import android.widget.RelativeLayout;
 
 public class UIOperator {
 	
-	LayoutInflater inflater;
+	private static GameActivity activity;
+	static LayoutInflater inflater;
+	private static UIOperator operator;
 	
+	static {
+		activity = GameActivity.getInstance();
+		inflater = activity.getLayoutInflater();
+	}
+
 	private static boolean expandedView = true;
 	
-	public boolean isViewExpanded(){
+	public static boolean isViewExpanded(){
 		return expandedView;
 	}
 	
 	private static boolean oneSuitView = false;
 	
-	public void setOneSuitView(boolean oneSuitView){
-		this.oneSuitView = oneSuitView;
+	public static void setOneSuitView(boolean oneSuit){
+		oneSuitView = oneSuit;
 	}
 	
-	public boolean isViewForOneSuit(){
+	public static boolean isViewForOneSuit(){
 		return oneSuitView;
 	}
 	
-	private static GameActivity activity = GameActivity.getInstance();
 	
-	private static UIOperator operator;
 
 	@SuppressLint("UseSparseArrays")
 	private static ArrayList<Card> UIPairsOfCards = new ArrayList<Card>();
 	
 	public UIOperator(){
-		inflater = activity.getLayoutInflater();
+		
 	}
 	
 	public static synchronized UIOperator getInstance(){
@@ -53,15 +58,14 @@ public class UIOperator {
 	 * Draws player's cards on the screen
 	 */
 	void UIShowPlayerCards(Player currentPlayer) {
-		
 		ArrayList<Card> cardsOnHand = currentPlayer.cardsOnHand;
 		int numOfCardsOnHand = cardsOnHand.size();
-		UIClearPlayerHand();
 		if (numOfCardsOnHand >= 11){
 			expandedView = false;
 			UIShowPlayerGroupOfCards(currentPlayer);
 		}
 		else {
+			UIRemoveIndividualCardsFromHand();
 			expandedView = true;
 			for (int i = 0; i < numOfCardsOnHand; i++){
 				CardView card = new CardView(activity, cardsOnHand.get(i));
@@ -78,16 +82,22 @@ public class UIOperator {
 				if (i != 0){
 					cardParams.leftMargin = -45;
 				}				
-				card.setOnTouchListener(new MyOnTouchListener(cardsOnHand.get(i), card));
+				card.setOnClickListener(new MyOnClickListener(cardsOnHand.get(i), card));
 			}
+			UIRemoveGroupsOfCards();
 		}
 	}
 	
+	private void UIRemoveGroupsOfCards() {
+		activity.llGroupOfCards.removeAllViews();
+	}
+
 	/**
 	 * Draws group of player's cards (grouped by suits) if their number is more than 11
 	 * @param currentPlayer - player, whose cards will be drawn
 	 */
 	private void UIShowPlayerGroupOfCards(Player currentPlayer) {
+		UIRemoveGroupsOfCards();
 		ArrayList<Card> cardsOnHand = currentPlayer.cardsOnHand;
 		int numOfCardsOnHand = cardsOnHand.size();
 		Suit suitAlreadyUsed = null;
@@ -103,9 +113,10 @@ public class UIOperator {
 				suitAlreadyUsed = cardsOnHand.get(i).getSuit();
 				
 				activity.llGroupOfCards.addView(card);
-				card.setOnTouchListener(new MyOnTouchListener(null, card));
+				card.setOnClickListener(new MyOnClickListener(null, card));
 			}
 		}
+		UIRemoveIndividualCardsFromHand();
 		
 	}
 
@@ -114,16 +125,7 @@ public class UIOperator {
 	 * @param currentPlayer - player whose hand should be redrawn
 	 */
 	void UIRefreshPlayerCards(Player currentPlayer){
-		UIClearPlayerHand();
 		UIShowPlayerCards(currentPlayer);
-	}
-	
-	/**
-	 * Removes all the cards from player's hand
-	 */
-	private void UIClearPlayerHand() {
-		activity.llCardsOnHand.removeAllViews();
-		activity.llGroupOfCards.removeAllViews();
 	}
 
 	/**
@@ -194,45 +196,39 @@ public class UIOperator {
 	 * Remove all card views from the table
 	 */
 	void UIClearTable(){
-		activity.glTable.removeAllViews();
+		if (activity.glTable.getChildCount() > 0){
+			activity.glTable.removeAllViews();
+		}
 		UIPairsOfCards.clear();
-	}
-	
-	void UIDisableDefendButton(){
-		Button btnDefendButton = (Button) activity.findViewById(R.id.btnPCDefenceMove);
-		btnDefendButton.setEnabled(false);
-	}
-	
-	void UIEnableDefendButton(){
-		Button btnDefendButton = (Button) activity.findViewById(R.id.btnPCDefenceMove);
-		btnDefendButton.setEnabled(true);
 	}
 
 	/**
 	 * Makes initial cardsOnHand invisible and draws only those cards that have suit as supplied in the parameter
 	 * @param suit - of cards to be displayed
 	 */
-	public static void expandSuit(Suit suit) {
+	public void expandSuit(Suit suit) {
 		ArrayList<Card> cardsOnHand = activity.getHumanPlayer().cardsOnHand;
-		operator.UIClearPlayerHand();
-		for (Card card : cardsOnHand){
-			if (card.getSuit() == suit){
-				CardView newCard = new CardView(activity, card);
-
-				ImageView cardValue = (ImageView) newCard.findViewById(R.id.ivCardValue);
-				cardValue.setImageResource(card.getValueResID());
+		for (int i = 0; i < cardsOnHand.size(); i++){
+			if (cardsOnHand.get(i).getSuit() == suit){
+				CardView card = new CardView(activity, cardsOnHand.get(i));
+				ImageView cardValue = (ImageView) card.findViewById(R.id.ivCardValue);
+				cardValue.setImageResource(cardsOnHand.get(i).getValueResID());
+				ImageView cardSuit = (ImageView) card.findViewById(R.id.ivCardSuit);
+				cardSuit.setImageResource(cardsOnHand.get(i).getSuit().getResourceID());
+				activity.llCardsOnHand.addView(card);
 				
-				ImageView cardSuit = (ImageView) newCard.findViewById(R.id.ivCardSuit);
-				cardSuit.setImageResource(card.getSuit().getResourceID());
-				
-				activity.llCardsOnHand.addView(newCard);
-				newCard.setOnTouchListener(new MyOnTouchListener(card, newCard));
+				LinearLayout.LayoutParams cardParams = (LinearLayout.LayoutParams) card.getLayoutParams();
+				if (activity.llCardsOnHand.getChildCount() != 1){
+					cardParams.leftMargin = -45;
+				}				
+				card.setOnClickListener(new MyOnClickListener(cardsOnHand.get(i), card));
 			}
 		}
+		UIRemoveGroupsOfCards();
 	}
 	
-	public static void collapseSuits(){
-		operator.UIClearPlayerHand();
-		operator.UIShowPlayerCards(activity.getHumanPlayer());
+	private void UIRemoveIndividualCardsFromHand() {
+		activity.llCardsOnHand.removeAllViews();
+		
 	}
 }

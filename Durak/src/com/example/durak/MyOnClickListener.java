@@ -6,10 +6,11 @@ import android.content.ClipData;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.LinearLayout;
 
-public class MyOnTouchListener implements OnTouchListener {
+public class MyOnClickListener implements OnClickListener {
 
 	private ArrayList<Object> dataToSend = new ArrayList<Object>();
 	
@@ -17,16 +18,16 @@ public class MyOnTouchListener implements OnTouchListener {
 	CardView cardView;
 	UIOperator operator = UIOperator.getInstance();
 	
-	public MyOnTouchListener(Card cardPlayed, CardView cardView) {
+	public MyOnClickListener(Card cardPlayed, CardView cardView) {
 		this.cardPlayed = cardPlayed;
 		this.cardView = cardView;
 		dataToSend.add(cardPlayed);
 		dataToSend.add(cardView);
 	}
 	
-	public boolean onTouch(View view, MotionEvent motionEvent) {
+	public void onClick(View view) {
 		//If current display of players cards shows all the cards at once or cards of a certain suit
-		if (operator.isViewExpanded() || operator.isViewForOneSuit()){
+		if (UIOperator.isViewExpanded() || UIOperator.isViewForOneSuit()){
 			//If this is a move as an attacking player
 			if (!GameActivity.getInstance().getHumanPlayer().isDefender()){
 				System.out.println("Human player attacks");
@@ -34,6 +35,9 @@ public class MyOnTouchListener implements OnTouchListener {
 				if (GameActivity.getDefendingPlayer().isOverwhelmed()){
 					if (GameActivity.getInstance().humanPlayerAttack(cardPlayed)){
 						UIOperator.getInstance().UIDrawNewAttackCard(cardPlayed);
+					}
+					else{
+						operator.UIShowPlayerCards(GameActivity.getInstance().getHumanPlayer());
 					}
 				}
 				//If this is a general attacking move
@@ -54,8 +58,9 @@ public class MyOnTouchListener implements OnTouchListener {
 				if (GameActivity.getInstance().humanPlayerDefend(cardPlayed, Table.getUnbeatenCards().get(0))){
 					if (GameActivity.getInstance().getHumanPlayer().getCardsOnHand().isEmpty()){
 						GameActivity.getInstance().endTurn();
-						return true;
+						return;
 					}
+					
 					GameActivity.currentPlayerIndex = -1;
 					GameActivity.getInstance().letNextAttackerMove();
 				}
@@ -64,15 +69,14 @@ public class MyOnTouchListener implements OnTouchListener {
 					operator.UIShowPlayerCards(GameActivity.getInstance().getHumanPlayer());
 				}
 			}
-			UIOperator.getInstance().setOneSuitView(false);
+			UIOperator.setOneSuitView(false);
 		}
 		//If current display of player's cards shows only Suits to choose 
 		else {
-			System.out.println("Expanding card group");
-			UIOperator.getInstance().setOneSuitView(true);
-			UIOperator.expandSuit(cardView.getSuit());
+			System.out.println(cardView);
+			UIOperator.setOneSuitView(true);
+			operator.expandSuit(cardView.getSuit());
 		}
-		
-		return false;
+
 	}
 }

@@ -28,6 +28,10 @@ public abstract class Table {
 		attackCards.add(card);
 	}
 	
+	public static ArrayList<Card> getAttackCards(){
+		return attackCards;
+	}
+	
 	/**
 	 * Place new defending card onto table, beat the appropriate attacking card
 	 * @param card card to be put onto table

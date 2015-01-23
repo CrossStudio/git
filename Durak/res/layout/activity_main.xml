@@ -29,8 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="5dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:background="#050" >
     </LinearLayout>
 	
 	<LinearLayout
@@ -40,39 +40,24 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="5dp"
         android:orientation="horizontal"
         android:background="#050" >
 	</LinearLayout>
 	
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/llButtons"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" >
+        android:layout_alignParentTop="true"
+        android:gravity="center_vertical">
 
         <Button
-            android:id="@+id/btnPCDefenceMove"
+            android:id="@+id/btnEndMove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Defend" />
+            android:layout_alignParentRight="true"
+            android:text="End Move" />
 
-        <Button
-            android:id="@+id/btnPCAttackMove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Attack!" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btnEndMove"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="End Move" />
+    </RelativeLayout>
 
 </RelativeLayout>

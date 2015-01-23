@@ -38,8 +38,6 @@ public class GameActivity extends Activity {
 	
 	LinearLayout llCardsOnHand;
 	GridLayout glTable;
-	Button btnPCDefenceMove;
-	Button btnPCAttackMove;
 	Button btnEndMove;
 	LinearLayout llGroupOfCards;
 	
@@ -47,12 +45,6 @@ public class GameActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		btnPCDefenceMove = (Button) findViewById(R.id.btnPCDefenceMove);
-		btnPCDefenceMove.setOnClickListener(new DefendClickListener());
-		
-		btnPCAttackMove = (Button) findViewById(R.id.btnPCAttackMove);
-		btnPCAttackMove.setOnClickListener(new AttackClickListener());
 		
 		btnEndMove = (Button) findViewById(R.id.btnEndMove);
 		btnEndMove.setOnClickListener(new EndMoveClickListener());
@@ -236,18 +228,7 @@ public class GameActivity extends Activity {
 				System.out.println("currentPlayer = " + currentPlayer);
 				UIOperator.getInstance().UIEnablePlayerMove(currentPlayer);
 			}
-			/*for (Player player : orderedPlayers) {
-				currentPlayer = player;
-				//If current active player is a defender
-				if (currentPlayer == defendingPlayer){
-					continue;
-				}
-				//If current active player is an attacker
-				else {
-					currentPlayer.lastAttackChance();
-				}
-			}
-			endTurn();*/
+
 		}
 		//If defender is not yet overwhelmed
 		else {
@@ -332,14 +313,16 @@ public class GameActivity extends Activity {
 	void endTurn() {
 		GameActivity.getInstance().btnEndMove.setEnabled(false);
 		System.out.println("Entering endTurn method");
-		defendingPlayer.notOverwhelmed();
-		defendingPlayer.setDefender(false);
-		if (Table.getUnbeatenCards().size() == 0){
+		if (defendingPlayer.isOverwhelmed()){
+			defendingPlayer.notOverwhelmed();
+			defendingPlayer.setDefender(false);
 			System.out.println("Finishing with discard");
 			Table.discard();
 			drawCardsForAllPlayers();
 			removePlayersWithNoCards();
 			if (checkGameOver()){
+				UIOperator.getInstance().UIDisablePlayerMove();
+				btnEndMove.setEnabled(false);
 				return;
 			}
 			else {
@@ -347,11 +330,15 @@ public class GameActivity extends Activity {
 			}
 		}
 		else {
+			defendingPlayer.notOverwhelmed();
+			defendingPlayer.setDefender(false);
 			System.out.println("Finishing with flush");
 			defendingPlayer.flushTheTable();
 			drawCardsForAllPlayers();
 			removePlayersWithNoCards();
 			if (checkGameOver()){
+				UIOperator.getInstance().UIDisablePlayerMove();
+				btnEndMove.setEnabled(false);
 				return;
 			}
 			else {
@@ -365,6 +352,7 @@ public class GameActivity extends Activity {
 		}
 		else {
 			UIOperator.getInstance().UIDisablePlayerMove();
+			
 		}
 		currentPlayerIndex = FIRST_ATTACKING_PLAYER_INDEX;
 		currentPlayer = orderedPlayers.get(currentPlayerIndex);

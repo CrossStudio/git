@@ -7,19 +7,21 @@ import android.widget.RelativeLayout;
 
 public class CardView extends RelativeLayout {
 	
+	static LayoutInflater inflater;
+	
 	public CardView(Context context, Card card) {
 		super(context);
 		this.card = card;
-		
-		LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		view = layoutInflater.inflate(R.layout.card,this);
+		this.suit = card.getSuit();
+		inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		view = inflater.inflate(R.layout.card,this);
 	}
 	
 	public CardView(Context context, Suit suit){
 		super(context);
 		this.suit = suit;
-		LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		view = layoutInflater.inflate(R.layout.blank_card, this);
+		inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		view = inflater.inflate(R.layout.blank_card, this);
 	}
 	
 	private Suit suit;
@@ -38,5 +40,9 @@ public class CardView extends RelativeLayout {
 
 	public Card getCard(){
 		return card;
+	}
+	
+	public String toString(){
+		return card + " " + suit;
 	}
 }

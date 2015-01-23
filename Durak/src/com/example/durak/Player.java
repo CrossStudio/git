@@ -366,6 +366,9 @@ public class Player {
 			GameActivity.currentPlayerIndex = -1;
 			GameActivity.getInstance().letNextAttackerMove();
 		}
+		if (Table.getAttackCards().size() >= 6){
+			GameActivity.getInstance().endTurn();
+		}
 	}
 	
 	public void lastAttackChance() {
