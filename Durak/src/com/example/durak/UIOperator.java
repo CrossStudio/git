@@ -82,7 +82,7 @@ public class UIOperator {
 				if (i != 0){
 					cardParams.leftMargin = -45;
 				}				
-				card.setOnClickListener(new MyOnClickListener(cardsOnHand.get(i), card));
+				card.setOnClickListener(new CardClickListener(cardsOnHand.get(i), card));
 			}
 			UIRemoveGroupsOfCards();
 		}
@@ -113,7 +113,7 @@ public class UIOperator {
 				suitAlreadyUsed = cardsOnHand.get(i).getSuit();
 				
 				activity.llGroupOfCards.addView(card);
-				card.setOnClickListener(new MyOnClickListener(null, card));
+				card.setOnClickListener(new CardClickListener(null, card));
 			}
 		}
 		UIRemoveIndividualCardsFromHand();
@@ -221,7 +221,7 @@ public class UIOperator {
 				if (activity.llCardsOnHand.getChildCount() != 1){
 					cardParams.leftMargin = -45;
 				}				
-				card.setOnClickListener(new MyOnClickListener(cardsOnHand.get(i), card));
+				card.setOnClickListener(new CardClickListener(cardsOnHand.get(i), card));
 			}
 		}
 		UIRemoveGroupsOfCards();

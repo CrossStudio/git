@@ -10,7 +10,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.LinearLayout;
 
-public class MyOnClickListener implements OnClickListener {
+public class CardClickListener implements OnClickListener {
 
 	private ArrayList<Object> dataToSend = new ArrayList<Object>();
 	
@@ -18,7 +18,7 @@ public class MyOnClickListener implements OnClickListener {
 	CardView cardView;
 	UIOperator operator = UIOperator.getInstance();
 	
-	public MyOnClickListener(Card cardPlayed, CardView cardView) {
+	public CardClickListener(Card cardPlayed, CardView cardView) {
 		this.cardPlayed = cardPlayed;
 		this.cardView = cardView;
 		dataToSend.add(cardPlayed);

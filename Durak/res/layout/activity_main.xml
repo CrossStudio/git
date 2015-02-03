@@ -58,6 +58,36 @@
             android:layout_alignParentRight="true"
             android:text="End Move" />
 
+        <LinearLayout
+            android:id="@+id/llGameParams"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tvNumOfCardsInDeck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textColor="#FFF" />
+
+            <TextView
+                android:id="@+id/tvWhoseTurn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textColor="#FFF" />
+
+            <ImageView
+                android:id="@+id/ivTrumpSuit"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/diamonds" />
+
+        </LinearLayout>
+
     </RelativeLayout>
 
 </RelativeLayout>

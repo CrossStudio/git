@@ -2,13 +2,17 @@ package com.example.durak;
 
 import java.util.ArrayList;
 
+import javax.crypto.spec.IvParameterSpec;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 public class GameActivity extends Activity {
@@ -35,7 +39,9 @@ public class GameActivity extends Activity {
 		return activity;
 	}
 	
-	
+	static ImageView ivTrumpSuit;
+	static TextView tvNumOfCardsInDeck;
+	static TextView tvWhoseTurn;
 	LinearLayout llCardsOnHand;
 	GridLayout glTable;
 	Button btnEndMove;
@@ -45,6 +51,10 @@ public class GameActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		ivTrumpSuit = (ImageView) findViewById(R.id.ivTrumpSuit);
+		tvNumOfCardsInDeck = (TextView) findViewById(R.id.tvNumOfCardsInDeck);
+		tvWhoseTurn = (TextView) findViewById(R.id.tvWhoseTurn);
 		
 		btnEndMove = (Button) findViewById(R.id.btnEndMove);
 		btnEndMove.setOnClickListener(new EndMoveClickListener());
@@ -143,11 +153,12 @@ public class GameActivity extends Activity {
 	/**
 	 * Sets trump card
 	 */
-	public static void setTrumpCard(){
+	public void setTrumpCard(){
 		trumpCard = newDeck.draw();
 		System.out.println("Trump: " + trumpCard);
 		// Put card at the beginning of the deck 
 		newDeck.getCards().add(0, trumpCard);
+		ivTrumpSuit.setImageResource(trumpCard.getSuit().getResourceID());
 	}
 	
 	/**
@@ -251,7 +262,8 @@ public class GameActivity extends Activity {
 			currentPlayerIndex = orderedPlayers.size()-1;
 			System.out.println("currentPlayerIndex = " + currentPlayerIndex);
 			currentPlayer = orderedPlayers.get(currentPlayerIndex);
-			playersMove();
+			btnEndMove.setOnClickListener(new NextMoveClickListener());
+			//playersMove();
 		}
 		else {
 			System.out.println("There is only one player left in the game");
@@ -265,7 +277,8 @@ public class GameActivity extends Activity {
 			currentPlayerIndex++;
 			System.out.println("currentPlayerIndex = " + currentPlayerIndex);
 			currentPlayer = orderedPlayers.get(currentPlayerIndex);
-			playersMove();
+			btnEndMove.setOnClickListener(new NextMoveClickListener());
+			//playersMove();
 		}
 		else {
 			System.out.println("It was the last attacking player");
@@ -275,6 +288,7 @@ public class GameActivity extends Activity {
 	}
 	
 	public void letHumanMove() {
+		btnEndMove.setOnClickListener(new EndMoveClickListener());
 		System.out.println("currentPlayer = " + currentPlayer);
 		UIOperator.getInstance().UIEnablePlayerMove(currentPlayer);
 	}
@@ -313,7 +327,7 @@ public class GameActivity extends Activity {
 	void endTurn() {
 		GameActivity.getInstance().btnEndMove.setEnabled(false);
 		System.out.println("Entering endTurn method");
-		if (defendingPlayer.isOverwhelmed()){
+		if (!defendingPlayer.isOverwhelmed()){
 			defendingPlayer.notOverwhelmed();
 			defendingPlayer.setDefender(false);
 			System.out.println("Finishing with discard");
@@ -518,7 +532,8 @@ public class GameActivity extends Activity {
 		orderedPlayers.add(defendingPlayer);
 		currentPlayerIndex = FIRST_ATTACKING_PLAYER_INDEX;
 		attackingPlayers = getAttackingPlayers();
-		
+		tvWhoseTurn.setText("" + attackingPlayers.get(0));
+		tvNumOfCardsInDeck.setText("" + newDeck.getCardsLeft() + " cards left in deck");
 		System.out.println("Order of movement: " + orderedPlayers);
 		System.out.println("Defending player is: " + defendingPlayer);
 	}
