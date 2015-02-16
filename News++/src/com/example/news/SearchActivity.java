@@ -9,11 +9,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 public class SearchActivity extends Activity {
 
@@ -24,8 +24,9 @@ public class SearchActivity extends Activity {
 	final String ATTRIBUTE_NAME_TEXT = "text";
 	final String ATTRIBUTE_NAME_IMAGE = "image";
 	
-	String[] texts = {"Газета.РУ", "НТВ.РУ", "Зеркало Недели"};
-	int[] img = {R.drawable.gazeta_og_image, R.drawable.ntv_logo, R.drawable.zn_logo};
+	String[] texts = {"Газета.РУ", "НТВ.РУ", "Зеркало Недели", "Вести.РУ", "Лента.РУ", "BBC", "CNN"};
+	int[] img = {R.drawable.gazeta_og_image, R.drawable.ntv_logo, R.drawable.zn_logo,
+			R.drawable.vesti_logo, R.drawable.lenta_logo, R.drawable.bbc_ogo, R.drawable.cnn_logo};
 	
 	ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(texts.length);
 	Map<String, Object> map;
@@ -35,6 +36,8 @@ public class SearchActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
 		assignViews();
+		
+		
 		
 		//Fill the data arrayList with map objects which contain all the data for each list item
 		for (int i = 0; i < texts.length; i++){
@@ -50,14 +53,13 @@ public class SearchActivity extends Activity {
 		SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.news_resource, from, to);
 		lvNewsResources.setAdapter(adapter);
 		
-		RelativeLayout rlClickable = (RelativeLayout) findViewById(R.id.rlClickable);
-		rlClickable.setOnClickListener(new OnClickListener() {
-			
+		lvNewsResources.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
 			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Toast.makeText(SearchActivity.this, "ID = " + id, Toast.LENGTH_LONG).show();
 			}
+			
 		});
 	}
 
