@@ -8,27 +8,41 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 public class SearchActivity extends Activity {
 
 	EditText etSearchText;
 	ListView lvNewsResources;
 	
+	public ArrayList<NewsResource> allNewsResources = new ArrayList<NewsResource>();
+	
+	private static SearchActivity activity;
+	
+	public SearchActivity(){
+		activity = this;
+	}
+	
+	public static synchronized SearchActivity getInstance(){
+		if (activity == null){
+			activity = new SearchActivity();
+		}
+		return activity;
+	}
+	
 	// имена атрибутов для Map
 	final String ATTRIBUTE_NAME_TEXT = "text";
 	final String ATTRIBUTE_NAME_IMAGE = "image";
 	
-	String[] texts = {"Газета.РУ", "НТВ.РУ", "Зеркало Недели", "Вести.РУ", "Лента.РУ", "BBC", "CNN"};
-	int[] img = {R.drawable.gazeta_og_image, R.drawable.ntv_logo, R.drawable.zn_logo,
+	String[] names = {"Газета.РУ", "НТВ.РУ", "Зеркало Недели", "Вести.РУ", "Лента.РУ", "BBC", "CNN"};
+	String[] URLs = {"gazeta.ru", "ntv.ru", "gazeta.zn.ua", "vesti.ru",
+			"lenta.ru", "bbc.co.uk", "cnn.com"};
+	int[] images = {R.drawable.gazeta_og_image, R.drawable.ntv_logo, R.drawable.zn_logo,
 			R.drawable.vesti_logo, R.drawable.lenta_logo, R.drawable.bbc_ogo, R.drawable.cnn_logo};
 	
-	ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(texts.length);
+	ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(names.length);
 	Map<String, Object> map;
 	
 	@Override
@@ -37,30 +51,30 @@ public class SearchActivity extends Activity {
 		setContentView(R.layout.activity_search);
 		assignViews();
 		
+		addAllNewsResources();
 		
-		
-		//Fill the data arrayList with map objects which contain all the data for each list item
-		for (int i = 0; i < texts.length; i++){
-			map = new HashMap<String, Object>();
-			map.put(ATTRIBUTE_NAME_TEXT, texts[i]);
-			map.put(ATTRIBUTE_NAME_IMAGE, img[i]);
-			data.add(map);
-		}
-		
-		String[] from = {ATTRIBUTE_NAME_TEXT,ATTRIBUTE_NAME_IMAGE};
+		String[] from = {ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE};
 		int[] to = {R.id.tvResource, R.id.ivLogo};
 		
 		SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.news_resource, from, to);
 		lvNewsResources.setAdapter(adapter);
 		
-		lvNewsResources.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Toast.makeText(SearchActivity.this, "ID = " + id, Toast.LENGTH_LONG).show();
-			}
-			
-		});
+		lvNewsResources.setOnItemClickListener(new NewsItemClickListener());
+	}
+	
+	/**
+	 * Fill the data arrayList with map objects which contain all the data for each list item
+	 */
+	private void addAllNewsResources() {
+		for (int i = 0; i < names.length; i++){
+			NewsResource resource = new NewsResource(names[i], URLs[i], images[i]);
+			allNewsResources.add(resource);
+			map = new HashMap<String, Object>();
+			map.put(ATTRIBUTE_NAME_TEXT, resource.getName());
+			map.put(ATTRIBUTE_NAME_IMAGE, resource.getLogoID());
+			data.add(map);
+			resource.setPositionInList(data.indexOf(map));
+		}
 	}
 
 	/**

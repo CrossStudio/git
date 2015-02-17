@@ -7,6 +7,7 @@
     <uses-sdk
         android:minSdkVersion="21"
         android:targetSdkVersion="21" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -20,6 +21,13 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="SearchResult">
+            <intent-filter >
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="http"/>
             </intent-filter>
         </activity>
     </application>
