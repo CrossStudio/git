@@ -20,7 +20,6 @@
         android:id="@+id/lvNewsResources"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/button1"
         android:layout_alignParentLeft="true"
         android:layout_alignRight="@+id/etSearchText"
         android:layout_below="@+id/etSearchText" >

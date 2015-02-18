@@ -3,7 +3,6 @@ package com.example.news;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import cross.xam.newsplusplus.R;
 
 public class SearchActivity extends Activity {
 

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
+import cross.xam.newsplusplus.R;
 
 public class NewsItemClickListener implements OnItemClickListener {
 	

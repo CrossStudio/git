@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import cross.xam.newsplusplus.R;
 
 public class SearchResult extends Activity {
 
