@@ -1,4 +1,4 @@
-package com.example.news;
+package cross.xam.newsplusplus;
 
 import android.app.Activity;
 import android.content.Intent;

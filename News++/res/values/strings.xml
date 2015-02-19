@@ -4,5 +4,23 @@
     <string name="app_name">News++</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+	<string-array name="resource_names">
+	    <item >Газета.РУ</item>
+	    <item >НТВ.РУ</item>
+	    <item >Зеркало Недели</item>
+	    <item >Вести.РУ</item>
+	    <item >Лента.РУ</item>
+	    <item >BBC</item>
+	    <item >CNN</item>
+	</string-array>
+	<string-array name="URLs">
+	    <item>gazeta.ru</item>
+	    <item>ntv.ru</item>
+	    <item>zn.ua</item>
+	    <item>vesti.ru</item>
+	    <item>lenta.ru</item>
+	    <item>bbc.co.uk</item>
+	    <item>cnn.com</item>
+	</string-array>
 
 </resources>

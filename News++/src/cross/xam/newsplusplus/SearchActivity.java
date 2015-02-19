@@ -1,8 +1,11 @@
-package com.example.news;
+package cross.xam.newsplusplus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,7 +13,6 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import cross.xam.newsplusplus.R;
 
 public class SearchActivity extends Activity {
 
@@ -18,6 +20,7 @@ public class SearchActivity extends Activity {
 	ListView lvNewsResources;
 	
 	public ArrayList<NewsResource> allNewsResources = new ArrayList<NewsResource>();
+	public ArrayList<NewsResource> currentNewsResources = new ArrayList<NewsResource>();
 	
 	private static SearchActivity activity;
 	
@@ -36,13 +39,13 @@ public class SearchActivity extends Activity {
 	final String ATTRIBUTE_NAME_TEXT = "text";
 	final String ATTRIBUTE_NAME_IMAGE = "image";
 	
-	String[] names = {"Газета.РУ", "НТВ.РУ", "Зеркало Недели", "Вести.РУ", "Лента.РУ", "BBC", "CNN"};
-	String[] URLs = {"gazeta.ru", "ntv.ru", "gazeta.zn.ua", "vesti.ru",
-			"lenta.ru", "bbc.co.uk", "cnn.com"};
+	private ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+	private List<String> names = new ArrayList<String>();
+	private List<String> URLs = new ArrayList<String>(); 
 	int[] images = {R.drawable.gazeta_og_image, R.drawable.ntv_logo, R.drawable.zn_logo,
 			R.drawable.vesti_logo, R.drawable.lenta_logo, R.drawable.bbc_ogo, R.drawable.cnn_logo};
 	
-	ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(names.length);
+	//ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(names.length);
 	Map<String, Object> map;
 	
 	@Override
@@ -50,6 +53,10 @@ public class SearchActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
 		assignViews();
+		
+		names = Arrays.asList(getResources().getStringArray(R.array.resource_names));
+		URLs = Arrays.asList(getResources().getStringArray(R.array.URLs));
+		
 		
 		addAllNewsResources();
 		
@@ -66,8 +73,8 @@ public class SearchActivity extends Activity {
 	 * Fill the data arrayList with map objects which contain all the data for each list item
 	 */
 	private void addAllNewsResources() {
-		for (int i = 0; i < names.length; i++){
-			NewsResource resource = new NewsResource(names[i], URLs[i], images[i]);
+		for (int i = 0; i < names.size(); i++){
+			NewsResource resource = new NewsResource(names.get(i), URLs.get(i), images[i]);
 			allNewsResources.add(resource);
 			map = new HashMap<String, Object>();
 			map.put(ATTRIBUTE_NAME_TEXT, resource.getName());

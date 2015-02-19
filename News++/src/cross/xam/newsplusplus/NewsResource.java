@@ -1,10 +1,14 @@
-package com.example.news;
+package cross.xam.newsplusplus;
+
+import java.util.ArrayList;
 
 public class NewsResource {
 	
 	private String name;
 	
 	private String URL;
+	
+	private ArrayList<Category> categoryList = new ArrayList<Category>();
 	
 	private int logoID;
 	
@@ -14,6 +18,18 @@ public class NewsResource {
 		this.name = name;
 		this.URL = URL;
 		this.logoID = logoID;
+	}
+	
+	public void addToCategory(Category category){
+		if (!categoryList.contains(category)){
+			this.categoryList.add(category);
+		}
+	}
+	
+	public void removeFromCategory(Category category){
+		if (this.categoryList.contains(category)){
+			categoryList.remove(category);
+		}
 	}
 	
 	/**
