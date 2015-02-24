@@ -32,6 +32,10 @@ public class NewsResource {
 		}
 	}
 	
+	public ArrayList<String> getCategories(){
+		return this.categoryList;
+	}
+	
 	/**
 	 * @return name of the news resource
 	 */

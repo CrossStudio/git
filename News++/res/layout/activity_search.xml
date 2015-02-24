@@ -14,13 +14,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"/>
-
+	
 	<LinearLayout
 	    android:id="@+id/llList"
 	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
+	    android:layout_height="wrap_content"
 	    android:layout_below="@+id/etSearchText"
 	    android:orientation="vertical" >
+
+	    <Spinner
+	        android:id="@+id/spCategories"
+	        android:entries="@array/categories"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="5dp"
+	        android:text="Category:"/>
 
 	    <ListView
 	        android:id="@+id/lvNewsResources"

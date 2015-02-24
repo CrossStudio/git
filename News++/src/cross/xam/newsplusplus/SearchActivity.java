@@ -14,12 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 public class SearchActivity extends Activity {
 
 	EditText etSearchText;
 	ListView lvNewsResources;
 	Button btnAddResource;
+	Spinner spCategories;
 	
 	public ArrayList<NewsResource> allNewsResources = new ArrayList<NewsResource>();
 	public ArrayList<NewsResource> currentNewsResources = new ArrayList<NewsResource>();
@@ -41,11 +44,15 @@ public class SearchActivity extends Activity {
 	final String ATTRIBUTE_NAME_TEXT = "text";
 	final String ATTRIBUTE_NAME_IMAGE = "image";
 	
-	private ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+	String[] from = {ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE};
+	int[] to = {R.id.tvResource, R.id.ivLogo};
+	
+	private ArrayList<Map<String, Object>> data;
 	private List<String> names = new ArrayList<String>();
 	private List<String> URLs = new ArrayList<String>(); 
 	int[] images = {R.drawable.gazeta_og_image, R.drawable.ntv_logo, R.drawable.zn_logo,
 			R.drawable.vesti_logo, R.drawable.lenta_logo, R.drawable.bbc_ogo, R.drawable.cnn_logo};
+	String[] categories = {"Politics", "General", "Politics", "General", "General", "General", "General"};
 	
 	//ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(names.length);
 	Map<String, Object> map;
@@ -61,29 +68,59 @@ public class SearchActivity extends Activity {
 			
 		addAllNewsResources();
 		
-		String[] from = {ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE};
-		int[] to = {R.id.tvResource, R.id.ivLogo};
+		//Initial news resources to be shown
+		currentNewsResources.addAll(allNewsResources);
 		
-		SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.news_resource, from, to);
-		lvNewsResources.setAdapter(adapter);
+		fillAdapterData();
+		
+		fillListWithAdapter();
 		
 		lvNewsResources.setOnItemClickListener(new NewsItemClickListener());
 
 	}
-	
+
 	/**
-	 * Fill the data arrayList with map objects which contain all the data for each list item
+	 * Add all available news resources to a list
 	 */
 	private void addAllNewsResources() {
 		for (int i = 0; i < names.size(); i++){
 			NewsResource resource = new NewsResource(names.get(i), URLs.get(i), images[i]);
+			resource.addToCategory(categories[i]);
 			allNewsResources.add(resource);
+		}
+	}
+	
+	/**
+	 * Fill the container 'data' with the information to populate the list of news resources
+	 */
+	private void fillAdapterData(){
+		data = new ArrayList<Map<String, Object>>();
+		for (NewsResource resource : currentNewsResources){
 			map = new HashMap<String, Object>();
 			map.put(ATTRIBUTE_NAME_TEXT, resource.getName());
 			map.put(ATTRIBUTE_NAME_IMAGE, resource.getLogoID());
+			
 			data.add(map);
 			resource.setPositionInList(data.indexOf(map));
 		}
+	}
+	
+	private void fillListWithAdapter() {
+		SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.news_resource, from, to);
+		lvNewsResources.setAdapter(adapter);		
+	}
+	
+	public void changeCurrentResources(String chosenCategory){
+		currentNewsResources.clear();
+		for (NewsResource resource : allNewsResources){
+			for (String resourceCategory : resource.getCategories()){
+				if (resourceCategory == chosenCategory){
+					currentNewsResources.add(resource);
+				}
+			}
+		}
+		fillAdapterData();
+		fillListWithAdapter();
 	}
 
 	/**
@@ -94,6 +131,8 @@ public class SearchActivity extends Activity {
 		lvNewsResources = (ListView) findViewById(R.id.lvNewsResources);
 		btnAddResource = (Button) findViewById(R.id.btnAddResource);
 		btnAddResource.setOnClickListener(new AddResourceClickListener());
+		spCategories = (Spinner) findViewById(R.id.spCategories);
+		spCategories.setOnItemSelectedListener(new SpinnerCategorySelectedListener());
 	}
 	
 	@Override

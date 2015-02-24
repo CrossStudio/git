@@ -45,6 +45,7 @@ public class NewResourceForm extends Activity {
 	    	categoryChosen.add(false);
 	    }
 	    
+	    //Add all the categories data to a single 'data' piece
 	    for (int i = 0; i < categories.size(); i++){
 	    	map = new HashMap<String, Object>();
 	    	map.put(ATTRIBUTE_NAME, categories.get(i));
@@ -55,6 +56,7 @@ public class NewResourceForm extends Activity {
 	    String[] from = {ATTRIBUTE_NAME, ATTRIBUTE_CONDITION};
 		int[] to = {R.id.cbCategory, R.id.cbCategory};
 		
+		//Insert all the categories data into a listView through adapter
 		SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.category, from, to);
 		lvCategory.setAdapter(adapter);
 		
