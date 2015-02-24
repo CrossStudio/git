@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -18,6 +19,7 @@ public class SearchActivity extends Activity {
 
 	EditText etSearchText;
 	ListView lvNewsResources;
+	Button btnAddResource;
 	
 	public ArrayList<NewsResource> allNewsResources = new ArrayList<NewsResource>();
 	public ArrayList<NewsResource> currentNewsResources = new ArrayList<NewsResource>();
@@ -56,8 +58,7 @@ public class SearchActivity extends Activity {
 		
 		names = Arrays.asList(getResources().getStringArray(R.array.resource_names));
 		URLs = Arrays.asList(getResources().getStringArray(R.array.URLs));
-		
-		
+			
 		addAllNewsResources();
 		
 		String[] from = {ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE};
@@ -67,6 +68,7 @@ public class SearchActivity extends Activity {
 		lvNewsResources.setAdapter(adapter);
 		
 		lvNewsResources.setOnItemClickListener(new NewsItemClickListener());
+
 	}
 	
 	/**
@@ -90,8 +92,10 @@ public class SearchActivity extends Activity {
 	private void assignViews() {
 		etSearchText = (EditText) findViewById(R.id.etSearchText);
 		lvNewsResources = (ListView) findViewById(R.id.lvNewsResources);
+		btnAddResource = (Button) findViewById(R.id.btnAddResource);
+		btnAddResource.setOnClickListener(new AddResourceClickListener());
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

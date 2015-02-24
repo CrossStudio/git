@@ -9,21 +9,32 @@
     tools:context="cross.xam.newsplusplus.SearchActivity" >
 
     <EditText
+        android:inputType="text"
         android:id="@+id/etSearchText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"/>
 
-    <ListView
-        android:id="@+id/lvNewsResources"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignRight="@+id/etSearchText"
-        android:layout_below="@+id/etSearchText" >
+	<LinearLayout
+	    android:id="@+id/llList"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:layout_below="@+id/etSearchText"
+	    android:orientation="vertical" >
 
-    </ListView>
+	    <ListView
+	        android:id="@+id/lvNewsResources"
+	        android:layout_width="match_parent"
+	        android:layout_height="0dp"
+	        android:layout_weight="0.29" >
+	    </ListView>
+
+	    <Button
+	        android:id="@+id/btnAddResource"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="Add new website"
+	        android:textSize="24sp" />
+	</LinearLayout>
 
 </RelativeLayout>

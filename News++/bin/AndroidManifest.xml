@@ -30,6 +30,12 @@
                 <data android:scheme="http"/>
             </intent-filter>
         </activity>
+        <activity 
+            android:name="NewResourceForm"
+            android:theme="@android:style/Theme.Dialog"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustPan" android:label="New Resource">
+            
+        </activity>
     </application>
 
 </manifest>
