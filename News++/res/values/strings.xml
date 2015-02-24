@@ -22,5 +22,11 @@
 	    <item>bbc.co.uk</item>
 	    <item>cnn.com</item>
 	</string-array>
+	<string-array name="categories" >
+	    <item >Politics</item>
+	    <item >Economics</item>
+	    <item >Sports</item>
+	    <item >General</item>
+	</string-array>
 
 </resources>

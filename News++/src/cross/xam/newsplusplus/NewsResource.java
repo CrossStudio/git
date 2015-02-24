@@ -8,7 +8,7 @@ public class NewsResource {
 	
 	private String URL;
 	
-	private ArrayList<Category> categoryList = new ArrayList<Category>();
+	private ArrayList<String> categoryList = new ArrayList<String>();
 	
 	private int logoID;
 	
@@ -20,13 +20,13 @@ public class NewsResource {
 		this.logoID = logoID;
 	}
 	
-	public void addToCategory(Category category){
+	public void addToCategory(String category){
 		if (!categoryList.contains(category)){
 			this.categoryList.add(category);
 		}
 	}
 	
-	public void removeFromCategory(Category category){
+	public void removeFromCategory(String category){
 		if (this.categoryList.contains(category)){
 			categoryList.remove(category);
 		}

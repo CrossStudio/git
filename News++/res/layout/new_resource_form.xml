@@ -1,14 +1,18 @@
-<LinearLayout
-    xmlns:android = "http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:minHeight="300dp" >
+
+<LinearLayout
+    
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
@@ -16,62 +20,74 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:text="Website:" />
+            android:text="Website:"
+            android:textSize="14sp"/>
 
         <EditText
             android:id="@+id/etURL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="textUri" />
+            android:inputType="textUri"
+            android:textSize="14sp" />
 
     </LinearLayout>
-    <LinearLayout 
-        android:orientation="horizontal"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_weight="1">
+        android:orientation="horizontal" >
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:text="Label:" />
+            android:text="Label:"
+            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/etLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="textUri" />
+            android:inputType="textUri"
+            android:textSize="14sp" />
 
     </LinearLayout>
-    <LinearLayout 
-        android:orientation="horizontal"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="200dp"
         android:gravity="center_vertical"
-        android:layout_weight="1">
+        android:orientation="horizontal" >
+
         <TextView 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:text="Category:"/>
+            android:text="Category:"
+            android:textSize="14sp"/>
 		<ListView
 		    android:id="@+id/lvCategory" 
 		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_weight="1">
+		    android:layout_height="match_parent"
+		    android:layout_weight="1"
+		    android:textSize="14sp">
 		    
 		</ListView>
 
     </LinearLayout>
-    <LinearLayout 
-        android:orientation="horizontal"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
         <Button 
+            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/btnCreate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -79,6 +95,7 @@
             android:text="Create"
             android:textSize="20sp"/>
         <Button 
+            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/btnCancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -87,3 +104,4 @@
             android:textSize="20sp"/>
     </LinearLayout>
 </LinearLayout>
+</ScrollView>
