@@ -18,11 +18,23 @@ public class NewsResource {
 		this.name = name;
 		this.URL = URL;
 		this.logoID = logoID;
+		this.categoryList.add("All");
 	}
 	
 	public void addToCategory(String category){
 		if (!categoryList.contains(category)){
 			this.categoryList.add(category);
+		}
+	}
+	
+	public void addToCategories(ArrayList<String> categories){
+		for (String category : categories){
+			if (categoryList.contains(category)){
+				continue;
+			}
+			else{
+				this.categoryList.add(category);
+			}
 		}
 	}
 	

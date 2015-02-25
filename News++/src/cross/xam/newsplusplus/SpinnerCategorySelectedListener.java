@@ -3,6 +3,7 @@ package cross.xam.newsplusplus;
 import java.util.Arrays;
 import java.util.List;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -19,7 +20,8 @@ public class SpinnerCategorySelectedListener implements OnItemSelectedListener {
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
 		List<String> categories = Arrays.asList(activity.getResources().getStringArray(R.array.categories));
-		activity.changeCurrentResources(categories.get(position));
+		Log.d("myLog", "Current category is: " + categories.get(position));
+		activity.setCurrentResources(categories.get(position));
 	}
 
 	@Override

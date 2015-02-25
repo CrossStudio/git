@@ -8,6 +8,7 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -15,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 public class SearchActivity extends Activity {
 
@@ -52,7 +52,6 @@ public class SearchActivity extends Activity {
 	private List<String> URLs = new ArrayList<String>(); 
 	int[] images = {R.drawable.gazeta_og_image, R.drawable.ntv_logo, R.drawable.zn_logo,
 			R.drawable.vesti_logo, R.drawable.lenta_logo, R.drawable.bbc_ogo, R.drawable.cnn_logo};
-	String[] categories = {"Politics", "General", "Politics", "General", "General", "General", "General"};
 	
 	//ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(names.length);
 	Map<String, Object> map;
@@ -61,33 +60,38 @@ public class SearchActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
-		assignViews();
-		
-		names = Arrays.asList(getResources().getStringArray(R.array.resource_names));
-		URLs = Arrays.asList(getResources().getStringArray(R.array.URLs));
-			
-		addAllNewsResources();
-		
-		//Initial news resources to be shown
-		currentNewsResources.addAll(allNewsResources);
-		
-		fillAdapterData();
-		
-		fillListWithAdapter();
-		
-		lvNewsResources.setOnItemClickListener(new NewsItemClickListener());
 
+	}
+	
+	/**
+	 * Fill the list of news resources with starting pack of resources
+	 */
+	private void addInitialNewsResources(){
+		for (int i = 0; i < names.size(); i++){
+			boolean unique = true;
+			for (NewsResource curRes : allNewsResources){
+				if (curRes.getURL().equals(URLs.get(i))){
+					unique = false;
+					break;
+				}
+			}
+			if (unique){
+				NewsResource resource = new NewsResource(names.get(i), URLs.get(i), images[i]);
+				allNewsResources.add(resource);
+			}
+		}
 	}
 
 	/**
-	 * Add all available news resources to a list
+	 * Add new resource with the obtained parameters to the list of news resources 
+	 * @param name - name of the news resource to appear on the screen
+	 * @param URL - URL of the news resource to be launched to find info on the news resource
+	 * @param category - category of the news resource to be assigned to
 	 */
-	private void addAllNewsResources() {
-		for (int i = 0; i < names.size(); i++){
-			NewsResource resource = new NewsResource(names.get(i), URLs.get(i), images[i]);
-			resource.addToCategory(categories[i]);
-			allNewsResources.add(resource);
-		}
+	public void addNewResource (String name, String URL, ArrayList<String> category){
+		NewsResource resource = new NewsResource(name, URL, -1);
+		resource.addToCategories(category);
+		allNewsResources.add(resource);
 	}
 	
 	/**
@@ -105,16 +109,26 @@ public class SearchActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * Populate the list with help of an adapter with values from 'data' 
+	 */
 	private void fillListWithAdapter() {
 		SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.news_resource, from, to);
-		lvNewsResources.setAdapter(adapter);		
+		lvNewsResources.setAdapter(adapter);
+		lvNewsResources.invalidateViews();
 	}
 	
-	public void changeCurrentResources(String chosenCategory){
+	/**
+	 * Sets currently shown resources for respectful category
+	 * @param chosenCategory - category of resources that will be shown
+	 */
+	public void setCurrentResources(String chosenCategory){
 		currentNewsResources.clear();
 		for (NewsResource resource : allNewsResources){
 			for (String resourceCategory : resource.getCategories()){
+				
 				if (resourceCategory.equals(chosenCategory)){
+					Log.d("myLog", "Adding " + resource.getName() + " to current resources");
 					currentNewsResources.add(resource);
 				}
 			}
@@ -135,6 +149,34 @@ public class SearchActivity extends Activity {
 		spCategories.setOnItemSelectedListener(new SpinnerCategorySelectedListener());
 	}
 	
+	protected void onResume(){
+		for (NewsResource resource : allNewsResources){
+			Log.d("myLog", resource.getName() + " categories: ");
+			for (String category : resource.getCategories()){
+				Log.d("myLog", category);
+			}
+			Log.d("myLog", "-----------------");
+		}
+		assignViews();
+		
+		names = Arrays.asList(getResources().getStringArray(R.array.resource_names));
+		URLs = Arrays.asList(getResources().getStringArray(R.array.URLs));
+			
+		addInitialNewsResources();
+		
+		//Initial news resources to be shown
+		setCurrentResources("All");
+		
+		fillAdapterData();
+		
+		fillListWithAdapter();
+		
+		spCategories.setSelection(0);
+		
+		lvNewsResources.setOnItemClickListener(new NewsItemClickListener());
+		super.onResume();
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
