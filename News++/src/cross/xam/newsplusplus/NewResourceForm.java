@@ -62,7 +62,7 @@ public class NewResourceForm extends Activity {
 	    }
 	    
 	    //Add all the categories data to a single 'data' piece
-	    for (int i = 0; i < categories.size(); i++){
+	    for (int i = 1; i < categories.size(); i++){
 	    	map = new HashMap<String, Object>();
 	    	map.put(ATTRIBUTE_NAME, categories.get(i));
 	    	map.put(ATTRIBUTE_CONDITION, categoryChosen.get(i));
