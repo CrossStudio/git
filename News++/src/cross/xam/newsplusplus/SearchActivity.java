@@ -114,7 +114,7 @@ public class SearchActivity extends Activity {
 		currentNewsResources.clear();
 		for (NewsResource resource : allNewsResources){
 			for (String resourceCategory : resource.getCategories()){
-				if (resourceCategory == chosenCategory){
+				if (resourceCategory.equals(chosenCategory)){
 					currentNewsResources.add(resource);
 				}
 			}
