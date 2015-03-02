@@ -3,10 +3,14 @@ package cross.xam.newsplusplus;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +27,8 @@ public class SearchActivity extends Activity {
 	ListView lvNewsResources;
 	Button btnAddResource;
 	Spinner spCategories;
+	
+	SharedPreferences sPref;
 	
 	public ArrayList<NewsResource> allNewsResources = new ArrayList<NewsResource>();
 	public ArrayList<NewsResource> currentNewsResources = new ArrayList<NewsResource>();
@@ -64,6 +70,14 @@ public class SearchActivity extends Activity {
 	}
 	
 	/**
+	 * Fill the names and URLs arrays with info about resources' names and urls
+	 */
+	private void fillInitialResourceArrays() {
+		names = Arrays.asList(getResources().getStringArray(R.array.resource_names));
+		URLs = Arrays.asList(getResources().getStringArray(R.array.URLs));		
+	}
+	
+	/**
 	 * Fill the list of news resources with starting pack of resources
 	 */
 	private void addInitialNewsResources(){
@@ -83,10 +97,10 @@ public class SearchActivity extends Activity {
 	}
 
 	/**
-	 * Add new resource with the obtained parameters to the list of news resources 
+	 * Add new resource with transfered parameters to the list of news resources 
 	 * @param name - name of the news resource to appear on the screen
 	 * @param URL - URL of the news resource to be launched to find info on the news resource
-	 * @param category - category of the news resource to be assigned to
+	 * @param categories - categories of the news resource to be assigned to
 	 */
 	public void addNewResource (String name, String URL, ArrayList<String> category){
 		NewsResource resource = new NewsResource(name, URL, -1);
@@ -119,11 +133,12 @@ public class SearchActivity extends Activity {
 	}
 	
 	/**
-	 * Sets currently shown resources for respectful category
-	 * @param chosenCategory - category of resources that will be shown
+	 * Sets currently shown resources for respectful categories
+	 * @param chosenCategory - categories of resources that will be shown
 	 */
 	public void setCurrentResources(String chosenCategory){
 		currentNewsResources.clear();
+		loadSavedResources();
 		for (NewsResource resource : allNewsResources){
 			for (String resourceCategory : resource.getCategories()){
 				
@@ -137,6 +152,12 @@ public class SearchActivity extends Activity {
 		fillListWithAdapter();
 	}
 
+	private void loadSavedResources() {
+		sPref = getPreferences(MODE_PRIVATE);
+		Set<String> savedCategory = new HashSet<String>();
+		//savedCategory = sPref.getStringSet(key, defValues)
+	}
+
 	/**
 	 * Assigns views' variables to the appropriate xml views for the Search screen
 	 */
@@ -144,27 +165,29 @@ public class SearchActivity extends Activity {
 		etSearchText = (EditText) findViewById(R.id.etSearchText);
 		lvNewsResources = (ListView) findViewById(R.id.lvNewsResources);
 		btnAddResource = (Button) findViewById(R.id.btnAddResource);
-		btnAddResource.setOnClickListener(new AddResourceClickListener());
+		btnAddResource.setOnClickListener(new OpenAddResourceFormClickListener());
 		spCategories = (Spinner) findViewById(R.id.spCategories);
 		spCategories.setOnItemSelectedListener(new SpinnerCategorySelectedListener());
 	}
 	
 	protected void onResume(){
-		for (NewsResource resource : allNewsResources){
+		/*for (NewsResource resource : allNewsResources){
 			Log.d("myLog", resource.getName() + " categories: ");
 			for (String category : resource.getCategories()){
 				Log.d("myLog", category);
 			}
 			Log.d("myLog", "-----------------");
-		}
+		}*/
+		
+		checkPreferences();
+		
 		assignViews();
 		
-		names = Arrays.asList(getResources().getStringArray(R.array.resource_names));
-		URLs = Arrays.asList(getResources().getStringArray(R.array.URLs));
+		fillInitialResourceArrays();
 			
 		addInitialNewsResources();
 		
-		//Initial news resources to be shown
+		//Initial category of news resources to be shown
 		setCurrentResources("All");
 		
 		fillAdapterData();
@@ -175,6 +198,21 @@ public class SearchActivity extends Activity {
 		
 		lvNewsResources.setOnItemClickListener(new NewsItemClickListener());
 		super.onResume();
+	}
+
+	private void checkPreferences() {
+		sPref = getPreferences(MODE_PRIVATE);
+		//If preferences are empty (first launch of the app) add empty set named 'resourcesLabels' where all new resources' names will go
+		if (sPref.getAll().size() == 0){
+			Editor editor = sPref.edit();
+			Set<String> newSet = new HashSet<String>();
+			editor.putStringSet("resourcesURLs", newSet);
+			editor.commit();
+		}
+		//If preferences are not empty do as told
+		else {
+			
+		}
 	}
 
 	@Override

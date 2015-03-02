@@ -20,7 +20,7 @@ public class SpinnerCategorySelectedListener implements OnItemSelectedListener {
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
 		List<String> categories = Arrays.asList(activity.getResources().getStringArray(R.array.categories));
-		Log.d("myLog", "Current category is: " + categories.get(position));
+		Log.d("myLog", "Current categories is: " + categories.get(position));
 		activity.setCurrentResources(categories.get(position));
 	}
 

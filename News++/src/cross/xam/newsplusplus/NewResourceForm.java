@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -56,7 +57,7 @@ public class NewResourceForm extends Activity {
 	    List<String> categories = Arrays.asList(getResources().getStringArray(R.array.categories));
 	    List<Boolean> categoryChosen = new ArrayList<Boolean>();
 	    
-	    //Add boolean placeholder with false in it for each category
+	    //Add boolean placeholder with false in it for each categories
 	    for (String category : categories){
 	    	categoryChosen.add(false);
 	    }
@@ -84,7 +85,6 @@ public class NewResourceForm extends Activity {
 	private void assignViews(){
 		btnCreate = (Button) findViewById(R.id.btnCreate);
 		btnCreate.setOnClickListener(new CreateResourceClickListener());
-		
 		lvCategory = (ListView) findViewById(R.id.lvCategory);
 	}
 }
