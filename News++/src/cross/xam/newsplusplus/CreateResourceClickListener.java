@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
@@ -14,13 +16,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 public class CreateResourceClickListener implements OnClickListener {
-
-	private static NewResourceForm currentActivity;
 	
 	private static SearchActivity searchActivity;
+	private static NewResourceForm currentActivity;
 	
 	static {
-		currentActivity = NewResourceForm.getInstance();
+		//currentActivity = NewResourceForm.getInstance();
 		searchActivity = SearchActivity.getInstance();
 	}
 	
@@ -33,16 +34,17 @@ public class CreateResourceClickListener implements OnClickListener {
 	ArrayList<String> categories = new ArrayList<String>();
 	SharedPreferences sPref;
 	Editor editor;
-	
+
 	@Override
 	public void onClick(View v) {
+		currentActivity = (NewResourceForm) v.getContext();
 		
 		assignViews();
 		
 		URL = etURL.getText().toString();
-		
+		Log.d("myLog", "URL: " + URL);
 		label = etLabel.getText().toString();
-		
+		Log.d("myLog", "Label: " + label);
 		getCategoriesFromUserInput();
 		
 		//Adding the new resource to the list of all resources

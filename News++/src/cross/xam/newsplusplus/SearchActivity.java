@@ -88,6 +88,10 @@ public class SearchActivity extends Activity {
 					unique = false;
 					break;
 				}
+				else if (curRes.getName().equals(names.get(i))){
+					unique = false;
+					break;
+				}
 			}
 			if (unique){
 				NewsResource resource = new NewsResource(names.get(i), URLs.get(i), images[i]);
@@ -211,7 +215,38 @@ public class SearchActivity extends Activity {
 		}
 		//If preferences are not empty do as told
 		else {
-			
+			sPref = getSharedPreferences("SearchActivity", MODE_PRIVATE);
+			Set<String> resourceURLsSets = sPref.getStringSet("resourcesURLs", null);
+			for (String resourceURL : resourceURLsSets){
+				String URL = "";
+				String label = "";
+				ArrayList<String> category = new ArrayList<String>();
+				for (String parameter : sPref.getStringSet(resourceURL, null)){
+					if (parameter.substring(0, 3).equals("URL")){
+						URL = parameter.substring(4);
+					}
+					else if (parameter.substring(0, 3).equals("LAB")){
+						label = parameter.substring(4);
+					}
+					else if (parameter.substring(0, 3).equals("CAT")){
+						category.add(parameter.substring(4));
+					}
+				}
+				boolean unique = true;
+				for (NewsResource curRes : allNewsResources){
+					if (curRes.getURL().equals(URL)){
+						unique = false;
+						break;
+					}
+					else if (curRes.getName().equals(label)){
+						unique = false;
+						break;
+					}
+				}
+				if (unique){
+					addNewResource(label, URL, category);
+				}
+			}
 		}
 	}
 
