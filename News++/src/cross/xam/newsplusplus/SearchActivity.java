@@ -1,5 +1,6 @@
 package cross.xam.newsplusplus;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,8 +14,11 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -23,6 +27,8 @@ import android.widget.Spinner;
 
 public class SearchActivity extends Activity {
 
+	final int MENU_DELETE = 0;
+	
 	EditText etSearchText;
 	ListView lvNewsResources;
 	Button btnAddResource;
@@ -74,13 +80,13 @@ public class SearchActivity extends Activity {
 	 */
 	private void fillInitialResourceArrays() {
 		names = Arrays.asList(getResources().getStringArray(R.array.resource_names));
-		URLs = Arrays.asList(getResources().getStringArray(R.array.URLs));		
+		URLs = Arrays.asList(getResources().getStringArray(R.array.URLs));
 	}
 	
 	/**
 	 * Fill the list of news resources with starting pack of resources
 	 */
-	private void addInitialNewsResources(){
+	private void addSecondaryNewsResources(){
 		for (int i = 0; i < names.size(); i++){
 			boolean unique = true;
 			for (NewsResource curRes : allNewsResources){
@@ -167,11 +173,107 @@ public class SearchActivity extends Activity {
 	 */
 	private void assignViews() {
 		etSearchText = (EditText) findViewById(R.id.etSearchText);
-		lvNewsResources = (ListView) findViewById(R.id.lvNewsResources);
+		
+		listViewSetUp();
+		
 		btnAddResource = (Button) findViewById(R.id.btnAddResource);
 		btnAddResource.setOnClickListener(new OpenAddResourceFormClickListener());
 		spCategories = (Spinner) findViewById(R.id.spCategories);
 		spCategories.setOnItemSelectedListener(new SpinnerCategorySelectedListener());
+	}
+	
+	private void listViewSetUp() {
+		lvNewsResources = (ListView) findViewById(R.id.lvNewsResources);
+		lvNewsResources.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		lvNewsResources.setMultiChoiceModeListener(new MultiChoiceModeListener() {
+
+		private ArrayList<Integer> checkedItemsPositions = new ArrayList<Integer>();	
+		
+	    @Override
+	    public void onItemCheckedStateChanged(ActionMode mode, int position,
+	                                          long id, boolean checked) {
+	    	Log.d("myLog", "position = " + position + ", checked = " + checked);
+	        checkedItemsPositions.add(position);
+	    	// Here you can do something when items are selected/de-selected,
+	        // such as update the title in the CAB
+	    }
+
+	    @Override
+	    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+	        // Respond to clicks on the actions in the CAB
+	    	switch (item.getItemId()){
+	    		case R.id.delete:
+	    			deleteSelectedItems();
+	    			Log.d("myLog", "Delete action item was clicked");
+	    			break;
+    			default:
+    				break;
+	    	}
+	    	return true;
+	    }
+	    
+	    /**
+	     * Removes selected list items
+	     */
+	    private void deleteSelectedItems() {
+	    	deleteItemsFromPreferences();
+	    	deleteItemsFromScreen();
+		}
+
+	    /**
+	     * Removes selected list items from the ListView
+	     */
+		private void deleteItemsFromScreen() {
+			for (int item : checkedItemsPositions){
+	    		allNewsResources.remove(item);
+	    		setCurrentResources("All");
+	    	}
+		}
+
+		/**
+		 * Removes selected list items from the preferences file
+		 */
+		private void deleteItemsFromPreferences(){
+			sPref = getSharedPreferences("SearchActivity", MODE_PRIVATE);
+			Editor editor = sPref.edit();
+			Set<String> resourcesURLsSet = sPref.getStringSet("resourcesURLs", new HashSet<String>());
+			
+			for (int item : checkedItemsPositions){
+				String URLofResource = allNewsResources.get(item).getURL();
+				resourcesURLsSet.remove(URLofResource);
+				editor.putStringSet("resourcesURLs", null);
+				editor.commit();
+				editor.putStringSet("resourcesURLs", resourcesURLsSet);
+				editor.commit();
+				editor.remove(URLofResource);
+				editor.commit();
+			}
+			
+			
+			
+		}
+		
+		@Override
+	    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+	        // Inflate the menu for the CAB
+	        MenuInflater inflater = mode.getMenuInflater();
+	        inflater.inflate(R.menu.context, menu);
+	        return true;
+	    }
+
+	    @Override
+	    public void onDestroyActionMode(ActionMode mode) {
+	        // Here you can make any necessary updates to the activity when
+	        // the CAB is removed. By default, selected items are deselected/unchecked.
+	    }
+
+	    @Override
+	    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+	        // Here you can perform updates to the CAB due to
+	        // an invalidate() request
+	        return false;
+	    }
+	});
 	}
 	
 	protected void onResume(){
@@ -189,7 +291,7 @@ public class SearchActivity extends Activity {
 		
 		fillInitialResourceArrays();
 			
-		addInitialNewsResources();
+		addSecondaryNewsResources();
 		
 		//Initial category of news resources to be shown
 		setCurrentResources("All");

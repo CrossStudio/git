@@ -33,7 +33,6 @@ public class NewResourceForm extends Activity {
 	public static synchronized NewResourceForm getInstance(){
 		if (activity == null){
 			activity = new NewResourceForm();
-			Log.d("myLog", "NewResourceForm activity created");
 		}
 		return activity;
 	}
@@ -89,29 +88,5 @@ public class NewResourceForm extends Activity {
 		btnCreate.setOnClickListener(new CreateResourceClickListener());
 		lvCategory = (ListView) findViewById(R.id.lvCategory);
 	}
-	
-	protected void onResume(){
-		super.onResume();
-		Log.d("myLog", "NewResourceForm activity onResume");
-	}
-	
-	protected void onPause(){
-		super.onPause();
-		Log.d("myLog", "NewResourceForm activity onPause");
-	}
-	
-	protected void onStop(){
-		super.onStop();
-		Log.d("myLog", "NewResourceForm activity onStop");
-	}
-	
-	protected void onStart(){
-		super.onStart();
-		Log.d("myLog", "NewResourceForm activity onStart");
-	}
-	
-	protected void onDestroy(){
-		super.onDestroy();
-		Log.d("myLog", "NewResourceForm activity onDestroy");
-	}
+
 }
