@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
@@ -17,13 +16,7 @@ import android.widget.ListView;
 
 public class CreateResourceClickListener implements OnClickListener {
 	
-	private static SearchActivity searchActivity;
 	private static NewResourceForm currentActivity;
-	
-	static {
-		//currentActivity = NewResourceForm.getInstance();
-		searchActivity = SearchActivity.getInstance();
-	}
 	
 	private EditText etURL;
 	private EditText etLabel;
@@ -47,8 +40,8 @@ public class CreateResourceClickListener implements OnClickListener {
 		Log.d("myLog", "Label: " + label);
 		getCategoriesFromUserInput();
 		
-		//Adding the new resource to the list of all resources
-		searchActivity.addNewResource(label, URL, categories);
+		NewsResource resource = new NewsResource(label, URL, -1);
+		resource.addToCategories(categories);
 		
 		//Saving this newly added resource to a file for later use
 		saveResourceToFile();
@@ -81,8 +74,7 @@ public class CreateResourceClickListener implements OnClickListener {
 	/**
 	 * Saves info on the new resource to a file for later use
 	 */
-	private void saveResourceToFile(){
-		
+	public void saveResourceToFile(){
 		sPref = currentActivity.getSharedPreferences("SearchActivity", currentActivity.MODE_PRIVATE);
 		editor = sPref.edit();
 		
@@ -91,7 +83,8 @@ public class CreateResourceClickListener implements OnClickListener {
 		}
 
 		addNewResourceInfo();
-	
+		
+		currentActivity.finish();
 	}
 
 	/**
@@ -99,14 +92,14 @@ public class CreateResourceClickListener implements OnClickListener {
 	 * @return - true if this URL is a new one, false if it is already in the list
 	 */
 	private boolean addNewResourceIdentifier() {	
-		Set<String> resourceURL = sPref.getStringSet("resourcesURLs", new HashSet<String>());
-		if (resourceURL.contains(URL)){
+		Set<String> resourcesURLs = sPref.getStringSet("resourcesURLs", new HashSet<String>());
+		if (resourcesURLs.contains(URL)){
 			return false;
 		}
-		resourceURL.add(URL);
+		resourcesURLs.add(URL);
 		editor.putStringSet("resourcesURLs", null);
 		editor.commit();
-		editor.putStringSet("resourcesURLs", resourceURL);
+		editor.putStringSet("resourcesURLs", resourcesURLs);
 		editor.commit();
 		return true;
 	}
@@ -124,5 +117,5 @@ public class CreateResourceClickListener implements OnClickListener {
 		editor.putStringSet(URL, resourceInfo);
 		editor.commit();
 	}
-	
+
 }

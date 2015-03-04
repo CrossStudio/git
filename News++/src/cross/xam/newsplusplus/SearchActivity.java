@@ -1,6 +1,5 @@
 package cross.xam.newsplusplus;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,6 +11,7 @@ import java.util.Set;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
@@ -62,8 +62,7 @@ public class SearchActivity extends Activity {
 	private ArrayList<Map<String, Object>> data;
 	private List<String> names = new ArrayList<String>();
 	private List<String> URLs = new ArrayList<String>(); 
-	int[] images = {R.drawable.gazeta_og_image, R.drawable.ntv_logo, R.drawable.zn_logo,
-			R.drawable.vesti_logo, R.drawable.lenta_logo, R.drawable.bbc_ogo, R.drawable.cnn_logo};
+	TypedArray images;
 	
 	//ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(names.length);
 	Map<String, Object> map;
@@ -79,30 +78,13 @@ public class SearchActivity extends Activity {
 	 * Fill the names and URLs arrays with info about resources' names and urls
 	 */
 	private void fillInitialResourceArrays() {
+		allNewsResources = new ArrayList<NewsResource>();
+		Log.d("myLog", "----fillInitialResourceArrays()----");
 		names = Arrays.asList(getResources().getStringArray(R.array.resource_names));
 		URLs = Arrays.asList(getResources().getStringArray(R.array.URLs));
-	}
-	
-	/**
-	 * Fill the list of news resources with starting pack of resources
-	 */
-	private void addSecondaryNewsResources(){
+		images = getResources().obtainTypedArray(R.array.images);
 		for (int i = 0; i < names.size(); i++){
-			boolean unique = true;
-			for (NewsResource curRes : allNewsResources){
-				if (curRes.getURL().equals(URLs.get(i))){
-					unique = false;
-					break;
-				}
-				else if (curRes.getName().equals(names.get(i))){
-					unique = false;
-					break;
-				}
-			}
-			if (unique){
-				NewsResource resource = new NewsResource(names.get(i), URLs.get(i), images[i]);
-				allNewsResources.add(resource);
-			}
+			allNewsResources.add(new NewsResource(names.get(i), URLs.get(i), images.getResourceId(i, -1)));
 		}
 	}
 
@@ -113,8 +95,18 @@ public class SearchActivity extends Activity {
 	 * @param categories - categories of the news resource to be assigned to
 	 */
 	public void addNewResource (String name, String URL, ArrayList<String> category){
+		Log.d("myLog", "----addNewResource()----");
 		NewsResource resource = new NewsResource(name, URL, -1);
 		resource.addToCategories(category);
+		allNewsResources.add(resource);
+	}
+	
+	/**
+	 * Add passed resource to the list of news resources
+	 * @param resource to be added to the list of news resources
+	 */
+	private void addNewResource(NewsResource resource) {
+		Log.d("myLog", "----addNewResource(NewsResource)----");
 		allNewsResources.add(resource);
 	}
 	
@@ -122,21 +114,24 @@ public class SearchActivity extends Activity {
 	 * Fill the container 'data' with the information to populate the list of news resources
 	 */
 	private void fillAdapterData(){
+		Log.d("myLog", "----fillAdapterData()----");
 		data = new ArrayList<Map<String, Object>>();
 		for (NewsResource resource : currentNewsResources){
 			map = new HashMap<String, Object>();
 			map.put(ATTRIBUTE_NAME_TEXT, resource.getName());
 			map.put(ATTRIBUTE_NAME_IMAGE, resource.getLogoID());
-			
 			data.add(map);
 			resource.setPositionInList(data.indexOf(map));
+			Log.d("myLog", "Adapter data list added " + resource.getName());
 		}
+		fillListWithAdapter();
 	}
 	
 	/**
 	 * Populate the list with help of an adapter with values from 'data' 
 	 */
 	private void fillListWithAdapter() {
+		Log.d("myLog", "----fillListWithAdapter()----");
 		SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.news_resource, from, to);
 		lvNewsResources.setAdapter(adapter);
 		lvNewsResources.invalidateViews();
@@ -147,6 +142,7 @@ public class SearchActivity extends Activity {
 	 * @param chosenCategory - categories of resources that will be shown
 	 */
 	public void setCurrentResources(String chosenCategory){
+		Log.d("myLog", "----setCurrentResources()----");
 		currentNewsResources.clear();
 		loadSavedResources();
 		for (NewsResource resource : allNewsResources){
@@ -159,13 +155,10 @@ public class SearchActivity extends Activity {
 			}
 		}
 		fillAdapterData();
-		fillListWithAdapter();
 	}
 
 	private void loadSavedResources() {
 		sPref = getPreferences(MODE_PRIVATE);
-		Set<String> savedCategory = new HashSet<String>();
-		//savedCategory = sPref.getStringSet(key, defValues)
 	}
 
 	/**
@@ -182,11 +175,17 @@ public class SearchActivity extends Activity {
 		spCategories.setOnItemSelectedListener(new SpinnerCategorySelectedListener());
 	}
 	
+	/**
+	 * Assigning ListView to a variable lvNewsResources
+	 * Adding LongClickListener to each item of the list to open console action bar 
+	 */
 	private void listViewSetUp() {
 		lvNewsResources = (ListView) findViewById(R.id.lvNewsResources);
 		lvNewsResources.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		
+		lvNewsResources.setOnItemClickListener(new NewsItemClickListener());
 		lvNewsResources.setMultiChoiceModeListener(new MultiChoiceModeListener() {
-
+		
 		private ArrayList<Integer> checkedItemsPositions = new ArrayList<Integer>();	
 		
 	    @Override
@@ -217,17 +216,6 @@ public class SearchActivity extends Activity {
 	     */
 	    private void deleteSelectedItems() {
 	    	deleteItemsFromPreferences();
-	    	deleteItemsFromScreen();
-		}
-
-	    /**
-	     * Removes selected list items from the ListView
-	     */
-		private void deleteItemsFromScreen() {
-			for (int item : checkedItemsPositions){
-	    		allNewsResources.remove(item);
-	    		setCurrentResources("All");
-	    	}
 		}
 
 		/**
@@ -239,7 +227,8 @@ public class SearchActivity extends Activity {
 			Set<String> resourcesURLsSet = sPref.getStringSet("resourcesURLs", new HashSet<String>());
 			
 			for (int item : checkedItemsPositions){
-				String URLofResource = allNewsResources.get(item).getURL();
+				Log.d("myLog", "Deleting item: " + currentNewsResources.get(item).getURL());
+				String URLofResource = currentNewsResources.get(item).getURL();
 				resourcesURLsSet.remove(URLofResource);
 				editor.putStringSet("resourcesURLs", null);
 				editor.commit();
@@ -249,7 +238,7 @@ public class SearchActivity extends Activity {
 				editor.commit();
 			}
 			
-			
+			loadNewsResources();
 			
 		}
 		
@@ -263,6 +252,7 @@ public class SearchActivity extends Activity {
 
 	    @Override
 	    public void onDestroyActionMode(ActionMode mode) {
+	    	checkedItemsPositions.clear();
 	        // Here you can make any necessary updates to the activity when
 	        // the CAB is removed. By default, selected items are deselected/unchecked.
 	    }
@@ -277,52 +267,43 @@ public class SearchActivity extends Activity {
 	}
 	
 	protected void onResume(){
-		/*for (NewsResource resource : allNewsResources){
-			Log.d("myLog", resource.getName() + " categories: ");
-			for (String category : resource.getCategories()){
-				Log.d("myLog", category);
-			}
-			Log.d("myLog", "-----------------");
-		}*/
-		
-		checkPreferences();
-		
-		assignViews();
 		
 		fillInitialResourceArrays();
 			
-		addSecondaryNewsResources();
-		
-		//Initial category of news resources to be shown
-		setCurrentResources("All");
-		
-		fillAdapterData();
-		
-		fillListWithAdapter();
-		
-		spCategories.setSelection(0);
-		
-		lvNewsResources.setOnItemClickListener(new NewsItemClickListener());
+		loadNewsResources();
+	
 		super.onResume();
 	}
 
-	private void checkPreferences() {
+	private void loadNewsResources() {
+		Log.d("myLog", "----loadNewsResources()----");
 		sPref = getPreferences(MODE_PRIVATE);
 		//If preferences are empty (first launch of the app) add empty set named 'resourcesLabels' where all new resources' names will go
 		if (sPref.getAll().size() == 0){
-			Editor editor = sPref.edit();
-			Set<String> newSet = new HashSet<String>();
-			editor.putStringSet("resourcesURLs", newSet);
-			editor.commit();
+			saveInitialSetOfResources();
 		}
-		//If preferences are not empty do as told
+		//If preferences are not empty do as told (main goal is to fill allNewsResources with correct resources and remove excess ones)
 		else {
 			sPref = getSharedPreferences("SearchActivity", MODE_PRIVATE);
 			Set<String> resourceURLsSets = sPref.getStringSet("resourcesURLs", null);
+			Set<NewsResource> dummyRes = new HashSet<NewsResource>();
+			Log.d("myLog", "allNewsResources.size() = " + allNewsResources.size());
+			for (NewsResource resource : allNewsResources){
+				Log.d("myLog", resource.getName() + " url is " + resource.getURL());
+				Log.d("myLog", "Current preferences contain " + resource.getURL() + " " + resourceURLsSets.contains(resource.getURL()));
+				if (!resourceURLsSets.contains(resource.getURL())){
+					dummyRes.add(resource);
+				}
+			}
+			for (NewsResource res : dummyRes){
+				Log.d("myLog", "Resource to be removed: " + res.getName());
+				allNewsResources.remove(res);
+			}
 			for (String resourceURL : resourceURLsSets){
 				String URL = "";
 				String label = "";
-				ArrayList<String> category = new ArrayList<String>();
+				ArrayList<String> categories = new ArrayList<String>();
+				int logoID = -1;
 				for (String parameter : sPref.getStringSet(resourceURL, null)){
 					if (parameter.substring(0, 3).equals("URL")){
 						URL = parameter.substring(4);
@@ -331,7 +312,10 @@ public class SearchActivity extends Activity {
 						label = parameter.substring(4);
 					}
 					else if (parameter.substring(0, 3).equals("CAT")){
-						category.add(parameter.substring(4));
+						categories.add(parameter.substring(4));
+					}
+					else if (parameter.substring(0, 3).equals("IMG")){
+						logoID = Integer.parseInt(parameter.substring(4));
 					}
 				}
 				boolean unique = true;
@@ -346,12 +330,46 @@ public class SearchActivity extends Activity {
 					}
 				}
 				if (unique){
-					addNewResource(label, URL, category);
+					NewsResource resource = new NewsResource(label, URL, logoID);
+					resource.addToCategories(categories);
+					addNewResource(resource);
 				}
 			}
+			
 		}
+		assignViews();
+		setCurrentResources("All");
+		spCategories.setSelection(0);
 	}
-
+	
+	private void saveInitialSetOfResources() {
+		Editor editor = sPref.edit();
+		Set<String> newSet = new HashSet<String>();
+		editor.putStringSet("resourcesURLs", newSet);
+		editor.commit();
+		Set<String> resourceURL = sPref.getStringSet("resourcesURLs", new HashSet<String>());
+		for (NewsResource resource : allNewsResources){
+			resourceURL.add(resource.getURL());
+		}
+		editor.putStringSet("resourcesURLs", null);
+		editor.commit();
+		editor.putStringSet("resourcesURLs", resourceURL);
+		editor.commit();
+		
+		for (NewsResource resource : allNewsResources){
+			Set<String> resourceInfo = new HashSet<String>();
+			for (String category : resource.getCategories()){
+				resourceInfo.add("CAT:" + category);
+			}
+			resourceInfo.add("URL:" + resource.getURL());
+			resourceInfo.add("LAB:" + resource.getName());
+			resourceInfo.add("IMG:" + resource.getLogoID());
+			editor.putStringSet(resource.getURL(), resourceInfo);
+			editor.commit();
+		}
+		Log.d("myLog", "Initial set of resources saved");
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

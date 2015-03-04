@@ -28,10 +28,16 @@
 	    <item >Economics</item>
 	    <item >Sports</item>	    
 	</string-array>
-
+	<array name="images">
+	    <item>@drawable/gazeta_og_image</item>
+	    <item>@drawable/ntv_logo</item>
+	    <item>@drawable/zn_logo</item>
+	    <item>@drawable/vesti_logo</item>
+	    <item>@drawable/lenta_logo</item>
+	    <item>@drawable/bbc_ogo</item>
+	    <item>@drawable/cnn_logo</item>
+	</array>
+	
 	<string name="action_mode">Action Mode</string>
-	<string name="item1">Item1</string>
-	<string name="item2">Item2</string>
-	<string name="item3">Item3</string>
-	<string name="item4">Item4</string>
+	<string name="delete">DEL</string>
 </resources>

@@ -1,6 +1,12 @@
 package cross.xam.newsplusplus;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 
 public class NewsResource {
 	
@@ -13,6 +19,10 @@ public class NewsResource {
 	private int logoID;
 	
 	private int positionInList;
+	
+	static SharedPreferences sPref;
+	
+	static Editor editor;
 	
 	public NewsResource(String name, String URL, int logoID){
 		this.name = name;
@@ -83,4 +93,6 @@ public class NewsResource {
 	public void setPositionInList(int position){
 		this.positionInList = position;
 	}
+	
+	
 }
