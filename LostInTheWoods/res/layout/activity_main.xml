@@ -6,11 +6,40 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="cross.xam.lostinthewoods.MainActivity" >
+    tools:context="cross.xam.lostinthewoods.MainActivity"
+    android:id="@+id/rlGame" >
 
-    <TextView
+    <Button
+        android:id="@+id/btnLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="Left" />
+
+    <Button
+        android:id="@+id/btnRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Right" />
+
+    <Button
+        android:id="@+id/btnUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnDown"
+        android:layout_centerHorizontal="true"
+        android:text="Up" />
+
+    <Button
+        android:id="@+id/btnDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnLeft"
+        android:layout_alignBottom="@+id/btnLeft"
+        android:layout_centerHorizontal="true"
+        android:text="Down" />
 
 </RelativeLayout>

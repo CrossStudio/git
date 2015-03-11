@@ -12,7 +12,7 @@ public class Character {
 	
 	protected String name;
 	
-	private int[] position = new int[2];
+	private int[] position = {0,0};
 	
 	private int movesLeftThisTurn;
 	
@@ -34,11 +34,8 @@ public class Character {
 		return position[1];
 	}
 	
-	public void setXPosition(int x){
+	public void setCharacterPosition(int x, int y){
 		position[0] = x;
-	}
-	
-	public void setYPosition(int y){
 		position[1] = y;
 	}
 	
@@ -59,26 +56,26 @@ public class Character {
 	}
 	
 	/**
-	 * Character makes 1 move in the passed direction 
+	 * Character makes 1 move in the passed direction (Y-coordinate is inversed)
 	 * @param direction - direction of character's move. MOVE_LEFT = 0, MOVE_UP = 1, MOVE_RIGHT = 2, MOVE_DOWN = 3
 	 */
 	public void move(int direction){
 		if (this.movesLeftThisTurn >= this.movesCostOfNextMove){
 			switch(direction) {
 			case MOVE_LEFT:
-				this.setXPosition(this.getXPosition() - 1);
+				this.setCharacterPosition(this.getXPosition() - 1, this.getYPosition());
 				Log.d("myLog", this.name + " has moved left");
 				break;
 			case MOVE_UP:
-				this.setYPosition(this.getYPosition() + 1);
+				this.setCharacterPosition(this.getXPosition(), this.getYPosition() - 1);
 				Log.d("myLog", this.name + " has moved up");
 				break;
 			case MOVE_RIGHT:
-				this.setXPosition(this.getXPosition() + 1);
+				this.setCharacterPosition(this.getXPosition() + 1, this.getYPosition());
 				Log.d("myLog", this.name + " has moved right");
 				break;
 			case MOVE_DOWN:
-				this.setYPosition(this.getYPosition() - 1);
+				this.setCharacterPosition(this.getXPosition(), this.getYPosition() + 1);
 				Log.d("myLog", this.name + " has moved down");
 				break;
 			}
