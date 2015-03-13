@@ -2,8 +2,7 @@ package cross.xam.lostinthewoods;
 
 import android.util.Log;
 
-public class Character {
-	
+public abstract class Character {
 	
 	public static final int MOVE_LEFT = 0;
 	public static final int MOVE_UP = 1;
@@ -12,11 +11,13 @@ public class Character {
 	
 	protected String name;
 	
+	protected boolean isDead = false;
+	
 	private int[] position = {0,0};
 	
 	private int movesLeftThisTurn;
 	
-	private int movesCostOfNextMove;
+	protected int movesCostOfNextMove;
 	
 	public String getName(){
 		return name;
@@ -40,16 +41,16 @@ public class Character {
 	}
 	
 	public void setMovesLeftThisTurn(int movesLeft){
-		this.movesLeftThisTurn = movesLeft;
+		if (!isDead){
+			this.movesLeftThisTurn = movesLeft;
+		}
 	}
 	
 	public int getMovesLeftThisTurn(){
 		return this.movesLeftThisTurn;
 	}
 	
-	public void setMovesCostOfNextMove(int movesCost){
-		this.movesCostOfNextMove = movesCost;
-	}
+	public abstract void setMovesCostOfNextMove(Terrain terrain);
 	
 	public int getMovesCostOfNextMove(){
 		return movesCostOfNextMove;
@@ -60,31 +61,38 @@ public class Character {
 	 * @param direction - direction of character's move. MOVE_LEFT = 0, MOVE_UP = 1, MOVE_RIGHT = 2, MOVE_DOWN = 3
 	 */
 	public void move(int direction){
-		if (this.movesLeftThisTurn >= this.movesCostOfNextMove){
-			switch(direction) {
-			case MOVE_LEFT:
-				this.setCharacterPosition(this.getXPosition() - 1, this.getYPosition());
-				Log.d("myLog", this.name + " has moved left");
-				break;
-			case MOVE_UP:
-				this.setCharacterPosition(this.getXPosition(), this.getYPosition() - 1);
-				Log.d("myLog", this.name + " has moved up");
-				break;
-			case MOVE_RIGHT:
-				this.setCharacterPosition(this.getXPosition() + 1, this.getYPosition());
-				Log.d("myLog", this.name + " has moved right");
-				break;
-			case MOVE_DOWN:
-				this.setCharacterPosition(this.getXPosition(), this.getYPosition() + 1);
-				Log.d("myLog", this.name + " has moved down");
-				break;
+		if (!isDead){
+			if (this.movesLeftThisTurn >= this.movesCostOfNextMove){
+				switch(direction) {
+				case MOVE_LEFT:
+					this.setCharacterPosition(this.getXPosition() - 1, this.getYPosition());
+					break;
+				case MOVE_UP:
+					this.setCharacterPosition(this.getXPosition(), this.getYPosition() - 1);
+					break;
+				case MOVE_RIGHT:
+					this.setCharacterPosition(this.getXPosition() + 1, this.getYPosition());
+					break;
+				case MOVE_DOWN:
+					this.setCharacterPosition(this.getXPosition(), this.getYPosition() + 1);
+					break;
+				}
+				this.movesLeftThisTurn -= this.movesCostOfNextMove;
+				Log.d("myLog", this.name + " has " + this.movesLeftThisTurn + " moves left");
 			}
-			this.movesLeftThisTurn -= this.movesCostOfNextMove;
+			else {
+				Log.d("myLog", this.name + " is out of moves");
+			}
 		}
 		else {
-			Log.d("myLog", this.name + " is out of moves");
+			Log.d("myLog", this + " is dead");
 		}
-		
 	}
+
+	/**
+	 * This character gets killed and removed from the board
+	 */
+	public abstract void getsKilled();
+	
 	
 }

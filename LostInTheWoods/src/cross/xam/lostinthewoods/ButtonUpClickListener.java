@@ -6,15 +6,18 @@ import android.view.View.OnClickListener;
 
 public class ButtonUpClickListener implements OnClickListener {
 
-	Ranger currentTraveller;
+	Ranger currentRanger;
 	
 	@Override
 	public void onClick(View v) {
 		GameActivity currentGameActivity = (GameActivity) v.getContext();
-		currentTraveller = currentGameActivity.xam;
-		currentTraveller.move(Character.MOVE_UP);
-		Log.d("myLog", currentTraveller + "'s position:[" + currentTraveller.getXPosition() +
-				", " + currentTraveller.getYPosition() + "]");
+		currentRanger = currentGameActivity.getRanger();
+		currentRanger.move(Character.MOVE_UP);
+		if (currentGameActivity.haveWolvesFoundRanger() != null){
+			currentRanger.setMovesLeftThisTurn(0);
+		}
+		Log.d("myLog", currentRanger + "'s position:[" + currentRanger.getXPosition() +
+				", " + currentRanger.getYPosition() + "]");
 	}
 
 }

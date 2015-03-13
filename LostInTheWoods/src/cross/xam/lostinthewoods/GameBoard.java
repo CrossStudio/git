@@ -46,7 +46,7 @@ public class GameBoard{
 		this.gameBoardFields = new GameField[horizontalSize * verticalSize];
 		for (int y = 0; y < verticalSize; y++){
 			for (int x = 0; x < horizontalSize; x++){
-				gameBoardFields[x + y * horizontalSize] = new GameField(context, x, y);
+				gameBoardFields[x + y * horizontalSize] = new GameField(context, x, y, Terrain.MEADOW);
 				gameBoardFields[x + y * horizontalSize].setOnClickListener(new GameFieldClickListener());
 			}
 		}
