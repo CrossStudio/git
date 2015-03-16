@@ -134,7 +134,7 @@ public abstract class Character {
 	/**
 	 * Finds the shortest route to the game field from the currently occupied game field
 	 * @param destination - game field where the route should end
-	 * @return array of game fields which are the shortest route to the given game field
+	 * @return array of game fields that form the shortest route to the given game field
 	 */
 	public GameField[] getShortestRouteToGameField(GameField destination){
 		int xDistance = destination.getXCoordinate() - this.getXPosition();

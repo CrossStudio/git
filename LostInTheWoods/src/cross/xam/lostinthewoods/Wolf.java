@@ -76,4 +76,8 @@ public class Wolf extends Character {
 		this.isDead = true;
 	}
 	
+	public void AIWolfMove(){
+		
+	}
+	
 }
