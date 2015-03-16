@@ -18,7 +18,7 @@ public class Ranger extends Character {
 	private int shotgunShells = 2;
 	
 	public Ranger (Context context, String name){
-		this.context = context;
+		super(context);
 		this.name = name;
 		currentActivity = (GameActivity) context;
 	}

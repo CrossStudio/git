@@ -16,7 +16,7 @@ public class Wolf extends Character {
 	GameActivity currentActivity;
 	
 	public Wolf (Context context, String name){
-		this.context = context;
+		super(context);
 		this.name = name;
 		currentActivity = (GameActivity) context;
 	}

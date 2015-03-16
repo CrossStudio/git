@@ -51,7 +51,6 @@ public class GameBoard{
 				Random rand = new Random();
 				int randomTerrainId = rand.nextInt(3);
 				Terrain terrain = Terrain.values()[randomTerrainId];
-				Log.d("myLog", ""+terrain);
 				gameBoardFields[x + y * horizontalSize] = new GameField(context, x, y, terrain);
 				gameBoardFields[x + y * horizontalSize].setOnClickListener(new GameFieldClickListener());
 			}
@@ -79,5 +78,6 @@ public class GameBoard{
 	public GridLayout getBoardLayout(){
 		return boardLayout;
 	}
+	
 	
 }

@@ -1,5 +1,6 @@
 package cross.xam.lostinthewoods;
 
+import android.content.Context;
 import android.util.Log;
 
 public abstract class Character {
@@ -18,6 +19,15 @@ public abstract class Character {
 	private int movesLeftThisTurn;
 	
 	protected int movesCostOfNextMove;
+	
+	private GameActivity currentActivity;
+	
+	private Context context;
+	
+	protected Character (Context context){
+		this.context = context;
+		currentActivity = (GameActivity) this.context;
+	}
 	
 	public String getName(){
 		return name;
@@ -66,16 +76,42 @@ public abstract class Character {
 			if (this.movesLeftThisTurn >= this.movesCostOfNextMove){
 				switch(direction) {
 				case MOVE_LEFT:
-					this.setCharacterPosition(this.getXPosition() - 1, this.getYPosition());
+					if (this.getXPosition() > 0){
+						this.setCharacterPosition(this.getXPosition() - 1, this.getYPosition());
+					}
+					else {
+						Log.d("myLog", "You are about to go out of the borders");
+						return;
+					}
 					break;
 				case MOVE_UP:
-					this.setCharacterPosition(this.getXPosition(), this.getYPosition() - 1);
+					if (this.getYPosition() > 0){
+						this.setCharacterPosition(this.getXPosition(), this.getYPosition() - 1);
+					}
+					else {
+						Log.d("myLog", "You are about to go out of the borders");
+						return;
+					}
 					break;
 				case MOVE_RIGHT:
-					this.setCharacterPosition(this.getXPosition() + 1, this.getYPosition());
+					if (this.getXPosition() + 1 < currentActivity.getBoard().getHorizontalSize()){
+						this.setCharacterPosition(this.getXPosition() + 1, this.getYPosition());
+					}
+					else {
+						Log.d("myLog", "You are about to go out of the borders");
+						return;
+					}
 					break;
 				case MOVE_DOWN:
-					this.setCharacterPosition(this.getXPosition(), this.getYPosition() + 1);
+					Log.d("myLog", "current Y position = " + this.getYPosition());
+					Log.d("myLog", "current board height = " + currentActivity.getBoard().getVerticalSize());
+					if (this.getYPosition() + 1 < currentActivity.getBoard().getVerticalSize()){
+						this.setCharacterPosition(this.getXPosition(), this.getYPosition() + 1);
+					}
+					else {
+						Log.d("myLog", "You are about to go out of the borders");
+						return;
+					}
 					break;
 				}
 				this.movesLeftThisTurn -= this.movesCostOfNextMove;
@@ -95,5 +131,66 @@ public abstract class Character {
 	 */
 	public abstract void getsKilled();
 	
+	/**
+	 * Finds the shortest route to the game field from the currently occupied game field
+	 * @param destination - game field where the route should end
+	 * @return array of game fields which are the shortest route to the given game field
+	 */
+	public GameField[] getShortestRouteToGameField(GameField destination){
+		int xDistance = destination.getXCoordinate() - this.getXPosition();
+		int yDistance = destination.getYCoordinate() - this.getYPosition();
+		GameField [] routeToDestination = new GameField[Math.abs(xDistance) + Math.abs(yDistance)];
+		GameField tempGameField = new GameField(context, this.getXPosition(), this.getYPosition(),
+				currentActivity.getBoard().getGameField(this.getXPosition(), this.getYPosition()).getFieldTerrain());
+		for (int i = 0; i < routeToDestination.length; i++){
+			
+			if (Math.abs(xDistance) >= Math.abs(yDistance)){
+				if (xDistance > 0){
+					if (tempGameField.getXCoordinate() < currentActivity.getBoard().getHorizontalSize()){
+						tempGameField = currentActivity.getBoard().getGameField(tempGameField.getXCoordinate() + 1,
+								tempGameField.getYCoordinate());
+					}
+					else {
+						Log.d("myLog", "Your route is about to go out of the borders");
+					}
+				}
+				else if (xDistance < 0){
+					if (tempGameField.getXCoordinate() > 0){
+						tempGameField = currentActivity.getBoard().getGameField(tempGameField.getXCoordinate() - 1,
+								tempGameField.getYCoordinate());
+					}
+					else {
+						Log.d("myLog", "Your route is about to go out of the borders");
+					}
+				}
+			}
+			else {
+				if (yDistance > 0){
+					if (tempGameField.getYCoordinate() < currentActivity.getBoard().getVerticalSize()){
+						tempGameField = currentActivity.getBoard().getGameField(tempGameField.getXCoordinate(),
+								tempGameField.getYCoordinate() + 1);
+					}
+					else {
+						Log.d("myLog", "Your route is about to go out of the borders");
+					}
+				}
+				else if (yDistance < 0){
+					if (tempGameField.getYCoordinate() > 0){
+						tempGameField = currentActivity.getBoard().getGameField(tempGameField.getXCoordinate(),
+							tempGameField.getYCoordinate() - 1);
+					}
+					else {
+						Log.d("myLog", "Your route is about to go out of the borders");
+					}
+				}
+			}
+			Log.d("myLog", "Game field " + tempGameField + " added to route");
+			routeToDestination[i] = tempGameField;
+			xDistance = destination.getXCoordinate() - tempGameField.getXCoordinate();
+			yDistance = destination.getYCoordinate() - tempGameField.getYCoordinate();
+		}
+		
+		return routeToDestination;
+	}
 	
 }
