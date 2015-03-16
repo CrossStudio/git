@@ -31,13 +31,12 @@ public class Wolf extends Character {
 		if (!isDead){
 			int previousX = this.getXPosition();
 			int previousY = this.getYPosition();
-			currentActivity.getBoard().getGameField(previousX, previousY).removeCharacterFromField(this);
+			GameField previousField = currentActivity.getBoard().getGameField(previousX, previousY);
+			previousField.removeCharacterFromField(this);
 			super.setCharacterPosition(x, y);
 			
 			GameField currentField = currentActivity.getBoard().getGameField(x, y);
 			currentField.addCharacterToField(this);
-			
-			this.setMovesCostOfNextMove(currentField.getFieldTerrain());
 		}
 		else {
 			Log.d("myLog", this + " is dead");
@@ -45,7 +44,8 @@ public class Wolf extends Character {
 	}
 	
 	@Override
-	public void setMovesCostOfNextMove(Terrain terrain) {
+	public void setMovesCostOfNextMove() {
+		Terrain terrain = currentActivity.getBoard().getGameField(getXPosition(), getYPosition()).getFieldTerrain();
 		switch (terrain.getNumValue()){
 		case 0:
 			this.movesCostOfNextMove = 1;

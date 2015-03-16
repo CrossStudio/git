@@ -50,7 +50,7 @@ public abstract class Character {
 		return this.movesLeftThisTurn;
 	}
 	
-	public abstract void setMovesCostOfNextMove(Terrain terrain);
+	public abstract void setMovesCostOfNextMove();
 	
 	public int getMovesCostOfNextMove(){
 		return movesCostOfNextMove;
@@ -62,6 +62,7 @@ public abstract class Character {
 	 */
 	public void move(int direction){
 		if (!isDead){
+			this.setMovesCostOfNextMove();
 			if (this.movesLeftThisTurn >= this.movesCostOfNextMove){
 				switch(direction) {
 				case MOVE_LEFT:

@@ -1,5 +1,7 @@
 package cross.xam.lostinthewoods;
 
+import java.util.Random;
+
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,7 +48,11 @@ public class GameBoard{
 		this.gameBoardFields = new GameField[horizontalSize * verticalSize];
 		for (int y = 0; y < verticalSize; y++){
 			for (int x = 0; x < horizontalSize; x++){
-				gameBoardFields[x + y * horizontalSize] = new GameField(context, x, y, Terrain.MEADOW);
+				Random rand = new Random();
+				int randomTerrainId = rand.nextInt(3);
+				Terrain terrain = Terrain.values()[randomTerrainId];
+				Log.d("myLog", ""+terrain);
+				gameBoardFields[x + y * horizontalSize] = new GameField(context, x, y, terrain);
 				gameBoardFields[x + y * horizontalSize].setOnClickListener(new GameFieldClickListener());
 			}
 		}

@@ -3,6 +3,7 @@ package cross.xam.lostinthewoods;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.drawable.ScaleDrawable;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -78,6 +79,12 @@ public class GameField extends RelativeLayout{
 		switch(fieldTerrain.getNumValue()){
 		case 0:
 			ivTerrain.setImageResource(R.drawable.green_grass);
+			break;
+		case 1:
+			ivTerrain.setImageResource(R.drawable.woods);
+			break;
+		case 2:
+			ivTerrain.setImageResource(R.drawable.lake_forest);
 			break;
 		}
 				
