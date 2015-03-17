@@ -60,7 +60,7 @@ public abstract class Character {
 		return this.movesLeftThisTurn;
 	}
 	
-	public abstract void setMovesCostOfNextMove();
+	public abstract void setMovesCostOfNextMove(GameField destinationField);
 	
 	public int getMovesCostOfNextMove(){
 		return movesCostOfNextMove;
@@ -72,54 +72,74 @@ public abstract class Character {
 	 */
 	public void move(int direction){
 		if (!isDead){
-			this.setMovesCostOfNextMove();
-			if (this.movesLeftThisTurn >= this.movesCostOfNextMove){
-				switch(direction) {
-				case MOVE_LEFT:
-					if (this.getXPosition() > 0){
+			switch(direction) {
+			case MOVE_LEFT:
+				if (this.getXPosition() > 0){
+					this.setMovesCostOfNextMove(currentActivity.getBoard().getGameField(this.getXPosition() - 1, this.getYPosition()));
+					if (this.movesLeftThisTurn >= this.movesCostOfNextMove){
 						this.setCharacterPosition(this.getXPosition() - 1, this.getYPosition());
+						this.movesLeftThisTurn -= this.movesCostOfNextMove;
 					}
 					else {
-						Log.d("myLog", "You are about to go out of the borders");
-						return;
-					}
-					break;
-				case MOVE_UP:
-					if (this.getYPosition() > 0){
-						this.setCharacterPosition(this.getXPosition(), this.getYPosition() - 1);
-					}
-					else {
-						Log.d("myLog", "You are about to go out of the borders");
-						return;
-					}
-					break;
-				case MOVE_RIGHT:
-					if (this.getXPosition() + 1 < currentActivity.getBoard().getHorizontalSize()){
-						this.setCharacterPosition(this.getXPosition() + 1, this.getYPosition());
-					}
-					else {
-						Log.d("myLog", "You are about to go out of the borders");
-						return;
-					}
-					break;
-				case MOVE_DOWN:
-					Log.d("myLog", "current Y position = " + this.getYPosition());
-					Log.d("myLog", "current board height = " + currentActivity.getBoard().getVerticalSize());
-					if (this.getYPosition() + 1 < currentActivity.getBoard().getVerticalSize()){
-						this.setCharacterPosition(this.getXPosition(), this.getYPosition() + 1);
-					}
-					else {
-						Log.d("myLog", "You are about to go out of the borders");
-						return;
-					}
-					break;
+						Log.d("myLog", "You have not got enough moves");
+					}	
 				}
-				this.movesLeftThisTurn -= this.movesCostOfNextMove;
-				Log.d("myLog", this.name + " has " + this.movesLeftThisTurn + " moves left");
+				else {
+					Log.d("myLog", "You are about to go out of the borders");
+					return;
+				}
+				break;
+			case MOVE_UP:
+				if (this.getYPosition() > 0){
+					this.setMovesCostOfNextMove(currentActivity.getBoard().getGameField(this.getXPosition(), this.getYPosition() - 1));
+					if (this.movesLeftThisTurn >= this.movesCostOfNextMove){
+						this.setCharacterPosition(this.getXPosition(), this.getYPosition() - 1);
+						this.movesLeftThisTurn -= this.movesCostOfNextMove;
+					}
+					else {
+						Log.d("myLog", "You have not got enough moves");
+					}	
+				}
+				else {
+					Log.d("myLog", "You are about to go out of the borders");
+					return;
+				}
+				break;
+			case MOVE_RIGHT:
+				if (this.getXPosition() + 1 < currentActivity.getBoard().getHorizontalSize()){
+					this.setMovesCostOfNextMove(currentActivity.getBoard().getGameField(this.getXPosition() + 1, this.getYPosition()));
+					if (this.movesLeftThisTurn >= this.movesCostOfNextMove){
+						this.setCharacterPosition(this.getXPosition() + 1, this.getYPosition());
+						this.movesLeftThisTurn -= this.movesCostOfNextMove;
+					}
+					else {
+						Log.d("myLog", "You have not got enough moves");
+					}
+				}
+				else {
+					Log.d("myLog", "You are about to go out of the borders");
+					return;
+				}
+				
+				break;
+			case MOVE_DOWN:
+				if (this.getYPosition() + 1 < currentActivity.getBoard().getVerticalSize()){
+					this.setMovesCostOfNextMove(currentActivity.getBoard().getGameField(this.getXPosition(), this.getYPosition() + 1));
+					if (this.movesLeftThisTurn >= this.movesCostOfNextMove){	
+						this.setCharacterPosition(this.getXPosition(), this.getYPosition() + 1);
+						this.movesLeftThisTurn -= this.movesCostOfNextMove;
+					}
+					else {
+						Log.d("myLog", "You have not got enough moves");
+					}
+				}
+				else {
+					Log.d("myLog", "You are about to go out of the borders");
+					return;
+				}
+				break;
 			}
-			else {
-				Log.d("myLog", this.name + " is out of moves");
-			}
+			Log.d("myLog", this.name + " has " + this.movesLeftThisTurn + " moves left");
 		}
 		else {
 			Log.d("myLog", this + " is dead");

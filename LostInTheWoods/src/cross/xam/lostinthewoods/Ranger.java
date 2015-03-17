@@ -52,8 +52,8 @@ public class Ranger extends Character {
 	 * Sets move cost of the current GameField taking into account terrain of this field
 	 */
 	@Override
-	public void setMovesCostOfNextMove() {
-		Terrain terrain = currentActivity.getBoard().getGameField(getXPosition(), getYPosition()).getFieldTerrain();
+	public void setMovesCostOfNextMove(GameField destinationField) {
+		Terrain terrain = destinationField.getFieldTerrain();
 		switch (terrain.getNumValue()){
 		case 0:
 			this.movesCostOfNextMove = 1;

@@ -44,8 +44,8 @@ public class Wolf extends Character {
 	}
 	
 	@Override
-	public void setMovesCostOfNextMove() {
-		Terrain terrain = currentActivity.getBoard().getGameField(getXPosition(), getYPosition()).getFieldTerrain();
+	public void setMovesCostOfNextMove(GameField destinationField) {
+		Terrain terrain = destinationField.getFieldTerrain();
 		switch (terrain.getNumValue()){
 		case 0:
 			this.movesCostOfNextMove = 1;
@@ -76,7 +76,11 @@ public class Wolf extends Character {
 		this.isDead = true;
 	}
 	
-	public void AIWolfMove(){
+	/**
+	 * Determines where the wolf will go this turn (two moves or less)
+	 * Destination game field is determined by the location of the ranger and other wolves (if any of them are still alive)
+	 */
+	public void AIWolfTurn(){
 		
 	}
 	
