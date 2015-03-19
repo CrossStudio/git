@@ -12,7 +12,7 @@ public class ButtonDownClickListener implements OnClickListener {
 	public void onClick(View v) {
 		GameActivity currentGameActivity = (GameActivity) v.getContext();
 		currentRanger = currentGameActivity.getRanger();
-		currentRanger.move(Character.MOVE_DOWN);
+		currentRanger.moveInDirection(Character.MOVE_DOWN);
 		if (currentGameActivity.haveWolvesFoundRanger() != null){
 			currentRanger.setMovesLeftThisTurn(0);
 		}

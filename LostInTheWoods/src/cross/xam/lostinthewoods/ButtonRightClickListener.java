@@ -12,7 +12,7 @@ public class ButtonRightClickListener implements OnClickListener {
 	public void onClick(View v) {
 		GameActivity currentGameActivity = (GameActivity) v.getContext();
 		currentRanger = currentGameActivity.getRanger();
-		currentRanger.move(Character.MOVE_RIGHT);
+		currentRanger.moveInDirection(Character.MOVE_RIGHT);
 		if (currentGameActivity.haveWolvesFoundRanger() != null){
 			currentRanger.setMovesLeftThisTurn(0);
 		}

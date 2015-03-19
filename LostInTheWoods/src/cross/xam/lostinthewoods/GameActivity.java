@@ -99,6 +99,9 @@ public class GameActivity extends Activity {
 	 */
 	public void endTurn(){
 		Log.d("myLog", "Turn has ended");
+		for (Wolf currentWolf : getWolves()){
+			currentWolf.AIWolfTurn();
+		}
 		Wolf wolf = haveWolvesFoundRanger();
 		if (wolf != null){
 			letTheFightBegin(wolf);
@@ -114,8 +117,10 @@ public class GameActivity extends Activity {
 		GameField rangerField = board.getGameField(getRanger().getXPosition(), getRanger().getYPosition());
 		for (Wolf wolf : wolves){
 			if (rangerField.equals(board.getGameField(wolf.getXPosition(), wolf.getYPosition()))){
-				Log.d("myLog", "The foes have met");
-				return wolf;
+				if (!wolf.isDead){
+					Log.d("myLog", "The foes have met");
+					return wolf;
+				}
 			}
 		}
 		return null;

@@ -29,14 +29,12 @@ public class Wolf extends Character {
 	@Override
 	public void setCharacterPosition(int x, int y){
 		if (!isDead){
-			int previousX = this.getXPosition();
-			int previousY = this.getYPosition();
-			GameField previousField = currentActivity.getBoard().getGameField(previousX, previousY);
+			super.setCharacterPosition(this.getXPosition(), this.getYPosition());
+			GameField previousField = this.getGameFieldPosition();
 			previousField.removeCharacterFromField(this);
 			super.setCharacterPosition(x, y);
-			
-			GameField currentField = currentActivity.getBoard().getGameField(x, y);
-			currentField.addCharacterToField(this);
+
+			this.getGameFieldPosition().addCharacterToField(this);
 		}
 		else {
 			Log.d("myLog", this + " is dead");
@@ -72,7 +70,7 @@ public class Wolf extends Character {
 
 	@Override
 	public void getsKilled() {
-		currentActivity.getBoard().getGameField(this.getXPosition(), this.getYPosition()).removeCharacterFromField(this);
+		this.getGameFieldPosition().removeCharacterFromField(this);
 		this.isDead = true;
 	}
 	
@@ -81,7 +79,10 @@ public class Wolf extends Character {
 	 * Destination game field is determined by the location of the ranger and other wolves (if any of them are still alive)
 	 */
 	public void AIWolfTurn(){
-		
+		GameField [] routeToRanger = this.getShortestRouteToGameField(currentActivity.getRanger().getGameFieldPosition());
+		if (routeToRanger.length <= 3 && routeToRanger.length > 0){
+			this.moveTo(routeToRanger[0]);
+		}
 	}
 	
 }

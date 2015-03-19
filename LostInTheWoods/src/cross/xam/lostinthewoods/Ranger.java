@@ -31,17 +31,14 @@ public class Ranger extends Character {
 	@Override
 	public void setCharacterPosition(int x, int y){
 		if (!isDead){
-			int previousX = this.getXPosition();
-			int previousY = this.getYPosition();
-			GameField previousField = currentActivity.getBoard().getGameField(previousX, previousY);
+			Log.d("myLog", "Game field position of ranger = " + this.getXPosition() + " : " + this.getYPosition());
+			super.setCharacterPosition(this.getXPosition(), this.getYPosition());
+			GameField previousField = this.getGameFieldPosition();
 			
 			previousField.removeCharacterFromField(this);
 			super.setCharacterPosition(x, y);
 			
-			GameField currentField = currentActivity.getBoard().getGameField(x, y);
-			currentField.addCharacterToField(this);
-			
-			
+			this.getGameFieldPosition().addCharacterToField(this);
 		}
 		else {
 			Log.d("myLog", this + " is dead");
@@ -89,7 +86,7 @@ public class Ranger extends Character {
 	
 	@Override
 	public void getsKilled() {
-		currentActivity.getBoard().getGameField(this.getXPosition(), this.getYPosition()).removeCharacterFromField(this);
+		this.getGameFieldPosition().removeCharacterFromField(this);
 		this.isDead = true;
 	}
 	

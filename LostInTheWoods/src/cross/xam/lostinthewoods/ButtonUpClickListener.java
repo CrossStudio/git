@@ -12,7 +12,7 @@ public class ButtonUpClickListener implements OnClickListener {
 	public void onClick(View v) {
 		GameActivity currentGameActivity = (GameActivity) v.getContext();
 		currentRanger = currentGameActivity.getRanger();
-		currentRanger.move(Character.MOVE_UP);
+		currentRanger.moveInDirection(Character.MOVE_UP);
 		if (currentGameActivity.haveWolvesFoundRanger() != null){
 			currentRanger.setMovesLeftThisTurn(0);
 		}

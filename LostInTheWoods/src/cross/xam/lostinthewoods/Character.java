@@ -16,6 +16,8 @@ public abstract class Character {
 	
 	private int[] position = {0,0};
 	
+	private GameField gameFieldPosition;
+	
 	private int movesLeftThisTurn;
 	
 	protected int movesCostOfNextMove;
@@ -27,6 +29,7 @@ public abstract class Character {
 	protected Character (Context context){
 		this.context = context;
 		currentActivity = (GameActivity) this.context;
+		this.setCharacterPosition(position[0], position[0]);
 	}
 	
 	public String getName(){
@@ -45,9 +48,14 @@ public abstract class Character {
 		return position[1];
 	}
 	
+	public GameField getGameFieldPosition(){
+		return gameFieldPosition;
+	}
+	
 	public void setCharacterPosition(int x, int y){
 		position[0] = x;
 		position[1] = y;
+		gameFieldPosition = currentActivity.getBoard().getGameField(x, y);
 	}
 	
 	public void setMovesLeftThisTurn(int movesLeft){
@@ -70,7 +78,7 @@ public abstract class Character {
 	 * Character makes 1 move in the passed direction (Y-coordinate is inversed)
 	 * @param direction - direction of character's move. MOVE_LEFT = 0, MOVE_UP = 1, MOVE_RIGHT = 2, MOVE_DOWN = 3
 	 */
-	public void move(int direction){
+	public void moveInDirection(int direction){
 		if (!isDead){
 			switch(direction) {
 			case MOVE_LEFT:
@@ -145,7 +153,29 @@ public abstract class Character {
 			Log.d("myLog", this + " is dead");
 		}
 	}
-
+	
+	/**
+	 * Character moves to the field passed to this method if he has enough moves
+	 * @param destinationField - field to move to
+	 */
+	public void moveTo(GameField destinationField){
+		int x = destinationField.getXCoordinate();
+		int y = destinationField.getYCoordinate();
+		this.setMovesCostOfNextMove(destinationField);
+		if (x >= 0 && x < currentActivity.getBoard().getHorizontalSize() && y >= 0 && y < currentActivity.getBoard().getVerticalSize()){
+			if (this.movesLeftThisTurn >= this.movesCostOfNextMove){
+				this.setCharacterPosition(x, y);
+				this.movesLeftThisTurn -= this.movesCostOfNextMove;
+			}
+			else {
+				Log.d("myLog", "You have not got enough moves");
+			}
+		}
+		else {
+			Log.d("myLog", "You are about to go out of the borders");
+		}
+	}
+	
 	/**
 	 * This character gets killed and removed from the board
 	 */
@@ -161,7 +191,7 @@ public abstract class Character {
 		int yDistance = destination.getYCoordinate() - this.getYPosition();
 		GameField [] routeToDestination = new GameField[Math.abs(xDistance) + Math.abs(yDistance)];
 		GameField tempGameField = new GameField(context, this.getXPosition(), this.getYPosition(),
-				currentActivity.getBoard().getGameField(this.getXPosition(), this.getYPosition()).getFieldTerrain());
+				this.getGameFieldPosition().getFieldTerrain());
 		for (int i = 0; i < routeToDestination.length; i++){
 			
 			if (Math.abs(xDistance) >= Math.abs(yDistance)){
