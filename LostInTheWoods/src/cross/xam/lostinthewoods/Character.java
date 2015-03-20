@@ -1,5 +1,7 @@
 package cross.xam.lostinthewoods;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -18,7 +20,7 @@ public abstract class Character {
 	
 	private GameField gameFieldPosition;
 	
-	private int movesLeftThisTurn;
+	protected int movesLeftThisTurn;
 	
 	protected int movesCostOfNextMove;
 	
@@ -26,9 +28,12 @@ public abstract class Character {
 	
 	private Context context;
 	
+	private GameBoard board;
+	
 	protected Character (Context context){
 		this.context = context;
 		currentActivity = (GameActivity) this.context;
+		board = currentActivity.getBoard();
 		this.setCharacterPosition(position[0], position[0]);
 	}
 	
@@ -55,7 +60,7 @@ public abstract class Character {
 	public void setCharacterPosition(int x, int y){
 		position[0] = x;
 		position[1] = y;
-		gameFieldPosition = currentActivity.getBoard().getGameField(x, y);
+		gameFieldPosition = board.getGameField(x, y);
 	}
 	
 	public void setMovesLeftThisTurn(int movesLeft){
@@ -83,7 +88,7 @@ public abstract class Character {
 			switch(direction) {
 			case MOVE_LEFT:
 				if (this.getXPosition() > 0){
-					this.setMovesCostOfNextMove(currentActivity.getBoard().getGameField(this.getXPosition() - 1, this.getYPosition()));
+					this.setMovesCostOfNextMove(board.getGameField(this.getXPosition() - 1, this.getYPosition()));
 					if (this.movesLeftThisTurn >= this.movesCostOfNextMove){
 						this.setCharacterPosition(this.getXPosition() - 1, this.getYPosition());
 						this.movesLeftThisTurn -= this.movesCostOfNextMove;
@@ -99,7 +104,7 @@ public abstract class Character {
 				break;
 			case MOVE_UP:
 				if (this.getYPosition() > 0){
-					this.setMovesCostOfNextMove(currentActivity.getBoard().getGameField(this.getXPosition(), this.getYPosition() - 1));
+					this.setMovesCostOfNextMove(board.getGameField(this.getXPosition(), this.getYPosition() - 1));
 					if (this.movesLeftThisTurn >= this.movesCostOfNextMove){
 						this.setCharacterPosition(this.getXPosition(), this.getYPosition() - 1);
 						this.movesLeftThisTurn -= this.movesCostOfNextMove;
@@ -114,8 +119,8 @@ public abstract class Character {
 				}
 				break;
 			case MOVE_RIGHT:
-				if (this.getXPosition() + 1 < currentActivity.getBoard().getHorizontalSize()){
-					this.setMovesCostOfNextMove(currentActivity.getBoard().getGameField(this.getXPosition() + 1, this.getYPosition()));
+				if (this.getXPosition() + 1 < board.getHorizontalSize()){
+					this.setMovesCostOfNextMove(board.getGameField(this.getXPosition() + 1, this.getYPosition()));
 					if (this.movesLeftThisTurn >= this.movesCostOfNextMove){
 						this.setCharacterPosition(this.getXPosition() + 1, this.getYPosition());
 						this.movesLeftThisTurn -= this.movesCostOfNextMove;
@@ -131,8 +136,8 @@ public abstract class Character {
 				
 				break;
 			case MOVE_DOWN:
-				if (this.getYPosition() + 1 < currentActivity.getBoard().getVerticalSize()){
-					this.setMovesCostOfNextMove(currentActivity.getBoard().getGameField(this.getXPosition(), this.getYPosition() + 1));
+				if (this.getYPosition() + 1 < board.getVerticalSize()){
+					this.setMovesCostOfNextMove(board.getGameField(this.getXPosition(), this.getYPosition() + 1));
 					if (this.movesLeftThisTurn >= this.movesCostOfNextMove){	
 						this.setCharacterPosition(this.getXPosition(), this.getYPosition() + 1);
 						this.movesLeftThisTurn -= this.movesCostOfNextMove;
@@ -162,7 +167,7 @@ public abstract class Character {
 		int x = destinationField.getXCoordinate();
 		int y = destinationField.getYCoordinate();
 		this.setMovesCostOfNextMove(destinationField);
-		if (x >= 0 && x < currentActivity.getBoard().getHorizontalSize() && y >= 0 && y < currentActivity.getBoard().getVerticalSize()){
+		if (x >= 0 && x < board.getHorizontalSize() && y >= 0 && y < board.getVerticalSize()){
 			if (this.movesLeftThisTurn >= this.movesCostOfNextMove){
 				this.setCharacterPosition(x, y);
 				this.movesLeftThisTurn -= this.movesCostOfNextMove;
@@ -186,19 +191,39 @@ public abstract class Character {
 	 * @param destination - game field where the route should end
 	 * @return array of game fields that form the shortest route to the given game field
 	 */
-	public GameField[] getShortestRouteToGameField(GameField destination){
+	public ArrayList<GameField> getShortestRouteToGameField(GameField destination){
 		int xDistance = destination.getXCoordinate() - this.getXPosition();
 		int yDistance = destination.getYCoordinate() - this.getYPosition();
-		GameField [] routeToDestination = new GameField[Math.abs(xDistance) + Math.abs(yDistance)];
+		ArrayList<GameField> routeToDestination = new ArrayList<GameField>();
 		GameField tempGameField = new GameField(context, this.getXPosition(), this.getYPosition(),
 				this.getGameFieldPosition().getFieldTerrain());
-		for (int i = 0; i < routeToDestination.length; i++){
-			
+		for (int i = 0; i < Math.abs(xDistance) + Math.abs(yDistance); i++){
+			GameField nextStepGameField;
 			if (Math.abs(xDistance) >= Math.abs(yDistance)){
 				if (xDistance > 0){
-					if (tempGameField.getXCoordinate() < currentActivity.getBoard().getHorizontalSize()){
-						tempGameField = currentActivity.getBoard().getGameField(tempGameField.getXCoordinate() + 1,
-								tempGameField.getYCoordinate());
+					nextStepGameField = board.getGameField(tempGameField.getXCoordinate() + 1, tempGameField.getYCoordinate());
+					if (nextStepGameField.gameFieldIsOnBoard()){
+						if (nextStepGameField.getFieldTerrain() == Terrain.LAKE){
+							if (Math.random()*10 > 5){
+								nextStepGameField = board.getGameField(tempGameField.getXCoordinate(),
+										tempGameField.getYCoordinate() + 1);
+								if (nextStepGameField.gameFieldIsOnBoard()){
+									if (nextStepGameField.getFieldTerrain() != Terrain.LAKE){
+										tempGameField = nextStepGameField;
+									}
+									else {
+										
+									}
+								}
+							}
+							else {
+								
+							}
+						}
+						else {
+							tempGameField = board.getGameField(tempGameField.getXCoordinate() + 1,
+									tempGameField.getYCoordinate());
+						}
 					}
 					else {
 						Log.d("myLog", "Your route is about to go out of the borders");
@@ -206,7 +231,7 @@ public abstract class Character {
 				}
 				else if (xDistance < 0){
 					if (tempGameField.getXCoordinate() > 0){
-						tempGameField = currentActivity.getBoard().getGameField(tempGameField.getXCoordinate() - 1,
+						tempGameField = board.getGameField(tempGameField.getXCoordinate() - 1,
 								tempGameField.getYCoordinate());
 					}
 					else {
@@ -216,8 +241,8 @@ public abstract class Character {
 			}
 			else {
 				if (yDistance > 0){
-					if (tempGameField.getYCoordinate() < currentActivity.getBoard().getVerticalSize()){
-						tempGameField = currentActivity.getBoard().getGameField(tempGameField.getXCoordinate(),
+					if (tempGameField.getYCoordinate() < board.getVerticalSize()){
+						tempGameField = board.getGameField(tempGameField.getXCoordinate(),
 								tempGameField.getYCoordinate() + 1);
 					}
 					else {
@@ -226,7 +251,7 @@ public abstract class Character {
 				}
 				else if (yDistance < 0){
 					if (tempGameField.getYCoordinate() > 0){
-						tempGameField = currentActivity.getBoard().getGameField(tempGameField.getXCoordinate(),
+						tempGameField = board.getGameField(tempGameField.getXCoordinate(),
 							tempGameField.getYCoordinate() - 1);
 					}
 					else {
@@ -242,5 +267,7 @@ public abstract class Character {
 		
 		return routeToDestination;
 	}
+
+
 	
 }

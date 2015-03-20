@@ -81,7 +81,9 @@ public class Wolf extends Character {
 	public void AIWolfTurn(){
 		GameField [] routeToRanger = this.getShortestRouteToGameField(currentActivity.getRanger().getGameFieldPosition());
 		if (routeToRanger.length <= 3 && routeToRanger.length > 0){
-			this.moveTo(routeToRanger[0]);
+			while (this.movesLeftThisTurn > 0){
+				this.moveTo(routeToRanger[0]);
+			}
 		}
 	}
 	

@@ -1,6 +1,7 @@
 package cross.xam.lostinthewoods;
 
 import java.util.ArrayList;
+import java.util.Currency;
 
 import android.content.Context;
 import android.graphics.drawable.ScaleDrawable;
@@ -24,11 +25,17 @@ public class GameField extends RelativeLayout{
 	
 	ImageView ivGameField;
 	
-	Context context;
+	private GameActivity currentActivity;
+	
+	private Context context;
+	
+	private GameBoard board;
 	
 	public GameField(Context context, int x, int y, Terrain terrain){
 		super(context);
 		this.context = context;
+		this.currentActivity = (GameActivity) context;
+		this.board = currentActivity.getBoard();
 		this.xCoordinate = x;
 		this.yCoordinate = y;
 		this.fieldTerrain = terrain;
@@ -116,6 +123,18 @@ public class GameField extends RelativeLayout{
 	public void removeObjectFromField(GameObject object){
 		this.fieldObject = null;
 		reDrawField(context);
+	}
+	
+	/**
+	 * Check whether the passed GameField with such coordinates exists on current Game board
+	 * @param gameField
+	 * @return true if such field exists and false otherwise
+	 */
+	protected boolean gameFieldIsOnBoard() {
+		if (board.getGameField(this.xCoordinate, this.yCoordinate) != null){
+			return true;
+		}
+		return false;
 	}
 	
 }
