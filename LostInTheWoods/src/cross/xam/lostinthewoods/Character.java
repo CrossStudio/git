@@ -260,7 +260,7 @@ public abstract class Character {
 				}
 			}
 			Log.d("myLog", "Game field " + tempGameField + " added to route");
-			routeToDestination[i] = tempGameField;
+			routeToDestination.add(tempGameField);
 			xDistance = destination.getXCoordinate() - tempGameField.getXCoordinate();
 			yDistance = destination.getYCoordinate() - tempGameField.getYCoordinate();
 		}
