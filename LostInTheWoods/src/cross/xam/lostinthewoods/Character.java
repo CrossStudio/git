@@ -192,82 +192,14 @@ public abstract class Character {
 	 * @return array of game fields that form the shortest route to the given game field
 	 */
 	public ArrayList<GameField> getShortestRouteToGameField(GameField destination){
-		int xDistance = destination.getXCoordinate() - this.getXPosition();
-		int yDistance = destination.getYCoordinate() - this.getYPosition();
-		ArrayList<GameField> routeToDestination = new ArrayList<GameField>();
-		GameField tempGameField = new GameField(context, this.getXPosition(), this.getYPosition(),
-				this.getGameFieldPosition().getFieldTerrain());
-		for (int i = 0; i < Math.abs(xDistance) + Math.abs(yDistance); i++){
-			GameField nextStepGameField;
-			if (Math.abs(xDistance) >= Math.abs(yDistance)){
-				if (xDistance > 0){
-					nextStepGameField = board.getGameField(tempGameField.getXCoordinate() + 1, tempGameField.getYCoordinate());
-					if (nextStepGameField.gameFieldIsOnBoard()){
-						if (nextStepGameField.getFieldTerrain() == Terrain.LAKE){
-							if (Math.random()*10 > 5){
-								nextStepGameField = board.getGameField(tempGameField.getXCoordinate(),
-										tempGameField.getYCoordinate() + 1);
-								if (nextStepGameField.gameFieldIsOnBoard()){
-									if (nextStepGameField.getFieldTerrain() != Terrain.LAKE){
-										tempGameField = nextStepGameField;
-									}
-									else {
-										
-									}
-								}
-							}
-							else {
-								
-							}
-						}
-						else {
-							tempGameField = board.getGameField(tempGameField.getXCoordinate() + 1,
-									tempGameField.getYCoordinate());
-						}
-					}
-					else {
-						Log.d("myLog", "Your route is about to go out of the borders");
-					}
-				}
-				else if (xDistance < 0){
-					if (tempGameField.getXCoordinate() > 0){
-						tempGameField = board.getGameField(tempGameField.getXCoordinate() - 1,
-								tempGameField.getYCoordinate());
-					}
-					else {
-						Log.d("myLog", "Your route is about to go out of the borders");
-					}
-				}
-			}
-			else {
-				if (yDistance > 0){
-					if (tempGameField.getYCoordinate() < board.getVerticalSize()){
-						tempGameField = board.getGameField(tempGameField.getXCoordinate(),
-								tempGameField.getYCoordinate() + 1);
-					}
-					else {
-						Log.d("myLog", "Your route is about to go out of the borders");
-					}
-				}
-				else if (yDistance < 0){
-					if (tempGameField.getYCoordinate() > 0){
-						tempGameField = board.getGameField(tempGameField.getXCoordinate(),
-							tempGameField.getYCoordinate() - 1);
-					}
-					else {
-						Log.d("myLog", "Your route is about to go out of the borders");
-					}
-				}
-			}
-			Log.d("myLog", "Game field " + tempGameField + " added to route");
-			routeToDestination.add(tempGameField);
-			xDistance = destination.getXCoordinate() - tempGameField.getXCoordinate();
-			yDistance = destination.getYCoordinate() - tempGameField.getYCoordinate();
-		}
-		
-		return routeToDestination;
+		return null;
 	}
 
-
+	/**
+	 * Returns a list of all game fields that are accessible by this character
+	 * @return
+	 */
+	public abstract ArrayList<GameField> getAllAccessibleFields();
+	
 	
 }

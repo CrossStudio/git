@@ -1,5 +1,7 @@
 package cross.xam.lostinthewoods;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -79,12 +81,30 @@ public class Wolf extends Character {
 	 * Destination game field is determined by the location of the ranger and other wolves (if any of them are still alive)
 	 */
 	public void AIWolfTurn(){
-		GameField [] routeToRanger = this.getShortestRouteToGameField(currentActivity.getRanger().getGameFieldPosition());
-		if (routeToRanger.length <= 3 && routeToRanger.length > 0){
-			while (this.movesLeftThisTurn > 0){
-				this.moveTo(routeToRanger[0]);
+
+	}
+
+	@Override
+	public ArrayList<GameField> getAllAccessibleFields() {
+		ArrayList<GameField> accessibleFields = new ArrayList<GameField>();
+		for (GameField field : currentActivity.getBoard().getGameBoardFields()){
+			if (accessibleField(field)){
+				accessibleFields.add(field);
 			}
 		}
+		return accessibleFields;
+	}
+
+	/**
+	 * Checks whether passed game field can be accessed by this wolf
+	 * @param field - GameField to be checked for accessibility
+	 * @return true if the field is accessible and false otherwise
+	 */
+	private boolean accessibleField(GameField field) {
+		if (field.getFieldTerrain() == Terrain.LAKE){
+			return false;
+		}
+		return true;
 	}
 	
 }

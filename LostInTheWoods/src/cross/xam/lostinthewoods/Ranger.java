@@ -1,5 +1,8 @@
 package cross.xam.lostinthewoods;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -88,6 +91,11 @@ public class Ranger extends Character {
 	public void getsKilled() {
 		this.getGameFieldPosition().removeCharacterFromField(this);
 		this.isDead = true;
+	}
+
+	@Override
+	public ArrayList<GameField> getAllAccessibleFields() {
+		return new ArrayList<GameField>(Arrays.asList(currentActivity.getBoard().getGameBoardFields()));
 	}
 	
 	
