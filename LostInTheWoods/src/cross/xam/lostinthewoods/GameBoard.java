@@ -67,8 +67,19 @@ public class GameBoard{
 		return gameBoardFields.length;
 	}
 	
+	/**
+	 * Returns GameField with passed coordinates from gameBoardFields array in case such exists, otherwise returns null
+	 * @param x - x-Coordinate of GameField to be found on board
+	 * @param y - y-Coordinate of GameField to be found on board
+	 * @return - GameField with given coordinates or null
+	 */
 	public GameField getGameField(int x, int y){
-		return gameBoardFields[x + y * horizontalSize];
+		if (x + y * horizontalSize < gameBoardFields.length){
+			return gameBoardFields[x + y * horizontalSize];
+		}
+		else {
+			return null;
+		}
 	}
 	
 	public GameField[] getGameBoardFields(){

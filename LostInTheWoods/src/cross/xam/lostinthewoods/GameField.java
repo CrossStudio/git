@@ -126,7 +126,7 @@ public class GameField extends RelativeLayout{
 	}
 	
 	/**
-	 * Check whether the passed GameField with such coordinates exists on current Game board
+	 * Check whether this GameField with such coordinates exists on current Game board
 	 * @param gameField
 	 * @return true if such field exists and false otherwise
 	 */
@@ -135,6 +135,29 @@ public class GameField extends RelativeLayout{
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Returns arrayList of neighbor GameFields for this GameField (without considering their availability for moves)
+	 * @return arrayList of neighbor GameFields
+	 */
+	public ArrayList<GameField> getNeighborFields(){
+		ArrayList<GameField> neighbors = new ArrayList<GameField>();
+		int x = this.xCoordinate;
+		int y = this.yCoordinate;
+		if (board.getGameField(x + 1, y) != null){
+			neighbors.add(board.getGameField(x + 1, y));
+		}
+		if (board.getGameField(x, y + 1) != null){
+			neighbors.add(board.getGameField(x, y + 1));
+		}
+		if (board.getGameField(x - 1, y) != null){
+			neighbors.add(board.getGameField(x - 1, y));
+		}
+		if (board.getGameField(x, y - 1) != null){
+			neighbors.add(board.getGameField(x, y - 1));
+		}
+		return neighbors;
 	}
 	
 }

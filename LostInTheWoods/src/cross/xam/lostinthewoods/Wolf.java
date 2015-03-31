@@ -81,7 +81,7 @@ public class Wolf extends Character {
 	 * Destination game field is determined by the location of the ranger and other wolves (if any of them are still alive)
 	 */
 	public void AIWolfTurn(){
-
+		
 	}
 
 	@Override
