@@ -145,17 +145,16 @@ public class GameField extends RelativeLayout{
 		ArrayList<GameField> neighbors = new ArrayList<GameField>();
 		int x = this.xCoordinate;
 		int y = this.yCoordinate;
-		Log.d("myLog", "board = " + board);
-		if (board.getGameField(x + 1, y) != null){
+		if ((x + 1) < board.getHorizontalSize()){
 			neighbors.add(board.getGameField(x + 1, y));
 		}
-		if (board.getGameField(x, y + 1) != null){
+		if ((y + 1) < board.getVerticalSize()){
 			neighbors.add(board.getGameField(x, y + 1));
 		}
-		if (board.getGameField(x - 1, y) != null){
+		if ((x - 1) >= 0){
 			neighbors.add(board.getGameField(x - 1, y));
 		}
-		if (board.getGameField(x, y - 1) != null){
+		if ((y - 1) >= 0){
 			neighbors.add(board.getGameField(x, y - 1));
 		}
 		return neighbors;

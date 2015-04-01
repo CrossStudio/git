@@ -24,6 +24,8 @@ public abstract class Character {
 	
 	protected int movesCostOfNextMove;
 	
+	protected ArrayList<Integer> gameFieldMarkers;
+	
 	private GameActivity currentActivity;
 	
 	private Context context;

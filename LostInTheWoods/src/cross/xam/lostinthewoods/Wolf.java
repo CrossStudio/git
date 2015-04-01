@@ -1,6 +1,7 @@
 package cross.xam.lostinthewoods;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import android.content.Context;
 import android.util.Log;
@@ -23,6 +24,16 @@ public class Wolf extends Character {
 		super(context);
 		this.name = name;
 		currentActivity = (GameActivity) context;
+		this.gameFieldMarkers = new ArrayList<Integer>();
+	}
+
+	/**
+	 * Set initial value of all the markers for all accessible GameFields this wolf has to -1
+	 */
+	private void initializeGameFieldMarkers() {
+		for (int i = 0; i < getAllAccessibleFields().size(); i++){
+			this.gameFieldMarkers.add(-1);
+		}
 	}
 
 	/**
@@ -203,86 +214,117 @@ public class Wolf extends Character {
 	}
 
 	private ArrayList<GameField> implementLeeAlgorithm(GameField destination) {
-		ArrayList<GameField> routeByLee = new ArrayList<GameField>();
-		ArrayList<GameField> allAccessibleFields = getAllAccessibleFields();
-		int [] fieldMarks = new int [allAccessibleFields.size()];
-		int currentMark = 0;
-		for (int i = 0; i < fieldMarks.length; i++){
-			fieldMarks[i] = -1;
-		}
-		ArrayList<GameField> currentWaveOfFields = new ArrayList<GameField>();
-		currentWaveOfFields.add(this.getGameFieldPosition());
-		int originIndex = allAccessibleFields.indexOf(currentWaveOfFields.get(0));
-		//Check if 
-		if (originIndex == -1){
-			return null;
-		}
-		fieldMarks[originIndex] = currentMark;
-		//Wave expansion part of Lee algorithm
-		while (true){
-			if (currentWaveOfFields.size() == 0){
-				break;			
-			}
-			for (GameField currentField : currentWaveOfFields){
-				ArrayList<GameField> accessibleNeighbors = new ArrayList<GameField>();
-				ArrayList<GameField> accessibleUnmarkedNeighbors = new ArrayList<GameField>();
-				//----MARKING (NOT ALGORITHM)----
-				for (GameField neighbor : currentField.getNeighborFields()){
-					if (allAccessibleFields.contains(neighbor)){
-						accessibleNeighbors.add(neighbor);
-					}
-				}
-				for (GameField accessibleNeighbor : accessibleNeighbors){
-					if (fieldMarks[allAccessibleFields.indexOf(accessibleNeighbor)] == -1){
-						accessibleUnmarkedNeighbors.add(accessibleNeighbor);
-					}
-				}
-				//----END OF MARKING----
-				
-				//----PART OF ALGORITHM----
-				if (accessibleUnmarkedNeighbors.size() > 0){
-					for (GameField accessibleUnmarkedNeighbor : accessibleUnmarkedNeighbors){
-						fieldMarks[allAccessibleFields.indexOf(accessibleUnmarkedNeighbor)] = currentMark + 1;
-					}
-					currentMark++;
-				}
-				else {
-					break;
-				}
-				//----END OF PART OF ALGORITHM
-			}
-			currentWaveOfFields.clear();
-			for (int i = 0; i < fieldMarks.length; i++){
-				if (fieldMarks[i] == currentMark){
-					currentWaveOfFields.add(allAccessibleFields.get(i));
-				}
-			}
-		}
 		
-		//Backtrace part of Lee algorithm
-		/*
-		while (!this.getGameFieldPosition().equals(currentField)){
-				ArrayList<GameField> accessibleNeighbors = new ArrayList<GameField>();
-				for (GameField neighbor : currentField.getNeighborFields()){
-					if (allAccessibleFields.contains(neighbor)){
-						accessibleNeighbors.add(neighbor);
-					}
-				}
-				for (GameField accessibleNeighbor : accessibleNeighbors){
-					if (fieldMarks[allAccessibleFields.indexOf(accessibleNeighbor)] == currentMark - 1){
-						Log.d("myLog", "" + routeByLee);
-						routeByLee.add(accessibleNeighbor);
-						currentMark--;
-						currentField = accessibleNeighbor;
-						break;
-					}
-				}
-				
-			}
-		 */
-		return routeByLee;
+		initializeLeeAlgorithm();
+		
+		leeAlgorithmWaveExpansion();
+		return null;
 	}
+
+	/**
+	 * Sets the marker of the current position of the Wolf to 0
+	 */
+	private void initializeLeeAlgorithm() {
+		initializeGameFieldMarkers();
 		
+		this.gameFieldMarkers.set(getAllAccessibleFields().indexOf(this.getGameFieldPosition()), 0);
 		
+		/*for (int i = 0; i < this.gameFieldMarkers.size(); i++){
+			Log.d("myLog", "Marker " + i + " = " + this.gameFieldMarkers.get(i));
+		}*/
+	}
+
+	/**
+	 * Part of Lee Algorithm for finding shortest path to some field that assigns appropriate markers to GameFields on its way to some destination GameField
+	 */
+	private void leeAlgorithmWaveExpansion() {
+		int waveNumber = 0;
+		
+		leeAlgorithmAssignMarkersInWaveNumber(waveNumber);
+	}
+	
+	/**
+	 * Part of wave expansion part of Lee Algorithm that assigns markers for wave number waveNumber + 1 
+	 * @param waveNumber - wave for each the markers should be assigned
+	 */
+	private void  leeAlgorithmAssignMarkersInWaveNumber(int waveNumber) {
+		ArrayList<GameField> currentWaveOrigins = new ArrayList<GameField>();
+		ArrayList<GameField> currentWaveNeighbors = new ArrayList<GameField>();
+		
+		currentWaveOrigins = leeAlgorithmGetGameFieldsOfCurrentWave(waveNumber);
+		
+		currentWaveNeighbors = leeAlgorithmGetCurrentWaveNeighbors(currentWaveOrigins, waveNumber);
+		Log.d("myLog", "neighbors : " + currentWaveNeighbors);
+		for (GameField neighbor : currentWaveNeighbors){
+			this.gameFieldMarkers.set(getAllAccessibleFields().indexOf(neighbor), waveNumber + 1);
+		}
+		for (int i = 0; i < this.gameFieldMarkers.size(); i++){
+			Log.d("myLog", "Marker " + i + " = " + this.gameFieldMarkers.get(i));
+		}
+	}
+
+	/**
+	 * Part of wave expansion part of Lee Algorithm that returns GameFields  with markers equal to the passed wave number
+	 * @param waveNumber - wave number to compare markers with
+	 * @return - GameFields with markers equal to waveNumber passed
+	 */
+	private ArrayList<GameField> leeAlgorithmGetGameFieldsOfCurrentWave(int waveNumber) {
+		ArrayList<GameField> accessibleFields = getAllAccessibleFields();
+		ArrayList<GameField> currentWaveFields = new ArrayList<GameField>();
+		for (int i = 0; i < this.gameFieldMarkers.size(); i++){
+			if (this.gameFieldMarkers.get(i) == waveNumber){
+				currentWaveFields.add(accessibleFields.get(i));
+			}
+		}
+		return currentWaveFields;
+	}
+	
+	/**
+	 * Part of wave expansion part of Lee Algorithm that returns neighbor GameFields for a list of GameFields of a certain wave
+	 * @param currentWaveOrigins - GameFields that require their neighbors to be found
+	 * @param waveNumber - wave number of the origin GameFields
+	 * @return ArrayList of GameField neighbors for the given wave number
+	 */
+	private ArrayList<GameField> leeAlgorithmGetCurrentWaveNeighbors(ArrayList<GameField> currentWaveOrigins, int waveNumber) {
+		
+		ArrayList<GameField> currentWaveNeighbors = new ArrayList<GameField>();
+		for (GameField origin : currentWaveOrigins){
+			currentWaveNeighbors.addAll(leeAlgorithmGetUnmarkedNeighborFields(origin));
+		}
+		return currentWaveNeighbors;
+	}
+
+	/**
+	 * Part of wave expansion part of Lee Algorithm that returns unmarked (marked with -1) GameFields for a set origin GameField
+	 * @param origin - GameField that requires its unmarked neighbors to be found
+	 * @return ArrayList of GameField unmarked neighbors (marked with -1)
+	 */
+	private ArrayList<GameField> leeAlgorithmGetUnmarkedNeighborFields(GameField origin) {
+		ArrayList<GameField> accessibleNeighbors = getAccessibleNeighborFields(origin);
+		ArrayList<GameField> originUnmarkedNeighbors = new ArrayList<GameField>();
+		for (GameField neighbor : accessibleNeighbors){
+			if (this.gameFieldMarkers.get(getAllAccessibleFields().indexOf(neighbor)) < 0){
+				originUnmarkedNeighbors.add(neighbor);
+			}
+		}
+		Log.d("myLog", "unmarked neighbors : " + originUnmarkedNeighbors);
+		return originUnmarkedNeighbors;
+	}
+	
+	/**
+	 * Returns a list of GameFields neighbors that are accessible by this character from the passed origin GameField
+	 * @param origin - GameField that requires its accessible neighbors to be found
+	 * @return ArrayList of GameField accessible neighbors
+	 */
+	private ArrayList<GameField> getAccessibleNeighborFields(GameField origin) {
+		ArrayList<GameField> accessibleNeighbors = new ArrayList<GameField>();
+		for (GameField neighbor : origin.getNeighborFields()){
+			if (getAllAccessibleFields().contains(neighbor)){
+				accessibleNeighbors.add(neighbor);
+			}
+		}
+		Log.d("myLog", "accessible neighbors : " + accessibleNeighbors);
+		return accessibleNeighbors;
+	}
 	
 }
