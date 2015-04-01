@@ -217,7 +217,9 @@ public class Wolf extends Character {
 		
 		initializeLeeAlgorithm();
 		
-		leeAlgorithmWaveExpansion();
+		leeAlgorithmWaveExpansion(destination);
+		
+		leeAlgorithmBacktrace(destination);
 		return null;
 	}
 
@@ -236,31 +238,50 @@ public class Wolf extends Character {
 
 	/**
 	 * Part of Lee Algorithm for finding shortest path to some field that assigns appropriate markers to GameFields on its way to some destination GameField
+	 * @param destination - GameField that is the target for the algorithm to reach
 	 */
-	private void leeAlgorithmWaveExpansion() {
+	private boolean leeAlgorithmWaveExpansion(GameField destination) {
 		int waveNumber = 0;
 		
-		leeAlgorithmAssignMarkersInWaveNumber(waveNumber);
+		while(true){
+			if (!leeAlgorithmAssignMarkersInWaveNumber(destination, waveNumber)){
+				Log.d("myLog", "wave number = " + waveNumber + " has finished");
+				waveNumber++;
+			}
+			else {
+				return true;
+			}
+		}
+		
 	}
 	
 	/**
 	 * Part of wave expansion part of Lee Algorithm that assigns markers for wave number waveNumber + 1 
+	 * @param destination - GameField that is the target for the algorithm to reach
 	 * @param waveNumber - wave for each the markers should be assigned
+	 * @return - true if destination GameField has been found on this wave, false otherwise
 	 */
-	private void  leeAlgorithmAssignMarkersInWaveNumber(int waveNumber) {
+	private boolean leeAlgorithmAssignMarkersInWaveNumber(GameField destination, int waveNumber) {
 		ArrayList<GameField> currentWaveOrigins = new ArrayList<GameField>();
 		ArrayList<GameField> currentWaveNeighbors = new ArrayList<GameField>();
 		
 		currentWaveOrigins = leeAlgorithmGetGameFieldsOfCurrentWave(waveNumber);
 		
 		currentWaveNeighbors = leeAlgorithmGetCurrentWaveNeighbors(currentWaveOrigins, waveNumber);
-		Log.d("myLog", "neighbors : " + currentWaveNeighbors);
+		
+		//Checks if destination is reachable (no neighbors means it is unreachable)
+		if (currentWaveNeighbors.size() == 0){
+			return true;
+		}
+		
 		for (GameField neighbor : currentWaveNeighbors){
 			this.gameFieldMarkers.set(getAllAccessibleFields().indexOf(neighbor), waveNumber + 1);
+			if (neighbor.equals(destination)){
+				Log.d("myLog", "Destination found : " + neighbor);
+				return true;
+			}
 		}
-		for (int i = 0; i < this.gameFieldMarkers.size(); i++){
-			Log.d("myLog", "Marker " + i + " = " + this.gameFieldMarkers.get(i));
-		}
+		return false;
 	}
 
 	/**
@@ -325,6 +346,10 @@ public class Wolf extends Character {
 		}
 		Log.d("myLog", "accessible neighbors : " + accessibleNeighbors);
 		return accessibleNeighbors;
+	}
+	
+	private void leeAlgorithmBacktrace(GameField destination) {
+		
 	}
 	
 }
