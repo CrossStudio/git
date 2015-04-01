@@ -17,6 +17,8 @@ public class Wolf extends Character {
 	
 	GameActivity currentActivity;
 	
+	Wolf closestWolf;
+	
 	public Wolf (Context context, String name){
 		super(context);
 		this.name = name;
@@ -82,8 +84,96 @@ public class Wolf extends Character {
 	 */
 	public void AIWolfTurn(){
 		
+		if (rangerInSight()){
+			huntRanger();
+			return;
+		}
+		findClosestWolf();
+		if (closestWolf != null && !closestWolf.isDead && otherWolfInSight()){
+			followWolfPack();
+		}
+	}
+	
+	private void findClosestWolf() {
+		int xDistanceToClosestWolf = 100;
+		int yDistanceToClosestWolf = 100;
+		for (Wolf wolf : currentActivity.getWolves()){
+			int xDistanceToCurrentWolf = Math.abs(wolf.getXPosition() - this.getXPosition());
+			int yDistanceToCurrentWolf = Math.abs(wolf.getYPosition() - this.getYPosition());
+			if ((xDistanceToClosestWolf + yDistanceToClosestWolf) > (xDistanceToCurrentWolf + yDistanceToCurrentWolf)){
+				xDistanceToClosestWolf = xDistanceToCurrentWolf;
+				yDistanceToClosestWolf = yDistanceToCurrentWolf;
+				closestWolf = wolf;
+			}
+		}
 	}
 
+	/**
+	 * Make this wolf stay close to his pack
+	 */
+	private void followWolfPack() {
+		
+	}
+
+	/**
+	 * Checks whether closest relative to this wolf is within this wolf's sight or scent
+	 * @return true if closest relative to this wolf is close enough for this wolf to see (hear or scent him), false otherwise
+	 */
+	private boolean otherWolfInSight() {
+		int xDistanceToClosestWolf = Math.abs(closestWolf.getXPosition() - this.getXPosition());
+		int yDistanceToClosestWolf = Math.abs(closestWolf.getYPosition() - this.getYPosition());
+		if ((xDistanceToClosestWolf + yDistanceToClosestWolf) <= 3){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
+	 * Make this wolf try to catch and eat ranger
+	 */
+	private void huntRanger() {
+		this.route = getShortestRouteToGameField(currentActivity.getRanger().getGameFieldPosition());
+		Log.d("myLog", "moves left = " + this.movesLeftThisTurn);
+		moveByRoute(this.movesLeftThisTurn);
+	}
+
+	/**
+	 * Makes this character spend the number of moves passed as a parameter on his current route
+	 * @param moves - number of moves this character will spend moving by his route
+	 */
+	private void moveByRoute(int moves) {
+		Log.d("myLog", "Moving by route " + this.route);
+		for (GameField nextField : this.route){
+			Log.d("myLog", "" + nextField);
+			if (moves > 0){
+				moveTo(nextField);
+				moves--;
+			}
+			else {
+				break;
+			}
+		}
+		
+	}
+
+	/**
+	 * Checks whether ranger is within this wolf's sight or scent
+	 * @return true if ranger is close enough for this wolf to see (hear or scent him), false otherwise
+	 */
+	private boolean rangerInSight() {
+		GameField rangerPosition = currentActivity.getRanger().getGameFieldPosition();
+		int xDistanceToRanger = Math.abs(rangerPosition.getXCoordinate() - this.getXPosition());
+		int yDistanceToRanger = Math.abs(rangerPosition.getYCoordinate() - this.getYPosition());
+		if ((xDistanceToRanger + yDistanceToRanger) <= 3){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	@Override
 	public ArrayList<GameField> getAllAccessibleFields() {
 		ArrayList<GameField> accessibleFields = new ArrayList<GameField>();
@@ -105,6 +195,78 @@ public class Wolf extends Character {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public ArrayList<GameField> getShortestRouteToGameField(GameField destination) {
+		ArrayList<GameField> shortestRoute = implementLeeAlgorithm(destination);
+		return shortestRoute;
+	}
+
+	private ArrayList<GameField> implementLeeAlgorithm(GameField destination) {
+		ArrayList<GameField> routeByLee = new ArrayList<GameField>();
+		ArrayList<GameField> allAccessibleFields = getAllAccessibleFields();
+		int [] fieldMarks = new int [allAccessibleFields.size()];
+		int currentMark = 0;
+		for (int mark : fieldMarks){
+			mark = -1;
+		}
+		GameField currentField = this.getGameFieldPosition();
+		int originIndex = allAccessibleFields.indexOf(currentField);
+		//Check if 
+		if (originIndex == -1){
+			return null;
+		}
+		fieldMarks[originIndex] = currentMark;
+
+		while (!destination.equals(currentField)){
+			ArrayList<GameField> accessibleNeighbors = new ArrayList<GameField>();
+			ArrayList<GameField> accessibleUnmarkedNeighbors = new ArrayList<GameField>();
+			//----MARKING (NOT ALGORITHM)----
+			for (GameField neighbor : currentField.getNeighborFields()){
+				if (allAccessibleFields.contains(neighbor)){
+					accessibleNeighbors.add(neighbor);
+				}
+			}
+			for (GameField accessibleNeighbor : accessibleNeighbors){
+				if (fieldMarks[allAccessibleFields.indexOf(accessibleNeighbor)] == -1){
+					accessibleUnmarkedNeighbors.add(accessibleNeighbor);
+				}
+			}
+			//----END OF MARKING----
+			
+			//----PART OF ALGORITHM----
+			if (accessibleUnmarkedNeighbors.size() > 0){
+				for (GameField accessibleUnmarkedNeighbor : accessibleUnmarkedNeighbors){
+					fieldMarks[allAccessibleFields.indexOf(accessibleUnmarkedNeighbor)] = currentMark + 1;
+				}
+				currentMark++;
+			}
+			else {
+				break;
+			}
+			//----END OF PART OF ALGORITHM
+		}
+		while (!this.getGameFieldPosition().equals(currentField)){
+			ArrayList<GameField> accessibleNeighbors = new ArrayList<GameField>();
+			for (GameField neighbor : currentField.getNeighborFields()){
+				if (allAccessibleFields.contains(neighbor)){
+					accessibleNeighbors.add(neighbor);
+				}
+			}
+			for (GameField accessibleNeighbor : accessibleNeighbors){
+				if (fieldMarks[allAccessibleFields.indexOf(accessibleNeighbor)] == currentMark - 1){
+					Log.d("myLog", "" + routeByLee);
+					routeByLee.add(accessibleNeighbor);
+					currentMark--;
+					currentField = accessibleNeighbor;
+					break;
+				}
+			}
+			
+		}
+		return routeByLee;
+		
 	}
 	
 }

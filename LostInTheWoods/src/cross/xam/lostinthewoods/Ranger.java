@@ -97,6 +97,13 @@ public class Ranger extends Character {
 	public ArrayList<GameField> getAllAccessibleFields() {
 		return new ArrayList<GameField>(Arrays.asList(currentActivity.getBoard().getGameBoardFields()));
 	}
+
+	@Override
+	public ArrayList<GameField> getShortestRouteToGameField(
+			GameField destination) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 }

@@ -30,6 +30,8 @@ public abstract class Character {
 	
 	private GameBoard board;
 	
+	protected ArrayList<GameField> route;
+	
 	protected Character (Context context){
 		this.context = context;
 		currentActivity = (GameActivity) this.context;
@@ -191,9 +193,7 @@ public abstract class Character {
 	 * @param destination - game field where the route should end
 	 * @return array of game fields that form the shortest route to the given game field
 	 */
-	public ArrayList<GameField> getShortestRouteToGameField(GameField destination){
-		return null;
-	}
+	public abstract ArrayList<GameField> getShortestRouteToGameField(GameField destination);
 
 	/**
 	 * Returns a list of all game fields that are accessible by this character

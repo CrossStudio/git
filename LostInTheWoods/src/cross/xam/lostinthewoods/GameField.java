@@ -1,10 +1,9 @@
 package cross.xam.lostinthewoods;
 
 import java.util.ArrayList;
-import java.util.Currency;
 
 import android.content.Context;
-import android.graphics.drawable.ScaleDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -29,13 +28,13 @@ public class GameField extends RelativeLayout{
 	
 	private Context context;
 	
-	private GameBoard board;
+	private static GameBoard board;
 	
 	public GameField(Context context, int x, int y, Terrain terrain){
 		super(context);
 		this.context = context;
 		this.currentActivity = (GameActivity) context;
-		this.board = currentActivity.getBoard();
+		board = currentActivity.getBoard();
 		this.xCoordinate = x;
 		this.yCoordinate = y;
 		this.fieldTerrain = terrain;
@@ -142,9 +141,11 @@ public class GameField extends RelativeLayout{
 	 * @return arrayList of neighbor GameFields
 	 */
 	public ArrayList<GameField> getNeighborFields(){
+		board = currentActivity.getBoard();
 		ArrayList<GameField> neighbors = new ArrayList<GameField>();
 		int x = this.xCoordinate;
 		int y = this.yCoordinate;
+		Log.d("myLog", "board = " + board);
 		if (board.getGameField(x + 1, y) != null){
 			neighbors.add(board.getGameField(x + 1, y));
 		}
