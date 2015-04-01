@@ -135,7 +135,6 @@ public class Wolf extends Character {
 	 */
 	private void huntRanger() {
 		this.route = getShortestRouteToGameField(currentActivity.getRanger().getGameFieldPosition());
-		Log.d("myLog", "moves left = " + this.movesLeftThisTurn);
 		moveByRoute(this.movesLeftThisTurn);
 	}
 
@@ -208,65 +207,82 @@ public class Wolf extends Character {
 		ArrayList<GameField> allAccessibleFields = getAllAccessibleFields();
 		int [] fieldMarks = new int [allAccessibleFields.size()];
 		int currentMark = 0;
-		for (int mark : fieldMarks){
-			mark = -1;
+		for (int i = 0; i < fieldMarks.length; i++){
+			fieldMarks[i] = -1;
 		}
-		GameField currentField = this.getGameFieldPosition();
-		int originIndex = allAccessibleFields.indexOf(currentField);
+		ArrayList<GameField> currentWaveOfFields = new ArrayList<GameField>();
+		currentWaveOfFields.add(this.getGameFieldPosition());
+		int originIndex = allAccessibleFields.indexOf(currentWaveOfFields.get(0));
 		//Check if 
 		if (originIndex == -1){
 			return null;
 		}
 		fieldMarks[originIndex] = currentMark;
-
-		while (!destination.equals(currentField)){
-			ArrayList<GameField> accessibleNeighbors = new ArrayList<GameField>();
-			ArrayList<GameField> accessibleUnmarkedNeighbors = new ArrayList<GameField>();
-			//----MARKING (NOT ALGORITHM)----
-			for (GameField neighbor : currentField.getNeighborFields()){
-				if (allAccessibleFields.contains(neighbor)){
-					accessibleNeighbors.add(neighbor);
+		//Wave expansion part of Lee algorithm
+		while (true){
+			if (currentWaveOfFields.size() == 0){
+				break;			
+			}
+			for (GameField currentField : currentWaveOfFields){
+				ArrayList<GameField> accessibleNeighbors = new ArrayList<GameField>();
+				ArrayList<GameField> accessibleUnmarkedNeighbors = new ArrayList<GameField>();
+				//----MARKING (NOT ALGORITHM)----
+				for (GameField neighbor : currentField.getNeighborFields()){
+					if (allAccessibleFields.contains(neighbor)){
+						accessibleNeighbors.add(neighbor);
+					}
 				}
-			}
-			for (GameField accessibleNeighbor : accessibleNeighbors){
-				if (fieldMarks[allAccessibleFields.indexOf(accessibleNeighbor)] == -1){
-					accessibleUnmarkedNeighbors.add(accessibleNeighbor);
+				for (GameField accessibleNeighbor : accessibleNeighbors){
+					if (fieldMarks[allAccessibleFields.indexOf(accessibleNeighbor)] == -1){
+						accessibleUnmarkedNeighbors.add(accessibleNeighbor);
+					}
 				}
-			}
-			//----END OF MARKING----
-			
-			//----PART OF ALGORITHM----
-			if (accessibleUnmarkedNeighbors.size() > 0){
-				for (GameField accessibleUnmarkedNeighbor : accessibleUnmarkedNeighbors){
-					fieldMarks[allAccessibleFields.indexOf(accessibleUnmarkedNeighbor)] = currentMark + 1;
+				//----END OF MARKING----
+				
+				//----PART OF ALGORITHM----
+				if (accessibleUnmarkedNeighbors.size() > 0){
+					for (GameField accessibleUnmarkedNeighbor : accessibleUnmarkedNeighbors){
+						fieldMarks[allAccessibleFields.indexOf(accessibleUnmarkedNeighbor)] = currentMark + 1;
+					}
+					currentMark++;
 				}
-				currentMark++;
-			}
-			else {
-				break;
-			}
-			//----END OF PART OF ALGORITHM
-		}
-		while (!this.getGameFieldPosition().equals(currentField)){
-			ArrayList<GameField> accessibleNeighbors = new ArrayList<GameField>();
-			for (GameField neighbor : currentField.getNeighborFields()){
-				if (allAccessibleFields.contains(neighbor)){
-					accessibleNeighbors.add(neighbor);
-				}
-			}
-			for (GameField accessibleNeighbor : accessibleNeighbors){
-				if (fieldMarks[allAccessibleFields.indexOf(accessibleNeighbor)] == currentMark - 1){
-					Log.d("myLog", "" + routeByLee);
-					routeByLee.add(accessibleNeighbor);
-					currentMark--;
-					currentField = accessibleNeighbor;
+				else {
 					break;
 				}
+				//----END OF PART OF ALGORITHM
 			}
-			
+			currentWaveOfFields.clear();
+			for (int i = 0; i < fieldMarks.length; i++){
+				if (fieldMarks[i] == currentMark){
+					currentWaveOfFields.add(allAccessibleFields.get(i));
+				}
+			}
 		}
-		return routeByLee;
 		
+		//Backtrace part of Lee algorithm
+		/*
+		while (!this.getGameFieldPosition().equals(currentField)){
+				ArrayList<GameField> accessibleNeighbors = new ArrayList<GameField>();
+				for (GameField neighbor : currentField.getNeighborFields()){
+					if (allAccessibleFields.contains(neighbor)){
+						accessibleNeighbors.add(neighbor);
+					}
+				}
+				for (GameField accessibleNeighbor : accessibleNeighbors){
+					if (fieldMarks[allAccessibleFields.indexOf(accessibleNeighbor)] == currentMark - 1){
+						Log.d("myLog", "" + routeByLee);
+						routeByLee.add(accessibleNeighbor);
+						currentMark--;
+						currentField = accessibleNeighbor;
+						break;
+					}
+				}
+				
+			}
+		 */
+		return routeByLee;
 	}
+		
+		
 	
 }

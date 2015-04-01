@@ -42,9 +42,6 @@ public class GameActivity extends Activity {
 		wolves.add(new Wolf(this, "Akela"));
 		wolves.get(0).setCharacterPosition(0, 1);
 		
-		wolves.add(new Wolf(this, "Big Bad Wolf"));
-		wolves.get(1).setCharacterPosition(3, 6);
-		
 		assignButtonViews();
 		
 		newTurn();
