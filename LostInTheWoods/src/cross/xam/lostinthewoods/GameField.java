@@ -114,6 +114,10 @@ public class GameField extends RelativeLayout{
 		reDrawField(context);
 	}
 	
+	public ArrayList<Character> getCharactersOnField(){
+		return this.charactersOnField;
+	}
+	
 	public void setObjectToField(GameObject object){
 		this.fieldObject = object;
 		reDrawField(context);

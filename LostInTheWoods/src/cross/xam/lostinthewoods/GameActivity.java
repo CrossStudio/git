@@ -37,10 +37,9 @@ public class GameActivity extends Activity {
 		drawGameBoard();
 		
 		ranger = new Ranger(this,"XAM");
-		ranger.setCharacterPosition(3,5);		
+		ranger.setCharacterPosition(3,5);
 		
-		wolves.add(new Wolf(this, "Akela"));
-		wolves.get(0).setCharacterPosition(0, 1);
+		addWolfPackToGameBoard(3);
 		
 		assignButtonViews();
 		
@@ -76,6 +75,13 @@ public class GameActivity extends Activity {
 	
 	public ArrayList<Wolf> getWolves(){
 		return wolves;
+	}
+	
+	private void addWolfPackToGameBoard(int numberOfWolves) {
+		while (numberOfWolves > 0){
+			wolves.add(board.addWolfToGameBoard());
+			numberOfWolves--;
+		}
 	}
 	
 	/**

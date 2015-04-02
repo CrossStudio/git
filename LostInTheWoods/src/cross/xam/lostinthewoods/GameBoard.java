@@ -30,6 +30,41 @@ public class GameBoard{
 		addGameFieldViewsToGameBoard();
 	}
 
+	/**
+	 * Creates passed number of wolves on current GameBoard (board must be created first!)
+	 * @param numberOfWolves - number of wolves to be added
+	 */
+	public Wolf addWolfToGameBoard() {
+		return generateRandomPositionForWolf();
+	}
+
+	/**
+	 * Generates a random position for a wolf and places this wolf on it if the position is unoccupied and is accessible
+	 * @return newly created wolf
+	 */
+	private Wolf generateRandomPositionForWolf() {
+		Wolf newWolf = new Wolf(context, "Wolf");
+		
+		Random rand = new Random();
+		int randomXCoordinate = rand.nextInt(this.horizontalSize);
+		int randomYCoordinate = rand.nextInt(this.verticalSize);
+		
+		GameField originForWolf = getGameField(randomXCoordinate, randomYCoordinate);
+		
+		while (true){
+			if (originForWolf.getCharactersOnField().size() > 0 || originForWolf.getFieldTerrain().equals(Terrain.LAKE)){
+				randomXCoordinate = rand.nextInt(this.horizontalSize);
+				randomYCoordinate = rand.nextInt(this.verticalSize);
+				originForWolf = getGameField(randomXCoordinate, randomYCoordinate);
+			}
+			else {
+				newWolf.setCharacterPosition(randomXCoordinate, randomYCoordinate);
+				break;
+			}
+		}
+		return newWolf;
+	}
+
 	public int getHorizontalSize(){
 		return this.horizontalSize;
 	}
