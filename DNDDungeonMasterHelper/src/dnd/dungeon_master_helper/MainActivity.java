@@ -10,8 +10,15 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
+	/**
+	 * List of all the characters (player controlled, NPCs and monsters) that are currently in the game
+	 */
 	ArrayList<DNDCharacter> dndCharacterArrayList = new ArrayList<>();
 	
+	/**
+	 * This TextView was created purely for visualisaztion purposes,
+	 * will not be used in actual app 
+	 */
 	TextView tvCharacters;
 	
 	@Override
