@@ -8,8 +8,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -32,6 +34,10 @@ public class MainActivity extends Activity {
 		activeCharacter = dndCharacterArrayList.get(charactersIndex);
 	}
 	
+	String[] arrayOfModifierTypes = {"Attack", "AC", "Fortitude", "Reflex", "Will", "Damage"};
+	
+	String[] arrayOfModifierTargets;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,7 +54,19 @@ public class MainActivity extends Activity {
 		DNDCharacter.addNewCharacterToGame("Lol1", "Human", "Paladin", dndCharacterArrayList);
 		DNDCharacter.addNewCharacterToGame("Leroy", "Dragonborn", "Fighter", dndCharacterArrayList);
 		
+		arrayOfModifierTargets = new String[dndCharacterArrayList.size()];
+		
 		LayoutInflater inflater = getLayoutInflater();
+		
+		/**
+		 * Adapter to set the values of spinner items of modifier types spinner
+		 */
+		{
+			ArrayAdapter<String> modifierTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrayOfModifierTypes);
+			modifierTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			Spinner spinModifierType = (Spinner) findViewById(R.id.spinModifierType);
+			spinModifierType.setAdapter(modifierTypeAdapter);
+		}
 		
 		for (DNDCharacter character : dndCharacterArrayList)
 		{
@@ -56,7 +74,21 @@ public class MainActivity extends Activity {
 			TextView tvInitOrderCharName = (TextView) inflatedInitOrderCharName.findViewById(R.id.tvInitOrderCharName);
 			tvInitOrderCharName.setText(character.getCharName());
 			llInitiativeOrder.addView(inflatedInitOrderCharName);
+			/**
+			 * Fill in the array of modifier targets for spinner's adapter (transfer it to separate method, you dense mofo
+			 */
+			arrayOfModifierTargets[dndCharacterArrayList.indexOf(character)] = character.getCharName();
 		}
+		/**
+		 * Adapter to set the values of spinner items of modifier targets spinner
+		 */
+		{
+			ArrayAdapter<String> modifierTargetAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrayOfModifierTargets);
+			modifierTargetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			Spinner spinModifierTarget = (Spinner) findViewById(R.id.spinModifierTarget);
+			spinModifierTarget.setAdapter(modifierTargetAdapter);
+		}
+		
 		if (dndCharacterArrayList.size() > 0)
 		{
 			activeCharacter = dndCharacterArrayList.get(0);

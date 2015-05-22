@@ -19,11 +19,9 @@ public class NextCharacterClickListener implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		
-		DNDCharacter activeCharacter = MainActivity.activeCharacter;
-		
 		for (DNDCharacter character : charactersList)
 		{
-			if (character.equals(activeCharacter))
+			if (character.equals(MainActivity.activeCharacter))
 			{
 				nextCharacter(character);
 				break;
