@@ -4,8 +4,11 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -15,27 +18,30 @@ public class MainActivity extends Activity {
 	 */
 	ArrayList<DNDCharacter> dndCharacterArrayList = new ArrayList<>();
 	
-	/**
-	 * This TextView was created purely for visualisaztion purposes,
-	 * will not be used in actual app 
-	 */
-	TextView tvCharacters;
+	LinearLayout llInitiativeOrder;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		tvCharacters = (TextView) findViewById(R.id.tvHelloWorld);
+		llInitiativeOrder = (LinearLayout) findViewById(R.id.llInitiativeOrder);
 		
 		DNDCharacter.addNewCharacterToGame("Father Tuck", "Human", "Cleric", dndCharacterArrayList);
 		DNDCharacter.addNewCharacterToGame("Lol1", "Human", "Paladin", dndCharacterArrayList);
 		DNDCharacter.addNewCharacterToGame("Leroy", "Dragonborn", "Fighter", dndCharacterArrayList);
+		
+		LayoutInflater inflater = getLayoutInflater();
+		
 		for (DNDCharacter character : dndCharacterArrayList)
 		{
-			tvCharacters.setText(tvCharacters.getText() + " " + character.getCharName());
+			View inflatedInitOrderCharName = inflater.inflate(R.layout.init_order_char_name, null, false);
+			TextView tvInitOrderCharName = (TextView) inflatedInitOrderCharName.findViewById(R.id.tvInitOrderCharName);
+			tvInitOrderCharName.setText(character.getCharName());
+			llInitiativeOrder.addView(inflatedInitOrderCharName);
 		}
 	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
