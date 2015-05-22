@@ -2,8 +2,10 @@ package dnd.dungeon_master_helper;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 /**
  * Uses OnClickListener interface to make Next Character button of the main interface function
@@ -13,15 +15,17 @@ import android.view.View.OnClickListener;
 public class NextCharacterClickListener implements OnClickListener {
 
 	ArrayList<DNDCharacter> charactersList = MainActivity.dndCharacterArrayList;
-	DNDCharacter activeCharacter = MainActivity.activeCharacter;
 	
 	@Override
 	public void onClick(View v) {
+		
+		DNDCharacter activeCharacter = MainActivity.activeCharacter;
+		
 		for (DNDCharacter character : charactersList)
 		{
 			if (character.equals(activeCharacter))
 			{
-				nextCharacter(activeCharacter);
+				nextCharacter(character);
 				break;
 			}
 		}
@@ -35,16 +39,16 @@ public class NextCharacterClickListener implements OnClickListener {
 	 */
 	private void nextCharacter(DNDCharacter activeCharacter)
 	{
-		if (charactersList.indexOf(activeCharacter) < charactersList.size() - 1)
+		int indexOfActiveCharacter = charactersList.indexOf(activeCharacter);
+		if (indexOfActiveCharacter < charactersList.size() - 1)
 		{
-			activeCharacter = charactersList.
-					get(charactersList.indexOf(activeCharacter) + 1);
+			MainActivity.setActiveCharacter(indexOfActiveCharacter + 1);
 		}
 		else
 		{
-			activeCharacter = charactersList.get(0);
+			MainActivity.setActiveCharacter(0);
 		}
-		MainActivity.tvActiveCharacter.setText("Active Character: " + activeCharacter.getCharName());
+		MainActivity.tvActiveCharacter.setText("Active Character: " + MainActivity.activeCharacter.getCharName());
 	}
 
 

@@ -27,6 +27,11 @@ public class MainActivity extends Activity {
 	
 	static DNDCharacter activeCharacter;
 	
+	static void setActiveCharacter(int charactersIndex)
+	{
+		activeCharacter = dndCharacterArrayList.get(charactersIndex);
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
