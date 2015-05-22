@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,7 +26,11 @@ public class MainActivity extends Activity {
 	
 	static Button btnNextCharacter;
 	
+	static Button btnAddModifier;
+	
 	static TextView tvActiveCharacter;
+	
+	static EditText etCharModifiers;
 	
 	static DNDCharacter activeCharacter;
 	
@@ -34,9 +39,11 @@ public class MainActivity extends Activity {
 		activeCharacter = dndCharacterArrayList.get(charactersIndex);
 	}
 	
-	String[] arrayOfModifierTypes = {"Attack", "AC", "Fortitude", "Reflex", "Will", "Damage"};
+	static String[] arrayOfModifierTypes = {"Attack", "AC", "Fortitude", "Reflex", "Will", "Damage"};
 	
-	String[] arrayOfModifierTargets;
+	static String[] arrayOfModifierTargets;
+	
+	static String[] modifierToAdd = new String[3];
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +53,11 @@ public class MainActivity extends Activity {
 		llInitiativeOrder = (LinearLayout) findViewById(R.id.llInitiativeOrder);
 		btnNextCharacter = (Button) findViewById(R.id.btnNextCharacter);
 		tvActiveCharacter = (TextView) findViewById(R.id.tvActiveCharName);
-		
+		btnAddModifier = (Button) findViewById(R.id.btnAddModifier);
+		etCharModifiers = (EditText) findViewById(R.id.etCharModifiers);
 		
 		btnNextCharacter.setOnClickListener(new NextCharacterClickListener());
+		btnAddModifier.setOnClickListener(new AddModifierClickListener());
 		
 		DNDCharacter.addNewCharacterToGame("Father Tuck", "Human", "Cleric", dndCharacterArrayList);
 		DNDCharacter.addNewCharacterToGame("Lol1", "Human", "Paladin", dndCharacterArrayList);
@@ -66,6 +75,7 @@ public class MainActivity extends Activity {
 			modifierTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			Spinner spinModifierType = (Spinner) findViewById(R.id.spinModifierType);
 			spinModifierType.setAdapter(modifierTypeAdapter);
+			spinModifierType.setOnItemSelectedListener(new ModifierTypeSelectedListener());
 		}
 		
 		for (DNDCharacter character : dndCharacterArrayList)
@@ -87,7 +97,12 @@ public class MainActivity extends Activity {
 			modifierTargetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			Spinner spinModifierTarget = (Spinner) findViewById(R.id.spinModifierTarget);
 			spinModifierTarget.setAdapter(modifierTargetAdapter);
+			spinModifierTarget.setOnItemSelectedListener(new ModifierTargetSelectedListener());
 		}
+		
+		modifierToAdd[0] = " ";
+		modifierToAdd[1] = " : ";
+		modifierToAdd[2] = " ";
 		
 		if (dndCharacterArrayList.size() > 0)
 		{
