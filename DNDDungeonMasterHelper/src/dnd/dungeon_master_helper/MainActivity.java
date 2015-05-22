@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,9 +17,15 @@ public class MainActivity extends Activity {
 	/**
 	 * List of all the characters (player controlled, NPCs and monsters) that are currently in the game
 	 */
-	ArrayList<DNDCharacter> dndCharacterArrayList = new ArrayList<>();
+	static ArrayList<DNDCharacter> dndCharacterArrayList = new ArrayList<>();
 	
-	LinearLayout llInitiativeOrder;
+	static LinearLayout llInitiativeOrder;
+	
+	static Button btnNextCharacter;
+	
+	static TextView tvActiveCharacter;
+	
+	static DNDCharacter activeCharacter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +33,11 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		llInitiativeOrder = (LinearLayout) findViewById(R.id.llInitiativeOrder);
+		btnNextCharacter = (Button) findViewById(R.id.btnNextCharacter);
+		tvActiveCharacter = (TextView) findViewById(R.id.tvActiveCharName);
+		
+		
+		btnNextCharacter.setOnClickListener(new NextCharacterClickListener());
 		
 		DNDCharacter.addNewCharacterToGame("Father Tuck", "Human", "Cleric", dndCharacterArrayList);
 		DNDCharacter.addNewCharacterToGame("Lol1", "Human", "Paladin", dndCharacterArrayList);
@@ -39,6 +51,11 @@ public class MainActivity extends Activity {
 			TextView tvInitOrderCharName = (TextView) inflatedInitOrderCharName.findViewById(R.id.tvInitOrderCharName);
 			tvInitOrderCharName.setText(character.getCharName());
 			llInitiativeOrder.addView(inflatedInitOrderCharName);
+		}
+		if (dndCharacterArrayList.size() > 0)
+		{
+			activeCharacter = dndCharacterArrayList.get(0);
+			tvActiveCharacter.setText("Active Character: " + activeCharacter.getCharName());
 		}
 	}
 	
