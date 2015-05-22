@@ -10,9 +10,12 @@
 
     <LinearLayout
         android:id="@+id/llInitiativeOrder"
+        android:gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        >
     </LinearLayout>
 
 	<TextView
