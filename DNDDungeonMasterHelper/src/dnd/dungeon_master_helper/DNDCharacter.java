@@ -44,10 +44,11 @@ public class DNDCharacter {
      * @param race - character's race
      * @param charClass - character's class
      */
-    private DNDCharacter(String name, String race, String charClass){
+    private DNDCharacter(String name, String charClass, int charInitiativeEncounter, int charMaxHP){
     	this.charName = name;
-    	this.charRace = race;
     	this.charClass = charClass;
+    	this.charInitiativeEncounter = charInitiativeEncounter;
+    	this.charHPMax = charMaxHP;
     }
     
     /**
@@ -58,8 +59,8 @@ public class DNDCharacter {
      * @param charClass - character's class
      * @param listOfChars - list of characters to get the newly created character
      */
-    public static void addNewCharacterToGame(String name, String race, String charClass, ArrayList<DNDCharacter> listOfChars){
-    	listOfChars.add(new DNDCharacter(name, race, charClass));
+    public static void addNewCharacterToGame(String name, String charClass, int charInitiativeEncounter, int charMaxHP, ArrayList<DNDCharacter> listOfChars){
+    	listOfChars.add(new DNDCharacter(name, charClass, charInitiativeEncounter, charMaxHP));
     }
 
     /**

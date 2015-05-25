@@ -9,7 +9,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="14dp"
         android:gravity="center_vertical" >
 
         <TextView
@@ -20,7 +19,7 @@
 
         <EditText
             android:id="@+id/etCharName"
-            android:layout_width="wrap_content"
+            android:layout_width="255dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
     </LinearLayout>
@@ -31,7 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/linearLayout1"
-        android:layout_marginTop="14dp"
         android:gravity="center_vertical" >
 
         <TextView
@@ -48,6 +46,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -62,31 +61,46 @@
 
         <EditText
             android:id="@+id/etCurrentInitiative"
-            android:layout_width="wrap_content"
+            android:layout_width="255dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:inputType="number" >
 
             <requestFocus />
         </EditText>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linearLayout3"
+        android:gravity="center_vertical" >
 
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <EditText
+            android:id="@+id/etMaxHP"
+            android:layout_width="255dp"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
     </LinearLayout>
 
     <Button
         android:id="@+id/btnAddNewCharacter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout4"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:text="Add Character" />
-
     <Button
         android:id="@+id/btnProceedToGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
         android:text="Proceed" />
-
 </RelativeLayout>

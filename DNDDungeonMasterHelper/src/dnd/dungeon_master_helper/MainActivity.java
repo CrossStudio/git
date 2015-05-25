@@ -52,9 +52,9 @@ public class MainActivity extends Activity {
 		
 		initializeViews();
 		
-		DNDCharacter.addNewCharacterToGame("Father Tuck", "Human", "Cleric", dndCharacterArrayList);
-		DNDCharacter.addNewCharacterToGame("Lol1", "Human", "Paladin", dndCharacterArrayList);
-		DNDCharacter.addNewCharacterToGame("Leroy", "Dragonborn", "Fighter", dndCharacterArrayList);
+		DNDCharacter.addNewCharacterToGame("Father Tuck", "Cleric", 16, 28, dndCharacterArrayList);
+		DNDCharacter.addNewCharacterToGame("Lol1", "Paladin", 8, 32, dndCharacterArrayList);
+		DNDCharacter.addNewCharacterToGame("Leroy", "Fighter", 12, 36, dndCharacterArrayList);
 		
 		arrayOfModifierTargets = new String[dndCharacterArrayList.size()];
 		LayoutInflater inflater = getLayoutInflater();

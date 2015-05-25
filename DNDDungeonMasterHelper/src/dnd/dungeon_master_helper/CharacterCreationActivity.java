@@ -11,6 +11,8 @@ public class CharacterCreationActivity extends Activity {
 	Button btnAddNewCharacter;
 	Button btnProceedToGame;
 	EditText etCharName;
+	EditText etCurrentInitiative;
+	EditText etMaxHP;
 	Spinner spCharClass;
 	
 	@Override
@@ -28,6 +30,8 @@ public class CharacterCreationActivity extends Activity {
 		btnAddNewCharacter = (Button) findViewById(R.id.btnAddNewCharacter);
 		btnProceedToGame = (Button) findViewById(R.id.btnProceedToGame);
 		etCharName = (EditText) findViewById(R.id.etCharName);
+		etCurrentInitiative = (EditText) findViewById(R.id.etCurrentInitiative);
+		etMaxHP = (EditText) findViewById(R.id.etMaxHP);
 		spCharClass = (Spinner) findViewById(R.id.spCharClass);
 		
 		btnAddNewCharacter.setOnClickListener(new AddNewCharacterListener());

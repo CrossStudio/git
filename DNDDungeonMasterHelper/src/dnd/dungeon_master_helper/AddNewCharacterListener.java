@@ -7,7 +7,7 @@ public class AddNewCharacterListener implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-
+		
 	}
 
 }
