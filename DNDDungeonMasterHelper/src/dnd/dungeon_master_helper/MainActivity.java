@@ -50,59 +50,22 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		llInitiativeOrder = (LinearLayout) findViewById(R.id.llInitiativeOrder);
-		btnNextCharacter = (Button) findViewById(R.id.btnNextCharacter);
-		tvActiveCharacter = (TextView) findViewById(R.id.tvActiveCharName);
-		btnAddModifier = (Button) findViewById(R.id.btnAddModifier);
-		etCharModifiers = (EditText) findViewById(R.id.etCharModifiers);
-		
-		btnNextCharacter.setOnClickListener(new NextCharacterClickListener());
-		btnAddModifier.setOnClickListener(new AddModifierClickListener());
+		initializeViews();
 		
 		DNDCharacter.addNewCharacterToGame("Father Tuck", "Human", "Cleric", dndCharacterArrayList);
 		DNDCharacter.addNewCharacterToGame("Lol1", "Human", "Paladin", dndCharacterArrayList);
 		DNDCharacter.addNewCharacterToGame("Leroy", "Dragonborn", "Fighter", dndCharacterArrayList);
 		
 		arrayOfModifierTargets = new String[dndCharacterArrayList.size()];
-		
 		LayoutInflater inflater = getLayoutInflater();
 		
-		/**
-		 * Adapter to set the values of spinner items of modifier types spinner
-		 */
-		{
-			ArrayAdapter<String> modifierTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrayOfModifierTypes);
-			modifierTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			Spinner spinModifierType = (Spinner) findViewById(R.id.spinModifierType);
-			spinModifierType.setAdapter(modifierTypeAdapter);
-			spinModifierType.setOnItemSelectedListener(new ModifierTypeSelectedListener());
-		}
+		fillInitiativeOrderLine(inflater);
 		
-		for (DNDCharacter character : dndCharacterArrayList)
-		{
-			View inflatedInitOrderCharName = inflater.inflate(R.layout.init_order_char_name, null, false);
-			TextView tvInitOrderCharName = (TextView) inflatedInitOrderCharName.findViewById(R.id.tvInitOrderCharName);
-			tvInitOrderCharName.setText(character.getCharName());
-			llInitiativeOrder.addView(inflatedInitOrderCharName);
-			/**
-			 * Fill in the array of modifier targets for spinner's adapter (transfer it to separate method, you dense mofo
-			 */
-			arrayOfModifierTargets[dndCharacterArrayList.indexOf(character)] = character.getCharName();
-		}
-		/**
-		 * Adapter to set the values of spinner items of modifier targets spinner
-		 */
-		{
-			ArrayAdapter<String> modifierTargetAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrayOfModifierTargets);
-			modifierTargetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			Spinner spinModifierTarget = (Spinner) findViewById(R.id.spinModifierTarget);
-			spinModifierTarget.setAdapter(modifierTargetAdapter);
-			spinModifierTarget.setOnItemSelectedListener(new ModifierTargetSelectedListener());
-		}
+		fillModifierTypesSpinner();
 		
-		modifierToAdd[0] = " ";
-		modifierToAdd[1] = " : ";
-		modifierToAdd[2] = " ";
+		fillModifierTargetsSpinner();
+		
+		fillModifierStringCombo();
 		
 		if (dndCharacterArrayList.size() > 0)
 		{
@@ -111,6 +74,71 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * Fills String array of modifier with initial values
+	 */
+	private void fillModifierStringCombo() {
+		modifierToAdd[0] = " ";
+		modifierToAdd[1] = " vs ";
+		modifierToAdd[2] = " ";		
+	}
+
+	/**
+	 * Sets the values of spinner items of modifier targets spinner
+	 */
+	private void fillModifierTargetsSpinner() {
+		for (DNDCharacter character : dndCharacterArrayList)
+		{
+			arrayOfModifierTargets[dndCharacterArrayList.indexOf(character)] = character.getCharName();
+		}
+		ArrayAdapter<String> modifierTargetAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrayOfModifierTargets);
+		modifierTargetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		Spinner spinModifierTarget = (Spinner) findViewById(R.id.spinModifierTarget);
+		spinModifierTarget.setAdapter(modifierTargetAdapter);
+		spinModifierTarget.setOnItemSelectedListener(new ModifierTargetSelectedListener());		
+	}
+
+
+	/**
+	 * Sets initiative order line to its initial value
+	 * @param inflater
+	 */
+	private void fillInitiativeOrderLine(LayoutInflater inflater) {
+		for (DNDCharacter character : dndCharacterArrayList)
+		{
+			View inflatedInitOrderCharName = inflater.inflate(R.layout.init_order_char_name, null, false);
+			TextView tvInitOrderCharName = (TextView) inflatedInitOrderCharName.findViewById(R.id.tvInitOrderCharName);
+			tvInitOrderCharName.setText(character.getCharName());
+			llInitiativeOrder.addView(inflatedInitOrderCharName);
+		}		
+	}
+
+
+	/**
+	 * Sets the values of spinner items of modifier types spinner
+	 */
+	private void fillModifierTypesSpinner() {
+		ArrayAdapter<String> modifierTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrayOfModifierTypes);
+		modifierTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		Spinner spinModifierType = (Spinner) findViewById(R.id.spinModifierType);
+		spinModifierType.setAdapter(modifierTypeAdapter);
+		spinModifierType.setOnItemSelectedListener(new ModifierTypeSelectedListener());		
+	}
+
+	/**
+	 * Assign initial values to various View variables along with listeners
+	 */
+	private void initializeViews() {
+		llInitiativeOrder = (LinearLayout) findViewById(R.id.llInitiativeOrder);
+		btnNextCharacter = (Button) findViewById(R.id.btnNextCharacter);
+		tvActiveCharacter = (TextView) findViewById(R.id.tvActiveCharName);
+		btnAddModifier = (Button) findViewById(R.id.btnAddModifier);
+		etCharModifiers = (EditText) findViewById(R.id.etCharModifiers);
+		
+		btnNextCharacter.setOnClickListener(new NextCharacterClickListener());
+		btnAddModifier.setOnClickListener(new AddModifierClickListener());
+	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
