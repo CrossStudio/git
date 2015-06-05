@@ -19,7 +19,6 @@ public class CharacterCreationActivity extends Activity {
 	public void onCreate(Bundle savedBundle){
 		super.onCreate(savedBundle);
 		setContentView(R.layout.character_creation);
-		
 		initializeViews();
 	}
 	
