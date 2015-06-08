@@ -3,28 +3,30 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/linearLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:gravity="center_vertical" >
+        android:layout_alignParentTop="true">
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="Name"
+            android:layout_centerVertical="true"/>
 
         <EditText
             android:id="@+id/etCharName"
             android:layout_width="255dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
-    </LinearLayout>
+            android:layout_weight="1"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,16 +38,21 @@
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="Class" 
+            android:layout_weight = "1"
+            android:layout_centerVertical="true"/>
 
         <Spinner
             android:id="@+id/spCharClass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
-    </LinearLayout>
+            android:layout_weight="1"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/textView1"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/linearLayout3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,18 +64,21 @@
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="Initiative" 
+            android:layout_centerVertical="true"/>
 
         <EditText
             android:id="@+id/etCurrentInitiative"
             android:layout_width="255dp"
             android:layout_height="wrap_content"
-            android:inputType="number" >
+            android:inputType="number"
+            android:layout_alignParentRight="true" 
+            android:layout_centerVertical="true">
 
             <requestFocus />
         </EditText>
-    </LinearLayout>
-    <LinearLayout
+    </RelativeLayout>
+    <RelativeLayout
         android:id="@+id/linearLayout4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -80,14 +90,17 @@
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="Max HP" 
+            android:layout_centerVertical="true"/>
 
         <EditText
             android:id="@+id/etMaxHP"
             android:layout_width="255dp"
             android:layout_height="wrap_content"
-            android:inputType="number" />
-    </LinearLayout>
+            android:inputType="number"
+            android:layout_alignParentRight="true" 
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
 
     <Button
         android:id="@+id/btnAddNewCharacter"

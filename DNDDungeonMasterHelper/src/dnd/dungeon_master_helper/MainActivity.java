@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
 	/**
 	 * List of all the characters (player controlled, NPCs and monsters) that are currently in the game
 	 */
-	static ArrayList<DNDCharacter> dndCharacterArrayList = new ArrayList<>();
+	static ArrayList<DNDCharacter> dndCharacterArrayList = DNDCharacter.getCharacters();
 	
 	static LinearLayout llInitiativeOrder;
 	
@@ -52,9 +52,9 @@ public class MainActivity extends Activity {
 		
 		initializeViews();
 		
-		DNDCharacter.addNewCharacterToGame("Father Tuck", "Cleric", 16, 28, dndCharacterArrayList);
-		DNDCharacter.addNewCharacterToGame("Lol1", "Paladin", 8, 32, dndCharacterArrayList);
-		DNDCharacter.addNewCharacterToGame("Leroy", "Fighter", 12, 36, dndCharacterArrayList);
+		DNDCharacter.addNewCharacterToGame("Father Tuck", "Cleric", 16, 28);
+		DNDCharacter.addNewCharacterToGame("Lol1", "Paladin", 8, 32);
+		DNDCharacter.addNewCharacterToGame("Leroy", "Fighter", 12, 36);
 		
 		arrayOfModifierTargets = new String[dndCharacterArrayList.size()];
 		LayoutInflater inflater = getLayoutInflater();

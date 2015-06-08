@@ -8,6 +8,9 @@ import java.util.ArrayList;
  *
  */
 public class DNDCharacter {
+	
+	private static ArrayList<DNDCharacter> characters = new ArrayList<>();
+	
 	private String charName;
     private String charRace;
     private String charClass;
@@ -59,10 +62,18 @@ public class DNDCharacter {
      * @param charClass - character's class
      * @param listOfChars - list of characters to get the newly created character
      */
-    public static void addNewCharacterToGame(String name, String charClass, int charInitiativeEncounter, int charMaxHP, ArrayList<DNDCharacter> listOfChars){
-    	listOfChars.add(new DNDCharacter(name, charClass, charInitiativeEncounter, charMaxHP));
+    public static void addNewCharacterToGame(String name, String charClass, int charInitiativeEncounter, int charMaxHP){
+    	characters.add(new DNDCharacter(name, charClass, charInitiativeEncounter, charMaxHP));
     }
 
+    /**
+     * Basic getter of list of characters
+     * @return list of all characters in the game
+     */
+    public static ArrayList<DNDCharacter> getCharacters() {
+    	return characters;
+    }
+    
     /**
      * Basic getter for character's name
      * @return character's name
