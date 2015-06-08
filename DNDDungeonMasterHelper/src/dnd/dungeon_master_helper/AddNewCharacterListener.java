@@ -1,10 +1,12 @@
 package dnd.dungeon_master_helper;
 
 import android.app.Activity;
+import android.sax.StartElementListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class AddNewCharacterListener implements OnClickListener {
 
@@ -16,9 +18,12 @@ public class AddNewCharacterListener implements OnClickListener {
 		String charName = ((EditText) activity.findViewById(R.id.etCharName)).getText().toString();
 		Spinner spCharClass = ((Spinner) activity.findViewById(R.id.spCharClass));
 		String charClass = spCharClass.getSelectedItem().toString();
-		String charInitiative = ((EditText) activity.findViewById(R.id.etCurrentInitiative)).getText().toString();
-		String charMaxHP = ((EditText) activity.findViewById(R.id.etMaxHP)).getText().toString();
+		int charInitiative = Integer.valueOf(((EditText) activity.findViewById(R.id.etCurrentInitiative)).getText().toString());
+		int charMaxHP = Integer.valueOf(((EditText) activity.findViewById(R.id.etMaxHP)).getText().toString());
+		
 		addNewCharacterToGame(charName, charClass, charInitiative, charMaxHP);
+		Toast.makeText(activity, "New Character created", Toast.LENGTH_SHORT).show();
+		
 	}
 
 	/**
@@ -28,8 +33,8 @@ public class AddNewCharacterListener implements OnClickListener {
 	 * @param charInitiative - encounter initiative of the character
 	 * @param charMaxHP - maximum health points of the character
 	 */
-	private void addNewCharacterToGame(String charName, String charClass, String charInitiative, String charMaxHP) {
-		
+	private void addNewCharacterToGame(String charName, String charClass, int charInitiative, int charMaxHP) {
+		DNDCharacter.addNewCharacterToGame(charName, charClass, charInitiative, charMaxHP);
 	}
 
 }

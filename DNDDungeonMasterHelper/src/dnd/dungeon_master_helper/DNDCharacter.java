@@ -9,7 +9,13 @@ import java.util.ArrayList;
  */
 public class DNDCharacter {
 	
-	private static ArrayList<DNDCharacter> characters = new ArrayList<>();
+	private static ArrayList<DNDCharacter> characters;
+	
+	static {
+		if (characters == null){
+			characters = new ArrayList<>();
+		}
+	}
 	
 	private String charName;
     private String charRace;
