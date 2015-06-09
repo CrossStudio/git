@@ -1,0 +1,28 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <RelativeLayout
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+        <Button 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnContinue"
+            android:text="Continue"
+            android:layout_alignParentTop="true"/>
+        <Button 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnNewEncounter"
+            android:text="New Encounter"
+            android:layout_below="@+id/btnContinue"/>
+        <Button 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnHelp"
+            android:text="Help"
+            android:layout_below="@+id/btnNewEncounter"/>
+    </RelativeLayout>
+</RelativeLayout>
