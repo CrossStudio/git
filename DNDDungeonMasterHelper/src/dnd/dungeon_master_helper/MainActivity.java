@@ -34,6 +34,10 @@ public class MainActivity extends Activity {
 	
 	static DNDCharacter activeCharacter;
 	
+	Spinner spinModifierType;
+	
+	Spinner spinModifierTarget;
+	
 	static void setActiveCharacter(int charactersIndex)
 	{
 		activeCharacter = dndCharacterArrayList.get(charactersIndex);
@@ -93,9 +97,8 @@ public class MainActivity extends Activity {
 		}
 		ArrayAdapter<String> modifierTargetAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrayOfModifierTargets);
 		modifierTargetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		Spinner spinModifierTarget = (Spinner) findViewById(R.id.spinModifierTarget);
+		
 		spinModifierTarget.setAdapter(modifierTargetAdapter);
-		spinModifierTarget.setOnItemSelectedListener(new ModifierTargetSelectedListener());		
 	}
 
 
@@ -120,9 +123,8 @@ public class MainActivity extends Activity {
 	private void fillModifierTypesSpinner() {
 		ArrayAdapter<String> modifierTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrayOfModifierTypes);
 		modifierTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		Spinner spinModifierType = (Spinner) findViewById(R.id.spinModifierType);
+		
 		spinModifierType.setAdapter(modifierTypeAdapter);
-		spinModifierType.setOnItemSelectedListener(new ModifierTypeSelectedListener());		
 	}
 
 	/**
@@ -134,9 +136,13 @@ public class MainActivity extends Activity {
 		tvActiveCharacter = (TextView) findViewById(R.id.tvActiveCharName);
 		btnAddModifier = (Button) findViewById(R.id.btnAddModifier);
 		etCharModifiers = (EditText) findViewById(R.id.etCharModifiers);
+		spinModifierType = (Spinner) findViewById(R.id.spinModifierType);
+		spinModifierTarget = (Spinner) findViewById(R.id.spinModifierTarget);
 		
 		btnNextCharacter.setOnClickListener(new NextCharacterClickListener());
 		btnAddModifier.setOnClickListener(new AddModifierClickListener());
+		spinModifierTarget.setOnItemSelectedListener(new ModifierTargetSelectedListener());
+		spinModifierType.setOnItemSelectedListener(new ModifierTypeSelectedListener());
 	}
 
 

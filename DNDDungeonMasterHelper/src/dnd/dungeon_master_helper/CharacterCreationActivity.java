@@ -2,6 +2,7 @@ package dnd.dungeon_master_helper;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -15,13 +16,18 @@ public class CharacterCreationActivity extends Activity {
 	EditText etMaxHP;
 	Spinner spCharClass;
 	
+	String classes[] = {"Cleric", "Fighter", "Paladin", "Ranger", "Rogue", "Warlock", "Warlord", "Wizard"};
+	
 	@Override
 	public void onCreate(Bundle savedBundle){
 		super.onCreate(savedBundle);
 		setContentView(R.layout.character_creation);
+		
 		initializeViews();
+		
+		fillCharacterClassesSpinner();
 	}
-	
+
 	/**
 	 * Assign initial values to various View variables along with listeners
 	 */
@@ -37,5 +43,13 @@ public class CharacterCreationActivity extends Activity {
 		btnProceedToGame.setOnClickListener(new ProceedToGameListener());
 		
 		spCharClass.setOnItemSelectedListener(new CharClassSelectedListener());
+	}
+	
+	/**
+	 * Sets the values of spinner items of character classes spinner
+	 */
+	private void fillCharacterClassesSpinner() {
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, classes);
+		spCharClass.setAdapter(adapter);
 	}
 }
