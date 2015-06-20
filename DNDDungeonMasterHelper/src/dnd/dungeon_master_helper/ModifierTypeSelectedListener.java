@@ -10,7 +10,7 @@ public class ModifierTypeSelectedListener implements OnItemSelectedListener {
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
 		// TODO Auto-generated method stub
-		MainActivity.modifierToAdd[0] = MainActivity.arrayOfModifierTypes[position];
+		MainActivity.modifierToAdd[1] = MainActivity.arrayOfModifierTypes[position];
 	}
 
 	@Override

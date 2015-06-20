@@ -47,6 +47,7 @@ public class NextCharacterClickListener implements OnClickListener {
 			MainActivity.setActiveCharacter(0);
 		}
 		MainActivity.tvActiveCharacter.setText("Active Character: " + MainActivity.activeCharacter.getCharName());
+		MainActivity.loadActiveCharacterModifiers();
 	}
 
 

@@ -47,6 +47,13 @@
         android:gravity="center"
         android:layout_below="@+id/tvActiveCharName">
 
+        <EditText 
+            android:id="@+id/etModifierValue"
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:inputType="numberSigned"
+            android:textSize="6pt"/>
         <Spinner
             android:id="@+id/spinModifierType"
             android:layout_width="wrap_content"
@@ -63,7 +70,7 @@
    	 	    android:layout_width="wrap_content"
    	 	    android:layout_height="wrap_content"
    	 	    android:layout_weight="1"
-   	 	    android:text="Add Mod"/>
+   	 	    android:text="Add"/>
 
     </LinearLayout>
     

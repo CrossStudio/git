@@ -47,6 +47,8 @@ public class DNDCharacter {
     private int charRefModifier = 0;
     private int charWillModifier = 0;
 
+    private ArrayList<String> listOfAppliedModifiers = new ArrayList<>();
+    
     /**
      * Basic constructor of the DNDCharacter
      * @param name - character's name
@@ -175,4 +177,12 @@ public class DNDCharacter {
     public void setCharOngoingDamage(int charOngoingDamage) {
 	        this.charOngoingDamage = charOngoingDamage;
 	    }
+    
+    /**
+     * Basic getter for a list of applied modifiers
+     * @return list of applied modifiers
+     */
+    public ArrayList<String> getListOfAppliedModifiers(){
+    	return listOfAppliedModifiers;
+    }
 }
