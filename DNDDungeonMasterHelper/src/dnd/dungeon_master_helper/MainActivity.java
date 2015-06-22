@@ -1,8 +1,6 @@
 package dnd.dungeon_master_helper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -32,8 +30,6 @@ public class MainActivity extends Activity {
 	
 	static TextView tvActiveCharacter;
 	
-	static EditText etModifierValue;
-	
 	static EditText etCharModifiers;
 	
 	static DNDCharacter activeCharacter;
@@ -51,7 +47,7 @@ public class MainActivity extends Activity {
 	
 	static String[] arrayOfModifierTargets;
 	
-	static String[] modifierToAdd = new String[4];
+	static String[] modifierToAdd = new String[3];
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +63,6 @@ public class MainActivity extends Activity {
 		arrayOfModifierTargets = new String[dndCharacterArrayList.size()];
 		LayoutInflater inflater = getLayoutInflater();
 		
-		sortCharactersByInitiative();
-		
 		fillInitiativeOrderLine(inflater);
 		
 		fillModifierTypesSpinner();
@@ -81,33 +75,16 @@ public class MainActivity extends Activity {
 		{
 			activeCharacter = dndCharacterArrayList.get(0);
 			tvActiveCharacter.setText("Active Character: " + activeCharacter.getCharName());
-			loadActiveCharacterModifiers();
 		}
 	}
 	
-	/**
-	 * Sorts characters within character list by their encounter initiative
-	 */
-	private void sortCharactersByInitiative() {
-		Collections.sort(dndCharacterArrayList, new DNDCharacterInitiativeComparator());
-	}
-	/**
-	 * Fills EditText responsible for modifier handling with applied modifier of the active character
-	 */
-	static void loadActiveCharacterModifiers() {
-		etCharModifiers.setText("");
-		for (String appliedModifier : activeCharacter.getListOfAppliedModifiers()){
-			etCharModifiers.setText(etCharModifiers.getText() + appliedModifier  + "\n");
-		}
-	}
 	/**
 	 * Fills String array of modifier with initial values
 	 */
 	private void fillModifierStringCombo() {
 		modifierToAdd[0] = " ";
-		modifierToAdd[1] = " ";
-		modifierToAdd[2] = " vs ";
-		modifierToAdd[3] = " ";		
+		modifierToAdd[1] = " vs ";
+		modifierToAdd[2] = " ";		
 	}
 
 	/**
@@ -130,18 +107,13 @@ public class MainActivity extends Activity {
 	 * @param inflater
 	 */
 	private void fillInitiativeOrderLine(LayoutInflater inflater) {
-		/**
-		 * Check whether there are no characters in the initiative line yet (there have to be only one object - initiative line nametag)
-		 */
-		if (llInitiativeOrder.getChildCount() == 1){
-			for (DNDCharacter character : dndCharacterArrayList)
-			{
-				View inflatedInitOrderCharName = inflater.inflate(R.layout.init_order_char_name, null, false);
-				TextView tvInitOrderCharName = (TextView) inflatedInitOrderCharName.findViewById(R.id.tvInitOrderCharName);
-				tvInitOrderCharName.setText(character.getCharName());
-				llInitiativeOrder.addView(inflatedInitOrderCharName);
-			}
-		}
+		for (DNDCharacter character : dndCharacterArrayList)
+		{
+			View inflatedInitOrderCharName = inflater.inflate(R.layout.init_order_char_name, null, false);
+			TextView tvInitOrderCharName = (TextView) inflatedInitOrderCharName.findViewById(R.id.tvInitOrderCharName);
+			tvInitOrderCharName.setText(character.getCharName());
+			llInitiativeOrder.addView(inflatedInitOrderCharName);
+		}		
 	}
 
 
@@ -164,7 +136,6 @@ public class MainActivity extends Activity {
 		tvActiveCharacter = (TextView) findViewById(R.id.tvActiveCharName);
 		btnAddModifier = (Button) findViewById(R.id.btnAddModifier);
 		etCharModifiers = (EditText) findViewById(R.id.etCharModifiers);
-		etModifierValue = (EditText) findViewById(R.id.etModifierValue);
 		spinModifierType = (Spinner) findViewById(R.id.spinModifierType);
 		spinModifierTarget = (Spinner) findViewById(R.id.spinModifierTarget);
 		

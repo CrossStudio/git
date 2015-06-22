@@ -97,22 +97,6 @@ public class DNDCharacter {
     }
 
     /**
-     * Basic getter for character's encounter initiative
-     * @return character's encounter initiative
-     */
-    public int getCharInitiativeEncounter(){
-    	return charInitiativeEncounter;
-    }
-    
-    /**
-     * Basic setter of character's encounter initiative
-     * @param initiative - character's encounter initiative to be set
-     */
-    public void setCharInitiativeEncounter(int initiative){
-    	this.charInitiativeEncounter = initiative;
-    }
-    
-    /**
      * Basic getter for character's maximum Health Points
      * @return character's maximum Health Points
      */
