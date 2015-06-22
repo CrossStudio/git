@@ -1,11 +1,13 @@
 package dnd.dungeon_master_helper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 import android.app.Activity;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,6 +40,8 @@ public class MainActivity extends Activity {
 	
 	static DNDCharacter activeCharacter;
 	
+	static DBHelper dbHelper;
+	
 	Spinner spinModifierType;
 	
 	Spinner spinModifierTarget;
@@ -60,9 +64,13 @@ public class MainActivity extends Activity {
 		
 		initializeViews();
 		
-		DNDCharacter.addNewCharacterToGame("Father Tuck", "Cleric", 16, 28);
-		DNDCharacter.addNewCharacterToGame("Lol1", "Paladin", 8, 32);
-		DNDCharacter.addNewCharacterToGame("Leroy", "Fighter", 12, 36);
+		//DNDCharacter.addNewCharacterToGame("Father Tuck", "Cleric", 16, 28);
+		//DNDCharacter.addNewCharacterToGame("Lol1", "Paladin", 8, 32);
+		//DNDCharacter.addNewCharacterToGame("Leroy", "Fighter", 12, 36);
+		
+		dbHelper = new DBHelper(this);
+		
+		loadCharactersFromDB();
 		
 		arrayOfModifierTargets = new String[dndCharacterArrayList.size()];
 		LayoutInflater inflater = getLayoutInflater();
@@ -83,10 +91,25 @@ public class MainActivity extends Activity {
 			tvActiveCharacter.setText("Active Character: " + activeCharacter.getCharName());
 			loadActiveCharacterModifiers();
 		}
+		
+		
 	}
 	
+	private void loadCharactersFromDB() {
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		Cursor cursor = db.query("characters",null,null,null,null,null,null);
+		
+		if (cursor.moveToFirst()){
+			int idColIndex = cursor.getColumnIndex("id");
+			int idNameIndex = cursor.getColumnIndex("name");
+			do {
+				Log.d("myLog", "ID = " + cursor.getInt(idColIndex) + ", name = " + cursor.getString(idNameIndex));
+			}
+			while (cursor.moveToNext());
+		}
+	}
+
 	/**
-<<<<<<< HEAD
 	 * Sorts characters within character list by their encounter initiative
 	 */
 	private void sortCharactersByInitiative() {

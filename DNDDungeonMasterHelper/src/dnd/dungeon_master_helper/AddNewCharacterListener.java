@@ -1,7 +1,9 @@
 package dnd.dungeon_master_helper;
 
 import android.app.Activity;
-import android.sax.StartElementListener;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -23,7 +25,7 @@ public class AddNewCharacterListener implements OnClickListener {
 		
 		addNewCharacterToGame(charName, charClass, charInitiative, charMaxHP);
 		Toast.makeText(activity, "New Character created", Toast.LENGTH_SHORT).show();
-		
+		saveNewCharacterToDB(charName);
 	}
 
 	/**
@@ -37,4 +39,15 @@ public class AddNewCharacterListener implements OnClickListener {
 		DNDCharacter.addNewCharacterToGame(charName, charClass, charInitiative, charMaxHP);
 	}
 
+	/**
+	 * Adds newly created character to the database
+	 */
+	private void saveNewCharacterToDB(String charName) {
+		ContentValues cv = new ContentValues();
+		
+		cv.put("name", charName);
+		SQLiteDatabase db = MainActivity.dbHelper.getWritableDatabase();
+		long rowID = db.insert("characters", null, cv);
+		Log.d("myLog", "Row number: " + rowID);
+	}
 }
