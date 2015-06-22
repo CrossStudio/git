@@ -47,6 +47,8 @@ public class DNDCharacter {
     private int charRefModifier = 0;
     private int charWillModifier = 0;
 
+    private ArrayList<String> listOfAppliedModifiers = new ArrayList<>();
+    
     /**
      * Basic constructor of the DNDCharacter
      * @param name - character's name
@@ -96,6 +98,22 @@ public class DNDCharacter {
         this.charName = charName;
     }
 
+    /**
+     * Basic getter for character's encounter initiative
+     * @return character's encounter initiative
+     */
+    public int getCharInitiativeEncounter(){
+    	return charInitiativeEncounter;
+    }
+    
+    /**
+     * Basic setter of character's encounter initiative
+     * @param initiative - character's encounter initiative to be set
+     */
+    public void setCharInitiativeEncounter(int initiative){
+    	this.charInitiativeEncounter = initiative;
+    }
+    
     /**
      * Basic getter for character's maximum Health Points
      * @return character's maximum Health Points
@@ -175,4 +193,12 @@ public class DNDCharacter {
     public void setCharOngoingDamage(int charOngoingDamage) {
 	        this.charOngoingDamage = charOngoingDamage;
 	    }
+    
+    /**
+     * Basic getter for a list of applied modifiers
+     * @return list of applied modifiers
+     */
+    public ArrayList<String> getListOfAppliedModifiers(){
+    	return listOfAppliedModifiers;
+    }
 }
