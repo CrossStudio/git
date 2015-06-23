@@ -12,7 +12,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL("create table characters (id integer primary key autoincrement, name text, modifiers text);");
+		db.execSQL("create table characters (id integer primary key autoincrement, class text, name text, maxhp integer, currenthp integer, modifiers text);");
 	}
 
 	@Override

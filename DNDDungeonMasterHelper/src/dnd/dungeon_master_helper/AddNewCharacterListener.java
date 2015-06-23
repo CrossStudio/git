@@ -13,6 +13,7 @@ import android.widget.Toast;
 public class AddNewCharacterListener implements OnClickListener {
 
 	Activity activity;
+	DBHelper dbHelper;
 	
 	@Override
 	public void onClick(View v) {
@@ -25,7 +26,6 @@ public class AddNewCharacterListener implements OnClickListener {
 		
 		addNewCharacterToGame(charName, charClass, charInitiative, charMaxHP);
 		Toast.makeText(activity, "New Character created", Toast.LENGTH_SHORT).show();
-		saveNewCharacterToDB(charName);
 	}
 
 	/**
@@ -36,17 +36,28 @@ public class AddNewCharacterListener implements OnClickListener {
 	 * @param charMaxHP - maximum health points of the character
 	 */
 	private void addNewCharacterToGame(String charName, String charClass, int charInitiative, int charMaxHP) {
-		DNDCharacter.addNewCharacterToGame(charName, charClass, charInitiative, charMaxHP);
+		DNDCharacter newCharacter = DNDCharacter.addNewCharacterToGame(charName, charClass, charInitiative, charMaxHP);
+		saveNewCharacterToDB(newCharacter);
 	}
 
 	/**
 	 * Adds newly created character to the database
 	 */
-	private void saveNewCharacterToDB(String charName) {
+	private void saveNewCharacterToDB(DNDCharacter character) {
 		ContentValues cv = new ContentValues();
 		
-		cv.put("name", charName);
-		SQLiteDatabase db = MainActivity.dbHelper.getWritableDatabase();
+		cv.put("class", character.getCharClass());
+		cv.put("name", character.getCharName());
+		cv.put("maxhp", character.getCharHPMax());
+		cv.put("currenthp",character.getCharHPCurrent());
+		String modifiers = "";
+		for (String modifier : character.getListOfAppliedModifiers()){
+			modifiers += modifier + "/n";
+		}
+		cv.put("modifiers", modifiers);
+		
+		dbHelper = new DBHelper(activity);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		long rowID = db.insert("characters", null, cv);
 		Log.d("myLog", "Row number: " + rowID);
 	}

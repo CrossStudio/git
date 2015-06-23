@@ -64,10 +64,6 @@ public class MainActivity extends Activity {
 		
 		initializeViews();
 		
-		//DNDCharacter.addNewCharacterToGame("Father Tuck", "Cleric", 16, 28);
-		//DNDCharacter.addNewCharacterToGame("Lol1", "Paladin", 8, 32);
-		//DNDCharacter.addNewCharacterToGame("Leroy", "Fighter", 12, 36);
-		
 		dbHelper = new DBHelper(this);
 		
 		loadCharactersFromDB();

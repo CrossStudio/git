@@ -54,12 +54,30 @@ public class DNDCharacter {
      * @param name - character's name
      * @param race - character's race
      * @param charClass - character's class
+     * @param charMaxHP - character's maximum health points
      */
     private DNDCharacter(String name, String charClass, int charInitiativeEncounter, int charMaxHP){
     	this.charName = name;
     	this.charClass = charClass;
     	this.charInitiativeEncounter = charInitiativeEncounter;
     	this.charHPMax = charMaxHP;
+    	this.charHPCurrent = this.charHPMax;
+    }
+    
+    /**
+     * Constructor to be used to load the character from the database
+     * @param name
+     * @param charClass
+     * @param charInitiativeEncounter
+     * @param charMaxHP
+     * @param charCurrentHP
+     */
+    private DNDCharacter(String name, String charClass, int charInitiativeEncounter, int charMaxHP, int charCurrentHP){
+    	this.charName = name;
+    	this.charClass = charClass;
+    	this.charInitiativeEncounter = charInitiativeEncounter;
+    	this.charHPMax = charMaxHP;
+    	this.charHPCurrent = charCurrentHP;
     }
     
     /**
@@ -69,9 +87,12 @@ public class DNDCharacter {
      * @param race - character's race
      * @param charClass - character's class
      * @param listOfChars - list of characters to get the newly created character
+     * @return - newly created character
      */
-    public static void addNewCharacterToGame(String name, String charClass, int charInitiativeEncounter, int charMaxHP){
-    	characters.add(new DNDCharacter(name, charClass, charInitiativeEncounter, charMaxHP));
+    public static DNDCharacter addNewCharacterToGame(String name, String charClass, int charInitiativeEncounter, int charMaxHP){
+    	DNDCharacter newCharacter = new DNDCharacter(name, charClass, charInitiativeEncounter, charMaxHP);
+    	characters.add(newCharacter);
+    	return newCharacter;
     }
 
     /**
@@ -80,6 +101,14 @@ public class DNDCharacter {
      */
     public static ArrayList<DNDCharacter> getCharacters() {
     	return characters;
+    }
+    
+    /**
+     * Basic getter for character's class
+     * @return character's class
+     */
+    public String getCharClass(){
+    	return this.charClass;
     }
     
     /**
