@@ -71,17 +71,19 @@ public class DNDCharacter {
      * @param charInitiativeEncounter
      * @param charMaxHP
      * @param charCurrentHP
+     * @param modifiers
      */
-    private DNDCharacter(String name, String charClass, int charInitiativeEncounter, int charMaxHP, int charCurrentHP){
+    private DNDCharacter(String name, String charClass, int charMaxHP, int charCurrentHP, ArrayList<String> modifiers){
     	this.charName = name;
     	this.charClass = charClass;
-    	this.charInitiativeEncounter = charInitiativeEncounter;
+    	this.charInitiativeEncounter = 0;
     	this.charHPMax = charMaxHP;
     	this.charHPCurrent = charCurrentHP;
+    	this.listOfAppliedModifiers = modifiers;
     }
     
     /**
-     * Method that adds one new character with three passed parameters to the game
+     * Method that adds one new character with four passed parameters to the game
      * by adding it to the list of characters that is also passed to it
      * @param name - character's name
      * @param race - character's race
@@ -91,6 +93,23 @@ public class DNDCharacter {
      */
     public static DNDCharacter addNewCharacterToGame(String name, String charClass, int charInitiativeEncounter, int charMaxHP){
     	DNDCharacter newCharacter = new DNDCharacter(name, charClass, charInitiativeEncounter, charMaxHP);
+    	characters.add(newCharacter);
+    	return newCharacter;
+    }
+    
+    /**
+     * Method that adds one new character with 6 passed parameters to the game 
+     * @param name
+     * @param charClass
+     * @param charInitiativeEncounter
+     * @param charMaxHP
+     * @param charCurrentHP
+     * @param modifiers
+     * @return - newly created character
+     */
+    public static DNDCharacter addNewCharacterToGame(String name, String charClass, int charMaxHP, int charCurrentHP,
+    		ArrayList<String> modifiers){
+    	DNDCharacter newCharacter = new DNDCharacter(name, charClass, charMaxHP, charCurrentHP, modifiers);
     	characters.add(newCharacter);
     	return newCharacter;
     }

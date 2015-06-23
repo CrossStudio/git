@@ -52,7 +52,12 @@ public class AddNewCharacterListener implements OnClickListener {
 		cv.put("currenthp",character.getCharHPCurrent());
 		String modifiers = "";
 		for (String modifier : character.getListOfAppliedModifiers()){
-			modifiers += modifier + "/n";
+			if (character.getListOfAppliedModifiers().indexOf(modifier) == 0){
+				modifiers += modifier;
+			}
+			else {
+				modifiers += "\n" + modifier;
+			}
 		}
 		cv.put("modifiers", modifiers);
 		

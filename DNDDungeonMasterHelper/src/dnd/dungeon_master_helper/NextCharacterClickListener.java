@@ -19,17 +19,20 @@ public class NextCharacterClickListener implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		
-		for (DNDCharacter character : charactersList)
-		{
-			if (character.equals(MainActivity.activeCharacter))
-			{
-				nextCharacter(character);
-				break;
-			}
-		}
-		
+		DNDCharacter activeCharacter = MainActivity.activeCharacter;
+		saveActiveCharacterModifiers(activeCharacter);
+		nextCharacter(activeCharacter);	
 	}
 	
+	/**
+	 * Saves modifiers of currently active character
+	 * @param activeCharacter
+	 */
+	private void saveActiveCharacterModifiers(DNDCharacter activeCharacter) {
+		activeCharacter.getListOfAppliedModifiers().clear();
+		activeCharacter.getListOfAppliedModifiers().add(MainActivity.etCharModifiers.getText().toString());
+	}
+
 	/**
 	 * Sets currently active character equal to the next character with regards to the character sent to the method
 	 * Also changes text in the "Active Character" TextView

@@ -12,8 +12,7 @@ public class AddModifierClickListener implements OnClickListener {
 		{
 			newModifier += modifierPart;
 		}
-		MainActivity.etCharModifiers.setText(MainActivity.etCharModifiers.getText() + newModifier + "\n");
-		MainActivity.activeCharacter.getListOfAppliedModifiers().add(newModifier);
+		MainActivity.etCharModifiers.setText(MainActivity.etCharModifiers.getText() + "\n" + newModifier);
 	}
 
 }

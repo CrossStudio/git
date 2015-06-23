@@ -40,8 +40,6 @@ public class MainActivity extends Activity {
 	
 	static DNDCharacter activeCharacter;
 	
-	static DBHelper dbHelper;
-	
 	Spinner spinModifierType;
 	
 	Spinner spinModifierTarget;
@@ -64,14 +62,8 @@ public class MainActivity extends Activity {
 		
 		initializeViews();
 		
-		dbHelper = new DBHelper(this);
-		
-		loadCharactersFromDB();
-		
 		arrayOfModifierTargets = new String[dndCharacterArrayList.size()];
 		LayoutInflater inflater = getLayoutInflater();
-		
-		sortCharactersByInitiative();
 		
 		fillInitiativeOrderLine(inflater);
 		
@@ -91,20 +83,12 @@ public class MainActivity extends Activity {
 		
 	}
 	
-	private void loadCharactersFromDB() {
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		Cursor cursor = db.query("characters",null,null,null,null,null,null);
-		
-		if (cursor.moveToFirst()){
-			int idColIndex = cursor.getColumnIndex("id");
-			int idNameIndex = cursor.getColumnIndex("name");
-			do {
-				Log.d("myLog", "ID = " + cursor.getInt(idColIndex) + ", name = " + cursor.getString(idNameIndex));
-			}
-			while (cursor.moveToNext());
-		}
+	@Override
+	protected void onResume(){
+		super.onResume();
+		sortCharactersByInitiative();
 	}
-
+	
 	/**
 	 * Sorts characters within character list by their encounter initiative
 	 */
@@ -117,7 +101,14 @@ public class MainActivity extends Activity {
 	static void loadActiveCharacterModifiers() {
 		etCharModifiers.setText("");
 		for (String appliedModifier : activeCharacter.getListOfAppliedModifiers()){
-			etCharModifiers.setText(etCharModifiers.getText() + appliedModifier  + "\n");
+			String longStringOfModifiers = "";
+			if (activeCharacter.getListOfAppliedModifiers().indexOf(appliedModifier)==0){
+				longStringOfModifiers += appliedModifier;
+			}
+			else {
+				longStringOfModifiers += "\n" + appliedModifier;
+			}
+			etCharModifiers.setText(longStringOfModifiers);
 		}
 	}
 
@@ -213,5 +204,10 @@ public class MainActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	protected void onPause(){
+		super.onPause();
 	}
 }
