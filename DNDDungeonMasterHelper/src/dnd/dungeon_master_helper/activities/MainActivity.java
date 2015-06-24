@@ -1,8 +1,18 @@
-package dnd.dungeon_master_helper;
+package dnd.dungeon_master_helper.activities;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
+import dnd.dungeon_master_helper.DNDCharacter;
+import dnd.dungeon_master_helper.DNDCharacterInitiativeComparator;
+import dnd.dungeon_master_helper.R;
+import dnd.dungeon_master_helper.R.id;
+import dnd.dungeon_master_helper.R.layout;
+import dnd.dungeon_master_helper.R.menu;
+import dnd.dungeon_master_helper.listeners.AddModifierClickListener;
+import dnd.dungeon_master_helper.listeners.ModifierTargetSelectedListener;
+import dnd.dungeon_master_helper.listeners.ModifierTypeSelectedListener;
+import dnd.dungeon_master_helper.listeners.NextCharacterClickListener;
 import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,7 +34,7 @@ public class MainActivity extends Activity {
 	/**
 	 * List of all the characters (player controlled, NPCs and monsters) that are currently in the game
 	 */
-	static ArrayList<DNDCharacter> dndCharacterArrayList = DNDCharacter.getCharacters();
+	public static ArrayList<DNDCharacter> dndCharacterArrayList = DNDCharacter.getCharacters();
 	
 	static LinearLayout llInitiativeOrder;
 	
@@ -32,28 +42,28 @@ public class MainActivity extends Activity {
 	
 	static Button btnAddModifier;
 	
-	static TextView tvActiveCharacter;
+	public static TextView tvActiveCharacter;
 	
-	static EditText etModifierValue;
+	public static EditText etModifierValue;
 	
-	static EditText etCharModifiers;
+	public static EditText etCharModifiers;
 	
-	static DNDCharacter activeCharacter;
+	public static DNDCharacter activeCharacter;
 	
 	Spinner spinModifierType;
 	
 	Spinner spinModifierTarget;
 	
-	static void setActiveCharacter(int charactersIndex)
+	public static void setActiveCharacter(int charactersIndex)
 	{
 		activeCharacter = dndCharacterArrayList.get(charactersIndex);
 	}
 	
-	static String[] arrayOfModifierTypes = {"Attack", "AC", "Fortitude", "Reflex", "Will", "Damage"};
+	public static String[] arrayOfModifierTypes = {"Attack", "AC", "Fortitude", "Reflex", "Will", "Damage"};
 	
-	static String[] arrayOfModifierTargets;
+	public static String[] arrayOfModifierTargets;
 	
-	static String[] modifierToAdd = new String[4];
+	public static String[] modifierToAdd = new String[4];
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +108,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Fills EditText responsible for modifier handling with applied modifier of the active character
 	 */
-	static void loadActiveCharacterModifiers() {
+	public static void loadActiveCharacterModifiers() {
 		etCharModifiers.setText("");
 		for (String appliedModifier : activeCharacter.getListOfAppliedModifiers()){
 			String longStringOfModifiers = "";

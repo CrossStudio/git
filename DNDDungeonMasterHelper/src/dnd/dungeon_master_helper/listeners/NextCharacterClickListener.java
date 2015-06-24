@@ -1,7 +1,9 @@
-package dnd.dungeon_master_helper;
+package dnd.dungeon_master_helper.listeners;
 
 import java.util.ArrayList;
 
+import dnd.dungeon_master_helper.DNDCharacter;
+import dnd.dungeon_master_helper.activities.MainActivity;
 import android.app.Activity;
 import android.view.View;
 import android.view.View.OnClickListener;
