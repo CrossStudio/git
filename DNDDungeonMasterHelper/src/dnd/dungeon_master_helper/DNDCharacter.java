@@ -76,7 +76,7 @@ public class DNDCharacter {
     private DNDCharacter(String name, String charClass, int charMaxHP, int charCurrentHP, ArrayList<String> modifiers){
     	this.charName = name;
     	this.charClass = charClass;
-    	this.charInitiativeEncounter = 0;
+    	this.charInitiativeEncounter = (int) (Math.random() * 10);
     	this.charHPMax = charMaxHP;
     	this.charHPCurrent = charCurrentHP;
     	this.listOfAppliedModifiers = modifiers;

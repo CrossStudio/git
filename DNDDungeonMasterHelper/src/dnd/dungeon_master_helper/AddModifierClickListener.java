@@ -7,12 +7,17 @@ public class AddModifierClickListener implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		String newModifier = MainActivity.etModifierValue.getText().toString();
+		String newModifier = MainActivity.etModifierValue.getText().toString() + " ";
 		for (String modifierPart : MainActivity.modifierToAdd)
 		{
 			newModifier += modifierPart;
 		}
-		MainActivity.etCharModifiers.setText(MainActivity.etCharModifiers.getText() + "\n" + newModifier);
+		if (MainActivity.etCharModifiers.getText().toString().equals("")){
+			MainActivity.etCharModifiers.setText(newModifier);
+		}
+		else {
+			MainActivity.etCharModifiers.setText(MainActivity.etCharModifiers.getText() + "\n" + newModifier);
+		}
 	}
 
 }

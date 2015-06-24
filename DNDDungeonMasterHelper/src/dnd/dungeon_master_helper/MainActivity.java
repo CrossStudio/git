@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -62,10 +63,7 @@ public class MainActivity extends Activity {
 		
 		initializeViews();
 		
-		arrayOfModifierTargets = new String[dndCharacterArrayList.size()];
-		LayoutInflater inflater = getLayoutInflater();
-		
-		fillInitiativeOrderLine(inflater);
+		arrayOfModifierTargets = new String[dndCharacterArrayList.size()];	
 		
 		fillModifierTypesSpinner();
 		
@@ -87,6 +85,9 @@ public class MainActivity extends Activity {
 	protected void onResume(){
 		super.onResume();
 		sortCharactersByInitiative();
+		LayoutInflater inflater = getLayoutInflater();
+		fillInitiativeOrderLine(inflater);
+		
 	}
 	
 	/**
@@ -209,5 +210,41 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onPause(){
 		super.onPause();
+		saveCharactersToDB();
+	}
+
+	/**
+	 * Saves all the characters with their current parameters to the database
+	 */
+	private void saveCharactersToDB() {
+		DBHelper dbHelper = new DBHelper(this);
+		
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		
+		ContentValues cv = new ContentValues();
+		
+		for (DNDCharacter character : dndCharacterArrayList){
+			
+			cv.put("class", character.getCharClass());
+			cv.put("name", character.getCharName());
+			cv.put("maxhp", character.getCharHPMax());
+			cv.put("currenthp",character.getCharHPCurrent());
+			String modifiers = "";
+			for (String modifier : character.getListOfAppliedModifiers()){
+				if (character.getListOfAppliedModifiers().indexOf(modifier) == 0){
+					modifiers += modifier;
+				}
+				else {
+					modifiers += "\n" + modifier;
+				}
+			}
+			cv.put("modifiers", modifiers);
+			
+			int updCount = db.update("characters", cv, "name = ?", new String[] {character.getCharName()});
+			if (updCount == 0){
+				long rowID = db.insert("characters", null, cv);
+				Log.d("myLog", "Row number: " + rowID);
+			}
+		}
 	}
 }
