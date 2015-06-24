@@ -3,6 +3,7 @@ package dnd.dungeon_master_helper.activities;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import dnd.dungeon_master_helper.DBHelper;
 import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.DNDCharacterInitiativeComparator;
 import dnd.dungeon_master_helper.R;
