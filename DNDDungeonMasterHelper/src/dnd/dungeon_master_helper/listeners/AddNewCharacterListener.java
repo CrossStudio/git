@@ -1,5 +1,9 @@
-package dnd.dungeon_master_helper;
+package dnd.dungeon_master_helper.listeners;
 
+import dnd.dungeon_master_helper.DBHelper;
+import dnd.dungeon_master_helper.DNDCharacter;
+import dnd.dungeon_master_helper.R;
+import dnd.dungeon_master_helper.R.id;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;

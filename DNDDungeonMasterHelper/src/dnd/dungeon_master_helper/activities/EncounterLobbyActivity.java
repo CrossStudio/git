@@ -1,9 +1,16 @@
-package dnd.dungeon_master_helper;
+package dnd.dungeon_master_helper.activities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import dnd.dungeon_master_helper.DBHelper;
+import dnd.dungeon_master_helper.DNDCharacter;
+import dnd.dungeon_master_helper.R;
+import dnd.dungeon_master_helper.R.id;
+import dnd.dungeon_master_helper.R.layout;
+import dnd.dungeon_master_helper.listeners.GoToCharacterCreationListener;
+import dnd.dungeon_master_helper.listeners.GoToMainActivityClickListener;
 import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -32,7 +39,7 @@ public class EncounterLobbyActivity extends Activity {
 		dbHelper = new DBHelper(this);
 		
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		
+		Log.d("myLog", "DB version = " + db.getVersion());
 		Cursor cursor = db.query("characters",null,null,null,null,null,null);
 		
 		if (cursor.moveToFirst()){
@@ -46,7 +53,9 @@ public class EncounterLobbyActivity extends Activity {
 				Log.d("myLog", "ID = " + cursor.getInt(idColIndex) + ", name = " + cursor.getString(idNameIndex));
 				ArrayList<String> modifiers = new ArrayList<>();
 				String longStringOfModifiers = cursor.getString(idModifiersIndex);
-				modifiers.addAll(Arrays.asList(longStringOfModifiers.split(" \\n")));
+				if (longStringOfModifiers != null){
+					modifiers.addAll(Arrays.asList(longStringOfModifiers.split(" \\n")));
+				}
 				Log.d("myLog", "Modifiers: " + modifiers);
 				DNDCharacter.addNewCharacterToGame(cursor.getString(idNameIndex), cursor.getString(idClassIndex), cursor.getInt(idMaxHPIndex), 
 						cursor.getInt(idCurrentHPIndex), modifiers);

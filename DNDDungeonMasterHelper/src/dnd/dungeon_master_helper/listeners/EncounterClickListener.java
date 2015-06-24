@@ -1,13 +1,14 @@
-package dnd.dungeon_master_helper;
+package dnd.dungeon_master_helper.listeners;
 
+import dnd.dungeon_master_helper.activities.EncounterLobbyActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class ContinueClickListener implements OnClickListener {
+public class EncounterClickListener implements OnClickListener {
 
-	Activity activity;
+Activity activity;
 	
 	@Override
 	public void onClick(View v) {

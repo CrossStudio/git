@@ -1,11 +1,12 @@
-package dnd.dungeon_master_helper;
+package dnd.dungeon_master_helper.listeners;
 
+import dnd.dungeon_master_helper.activities.MainActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class GoToCharacterCreationListener implements OnClickListener {
+public class ProceedToGameListener implements OnClickListener {
 
 	Activity activity;
 	
@@ -13,7 +14,7 @@ public class GoToCharacterCreationListener implements OnClickListener {
 	public void onClick(View v) {
 		activity = (Activity) v.getContext();
 		
-		Intent intent = new Intent(activity, CharacterCreationActivity.class);
+		Intent intent = new Intent(activity, MainActivity.class);
 		activity.startActivity(intent);
 	}
 

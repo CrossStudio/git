@@ -1,5 +1,6 @@
-package dnd.dungeon_master_helper;
+package dnd.dungeon_master_helper.listeners;
 
+import dnd.dungeon_master_helper.activities.MainActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 

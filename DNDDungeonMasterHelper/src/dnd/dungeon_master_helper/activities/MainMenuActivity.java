@@ -1,5 +1,11 @@
-package dnd.dungeon_master_helper;
+package dnd.dungeon_master_helper.activities;
 
+import dnd.dungeon_master_helper.R;
+import dnd.dungeon_master_helper.R.id;
+import dnd.dungeon_master_helper.R.layout;
+import dnd.dungeon_master_helper.listeners.ContinueClickListener;
+import dnd.dungeon_master_helper.listeners.EncounterClickListener;
+import dnd.dungeon_master_helper.listeners.HelpClickListener;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Button;
