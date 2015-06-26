@@ -2,26 +2,28 @@ package dnd.dungeon_master_helper.activities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-import dnd.dungeon_master_helper.DBHelper;
-import dnd.dungeon_master_helper.DNDCharacter;
-import dnd.dungeon_master_helper.R;
-import dnd.dungeon_master_helper.R.id;
-import dnd.dungeon_master_helper.R.layout;
-import dnd.dungeon_master_helper.listeners.GoToCharacterCreationListener;
-import dnd.dungeon_master_helper.listeners.GoToMainActivityClickListener;
 import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ListView;
+import dnd.dungeon_master_helper.DBHelper;
+import dnd.dungeon_master_helper.DNDCharacter;
+import dnd.dungeon_master_helper.R;
+import dnd.dungeon_master_helper.listeners.GoToCharacterCreationListener;
+import dnd.dungeon_master_helper.listeners.GoToMainActivityClickListener;
 
 public class EncounterLobbyActivity extends Activity {
 
 	Button btnAddCharacter;
 	Button btnStartEncounter;
+	
+	ListView lvAvailableCharacters;
+	ListView lvSelectedCharacters;
+	
 	
 	DBHelper dbHelper;
 	
@@ -29,13 +31,16 @@ public class EncounterLobbyActivity extends Activity {
 	protected void onCreate(Bundle savedBundle){
 		super.onCreate(savedBundle);
 		setContentView(R.layout.encounter_lobby);
-		DNDCharacter.getCharacters().clear();
-		initializeViews();
 		
 		loadCharactersFromDB();
+		
+		initializeViews();
+		
 	}
 
 	private void loadCharactersFromDB() {
+		DNDCharacter.getCharacters().clear();
+		
 		dbHelper = new DBHelper(this);
 		
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -70,5 +75,8 @@ public class EncounterLobbyActivity extends Activity {
 		
 		btnAddCharacter.setOnClickListener(new GoToCharacterCreationListener());
 		btnStartEncounter.setOnClickListener(new GoToMainActivityClickListener());
+		
+		lvAvailableCharacters = (ListView) findViewById(R.id.lvAvailableCharacters);
+		lvSelectedCharacters = (ListView) findViewById(R.id.lvSelectedCharacters);
 	}
 }

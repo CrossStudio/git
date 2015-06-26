@@ -1,18 +1,53 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    <Button 
+    android:layout_height="fill_parent" >
+
+
+    <Button
+        android:id="@+id/btnAddCharacter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/btnAddCharacter"
-        android:text="Add Character"
+        android:layout_below="@+id/lvAvailableCharacters"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="108dp"
+        android:text="Add Character" />
+
+    <TextView 
+        android:id="@+id/tvAvailableCharactersLabel"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Available characters:"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <ListView
+        android:id="@+id/lvAvailableCharacters"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/tvAvailableCharactersLabel" >
+
+    </ListView>
+    <TextView 
+        android:id="@+id/tvSelectedCharactersLabel"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Selected characters:"
+        android:layout_below="@+id/lvAvailableCharacters"
         android:layout_centerHorizontal="true"/>
-    <Button 
+
+	<ListView
+	    android:id="@+id/lvSelectedCharacters"
+	    android:layout_width="match_parent"
+	    android:layout_height="200dp"
+	    android:layout_below="@+id/tvSelectedCharactersLabel"
+	    android:layout_centerHorizontal="true" >
+
+    </ListView>
+     <Button 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btnStartEncounter"
         android:text="Start Encounter"
-        android:layout_below="@+id/btnAddCharacter"
+        android:layout_below="@+id/lvSelectedCharacters"
         android:layout_centerHorizontal="true"/>
 </RelativeLayout>
