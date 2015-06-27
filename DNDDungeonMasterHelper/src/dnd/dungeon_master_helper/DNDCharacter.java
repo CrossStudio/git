@@ -9,11 +9,15 @@ import java.util.ArrayList;
  */
 public class DNDCharacter {
 	
-	private static ArrayList<DNDCharacter> characters;
+	private static ArrayList<DNDCharacter> allCharacters;
+	private static ArrayList<DNDCharacter> selectedCharacters;
 	
 	static {
-		if (characters == null){
-			characters = new ArrayList<>();
+		if (allCharacters == null){
+			allCharacters = new ArrayList<>();
+		}
+		if (selectedCharacters == null){
+			selectedCharacters = new ArrayList<>();
 		}
 	}
 	
@@ -84,16 +88,16 @@ public class DNDCharacter {
     
     /**
      * Method that adds one new character with four passed parameters to the game
-     * by adding it to the list of characters that is also passed to it
+     * by adding it to the list of allCharacters that is also passed to it
      * @param name - character's name
      * @param race - character's race
      * @param charClass - character's class
-     * @param listOfChars - list of characters to get the newly created character
+     * @param listOfChars - list of allCharacters to get the newly created character
      * @return - newly created character
      */
     public static DNDCharacter addNewCharacterToGame(String name, String charClass, int charInitiativeEncounter, int charMaxHP){
     	DNDCharacter newCharacter = new DNDCharacter(name, charClass, charInitiativeEncounter, charMaxHP);
-    	characters.add(newCharacter);
+    	allCharacters.add(newCharacter);
     	return newCharacter;
     }
     
@@ -110,16 +114,24 @@ public class DNDCharacter {
     public static DNDCharacter addNewCharacterToGame(String name, String charClass, int charMaxHP, int charCurrentHP,
     		ArrayList<String> modifiers){
     	DNDCharacter newCharacter = new DNDCharacter(name, charClass, charMaxHP, charCurrentHP, modifiers);
-    	characters.add(newCharacter);
+    	allCharacters.add(newCharacter);
     	return newCharacter;
     }
 
     /**
-     * Basic getter of list of characters
-     * @return list of all characters in the game
+     * Basic getter of list of allCharacters
+     * @return list of all allCharacters in the game
      */
     public static ArrayList<DNDCharacter> getCharacters() {
-    	return characters;
+    	return allCharacters;
+    }
+    
+    /**
+     * Basic getter of list of selected characters
+     * @return list of selected characters in the game
+     */
+    public static ArrayList<DNDCharacter> getSelectedCharacters(){
+    	return selectedCharacters;
     }
     
     /**

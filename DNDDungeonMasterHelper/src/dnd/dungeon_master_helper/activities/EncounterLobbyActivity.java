@@ -11,6 +11,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -41,6 +45,7 @@ public class EncounterLobbyActivity extends Activity {
 		initializeViews();
 		
 		refreshAvailableCharactersList();
+		refreshSelectedCharactersList();
 	}
 
 	/**
@@ -109,6 +114,52 @@ public class EncounterLobbyActivity extends Activity {
 		
 		SimpleAdapter adapter = new SimpleAdapter(this, listCharactersDataToFillList, R.layout.available_character_item, takeDataFromKey, writeDataToKey);
 		lvAvailableCharacters.setAdapter(adapter);
+		lvAvailableCharacters.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View v, int arg2,
+					long arg3) {
+				int idCharacterClicked = lvAvailableCharacters.indexOfChild(v);
+				DNDCharacter clickedCharacter = DNDCharacter.getCharacters().get(idCharacterClicked);
+				
+				addCharacterToSelectedCharactersList(clickedCharacter);
+			}
+			
+		});
+	}
+
+	/**
+	 * Adds chosen character to the list of selected characters
+	 * @param clickedCharacter
+	 */
+	private void addCharacterToSelectedCharactersList(DNDCharacter clickedCharacter) {
+		ArrayList<DNDCharacter> selectedCharacters = DNDCharacter.getSelectedCharacters();
+		selectedCharacters.add(clickedCharacter);
+		
+		refreshSelectedCharactersList();
+	}
+	
+	/**
+	 * Fills the ListView which holds all selected characters
+	 */
+	private void refreshSelectedCharactersList(){
+		List<Map<String,String>> listCharactersDataToFillList = new ArrayList<>();
+		Map<String, String> mapCharacterData;
+		
+		String[] takeDataFromKey = {"name", "class", "current HP", "initiative"};
+		int[] writeDataToKey = {R.id.tvSelCharacterName, R.id.tvSelCharacterClass, R.id.tvSelCharacterHP, R.id.tvSelCharacterInit};
+		
+		for (DNDCharacter selectedCharacter : DNDCharacter.getSelectedCharacters()){
+			mapCharacterData = new HashMap<>();
+			mapCharacterData.put("name", selectedCharacter.getCharName());
+			mapCharacterData.put("class", "(" + selectedCharacter.getCharClass() + ")");
+			mapCharacterData.put("current HP", "HP: " + selectedCharacter.getCharHPCurrent());
+			mapCharacterData.put("initiative", "Initiative: " + selectedCharacter.getCharInitiativeEncounter());
+			listCharactersDataToFillList.add(mapCharacterData);
+		}
+		
+		SimpleAdapter adapter = new SimpleAdapter(this, listCharactersDataToFillList, R.layout.selected_character_item, takeDataFromKey, writeDataToKey);
+		lvSelectedCharacters.setAdapter(adapter);
 	}
 
 }
