@@ -19,10 +19,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import dnd.dungeon_master_helper.DBHelper;
@@ -271,5 +270,19 @@ public class EncounterLobbyActivity extends Activity {
 		
 		SimpleAdapter adapter = new SimpleAdapter(this, listCharactersDataToFillList, R.layout.selected_character_item, takeDataFromKey, writeDataToKey);
 		lvSelectedCharacters.setAdapter(adapter);
+		
+	}
+	
+	/**
+	 * Makes a copy of a corresponding character and adds it to the selected characters list
+	 * @param v - clicked view
+	 */
+	public void copyCharacterClickHandler(View v){
+		
+		LinearLayout vwParentRow = (LinearLayout)v.getParent();
+		
+		DNDCharacter clickedCharacter = DNDCharacter.getSelectedCharacters().get(lvSelectedCharacters.getPositionForView(vwParentRow));
+				
+		Log.d("myLog", "Copy button clicked " + clickedCharacter.getCharName());
 	}
 }

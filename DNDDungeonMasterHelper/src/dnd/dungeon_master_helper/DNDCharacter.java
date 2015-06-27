@@ -119,6 +119,16 @@ public class DNDCharacter {
     }
 
     /**
+     * Creates a copy of a given character with slightly changed name
+     * @param characterToBeCopied - character that will be copied
+     * @return copy of a given character
+     */
+    public static DNDCharacter copyCharacter(DNDCharacter characterToBeCopied){
+    	//TODO
+    	return characterToBeCopied;
+    }
+    
+    /**
      * Basic getter of list of allCharacters
      * @return list of all allCharacters in the game
      */
