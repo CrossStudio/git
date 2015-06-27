@@ -2,6 +2,7 @@ package dnd.dungeon_master_helper.activities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,10 +12,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -32,6 +39,7 @@ public class EncounterLobbyActivity extends Activity {
 	ListView lvAvailableCharacters;
 	ListView lvSelectedCharacters;
 	
+
 	
 	DBHelper dbHelper;
 	
@@ -42,10 +50,13 @@ public class EncounterLobbyActivity extends Activity {
 		
 		loadCharactersFromDB();
 		
+		
 		initializeViews();
 		
 		refreshAvailableCharactersList();
 		refreshSelectedCharactersList();
+		
+		
 	}
 
 	/**
@@ -99,7 +110,7 @@ public class EncounterLobbyActivity extends Activity {
 	 */
 	private void refreshAvailableCharactersList(){
 		
-		List<Map<String,String>> listCharactersDataToFillList = new ArrayList<>();
+		final List<Map<String,String>> listCharactersDataToFillList = new ArrayList<>();
 		Map<String, String> mapCharacterData;
 		
 		String[] takeDataFromKey = {"name", "class"};
@@ -112,17 +123,81 @@ public class EncounterLobbyActivity extends Activity {
 			listCharactersDataToFillList.add(mapCharacterData);
 		}
 		
-		SimpleAdapter adapter = new SimpleAdapter(this, listCharactersDataToFillList, R.layout.available_character_item, takeDataFromKey, writeDataToKey);
+		final SimpleAdapter adapter = new SimpleAdapter(this, listCharactersDataToFillList, R.layout.available_character_item, takeDataFromKey, writeDataToKey);
 		lvAvailableCharacters.setAdapter(adapter);
 		lvAvailableCharacters.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View v, int arg2,
-					long arg3) {
+			public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
 				int idCharacterClicked = lvAvailableCharacters.indexOfChild(v);
 				DNDCharacter clickedCharacter = DNDCharacter.getCharacters().get(idCharacterClicked);
 				
 				addCharacterToSelectedCharactersList(clickedCharacter);
+			}
+			
+		});
+		lvAvailableCharacters.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		lvAvailableCharacters.setMultiChoiceModeListener(new MultiChoiceModeListener(){
+			
+			private ArrayList<Integer> listOfSelectedViewsForDeletion = new ArrayList<>();
+			
+			@Override
+			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+				// Respond to clicks on the actions in the CAB
+		        switch (item.getItemId()) {
+		            case R.id.action_delete:
+		            	deleteSelectedItems();
+		                mode.finish(); // Action picked, so close the CAB
+		                return true;
+		            default:
+		                return false;
+		        }
+			}
+			/**
+			 * Removes selected items from the list of available characters as well as from the database
+			 */
+			private void deleteSelectedItems() {
+				for (int i = listOfSelectedViewsForDeletion.size() - 1; i >= 0 ; i--){
+					Collections.sort(listOfSelectedViewsForDeletion);
+					listCharactersDataToFillList.remove((int)listOfSelectedViewsForDeletion.get(i));
+					Log.d("myLog", "Item deleted " + listOfSelectedViewsForDeletion.get(i));
+				}
+				listOfSelectedViewsForDeletion.clear();
+				((SimpleAdapter) lvAvailableCharacters.getAdapter()).notifyDataSetChanged();
+			}
+
+			@Override
+			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+				MenuInflater inflater = mode.getMenuInflater();
+		        inflater.inflate(R.menu.encounter_lobby_action_bar, menu);
+		        return true;
+			}
+
+			@Override
+			public void onDestroyActionMode(ActionMode mode) {
+				for (int i=0; i < lvAvailableCharacters.getChildCount(); i++){
+					lvAvailableCharacters.getChildAt(i).setAlpha(1);
+				}
+				
+			}
+
+			@Override
+			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+				View selectedView = lvAvailableCharacters.getChildAt(position);
+				if (checked){
+					selectedView.setAlpha(0.3f);
+					listOfSelectedViewsForDeletion.add(position);
+				}
+				else {
+					selectedView.setAlpha(1);
+					listOfSelectedViewsForDeletion.remove((Object)position);
+				}
 			}
 			
 		});
@@ -161,5 +236,4 @@ public class EncounterLobbyActivity extends Activity {
 		SimpleAdapter adapter = new SimpleAdapter(this, listCharactersDataToFillList, R.layout.selected_character_item, takeDataFromKey, writeDataToKey);
 		lvSelectedCharacters.setAdapter(adapter);
 	}
-
 }

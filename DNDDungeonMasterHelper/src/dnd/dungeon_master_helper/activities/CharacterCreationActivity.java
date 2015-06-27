@@ -22,7 +22,7 @@ public class CharacterCreationActivity extends Activity {
 	EditText etMaxHP;
 	Spinner spCharClass;
 	
-	String classes[] = {"Cleric", "Fighter", "Paladin", "Ranger", "Rogue", "Warlock", "Warlord", "Wizard"};
+	String classes[] = {"Cleric", "Fighter", "Paladin", "Ranger", "Rogue", "Warlock", "Warlord", "Wizard", "Monster"};
 	
 	@Override
 	public void onCreate(Bundle savedBundle){
