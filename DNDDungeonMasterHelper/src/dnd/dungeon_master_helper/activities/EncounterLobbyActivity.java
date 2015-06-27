@@ -68,7 +68,7 @@ public class EncounterLobbyActivity extends Activity {
 		dbHelper = new DBHelper(this);
 		
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		Log.d("myLog", "DB version = " + db.getVersion());
+		
 		Cursor cursor = db.query("characters",null,null,null,null,null,null);
 		
 		if (cursor.moveToFirst()){
@@ -137,14 +137,21 @@ public class EncounterLobbyActivity extends Activity {
 			
 		});
 		lvAvailableCharacters.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		
+		/**
+		 * Adds context action bar upon long click on the list item. CAB lets you delete multiple list items at once
+		 * both from the list and from the database
+		 */
 		lvAvailableCharacters.setMultiChoiceModeListener(new MultiChoiceModeListener(){
 			
-			private ArrayList<Integer> listOfSelectedViewsForDeletion = new ArrayList<>();
+			private ArrayList<Integer> listOfIndicesForDeletion = new ArrayList<>();
+			private String[] arrayOfCharacterNamesForDeletion;
 			
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				// Respond to clicks on the actions in the CAB
-		        switch (item.getItemId()) {
+		        fillArrayOfCharacterNamesForDeletion();
+				switch (item.getItemId()) {
 		            case R.id.action_delete:
 		            	deleteSelectedItems();
 		                mode.finish(); // Action picked, so close the CAB
@@ -154,18 +161,47 @@ public class EncounterLobbyActivity extends Activity {
 		        }
 			}
 			/**
+			 * Populates an array of names of characters that will be deleted
+			 */
+			private void fillArrayOfCharacterNamesForDeletion() {
+				arrayOfCharacterNamesForDeletion = new String[listOfIndicesForDeletion.size()];
+				int counter = 0;
+				for (int i : listOfIndicesForDeletion){
+					arrayOfCharacterNamesForDeletion[counter] = DNDCharacter.getCharacters().get(i).getCharName();
+					counter++;
+				}
+			}
+			/**
 			 * Removes selected items from the list of available characters as well as from the database
 			 */
 			private void deleteSelectedItems() {
-				for (int i = listOfSelectedViewsForDeletion.size() - 1; i >= 0 ; i--){
-					Collections.sort(listOfSelectedViewsForDeletion);
-					listCharactersDataToFillList.remove((int)listOfSelectedViewsForDeletion.get(i));
-					Log.d("myLog", "Item deleted " + listOfSelectedViewsForDeletion.get(i));
-				}
-				listOfSelectedViewsForDeletion.clear();
-				((SimpleAdapter) lvAvailableCharacters.getAdapter()).notifyDataSetChanged();
+				removeItemsFromList();
+				removeItemsFromDatabase();
 			}
 
+			/**
+			 * Removes selected items from the list
+			 */
+			private void removeItemsFromList() {
+				Collections.sort(listOfIndicesForDeletion);
+				for (int i = listOfIndicesForDeletion.size() - 1; i >= 0 ; i--){
+					listCharactersDataToFillList.remove((int)listOfIndicesForDeletion.get(i));
+					Log.d("myLog", "Item deleted " + listOfIndicesForDeletion.get(i));
+				}
+				listOfIndicesForDeletion.clear();
+				((SimpleAdapter) lvAvailableCharacters.getAdapter()).notifyDataSetChanged();
+			}
+			
+			/**
+			 * Removes selected items from the database
+			 */
+			private void removeItemsFromDatabase() {
+				dbHelper = new DBHelper(getBaseContext());
+				SQLiteDatabase db = dbHelper.getWritableDatabase();
+				db.delete("characters", "name IN (" + new String(new char[arrayOfCharacterNamesForDeletion.length-1]).replace("\0","?,") + "?)",
+						arrayOfCharacterNamesForDeletion);
+			}
+			
 			@Override
 			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 				MenuInflater inflater = mode.getMenuInflater();
@@ -178,7 +214,7 @@ public class EncounterLobbyActivity extends Activity {
 				for (int i=0; i < lvAvailableCharacters.getChildCount(); i++){
 					lvAvailableCharacters.getChildAt(i).setAlpha(1);
 				}
-				
+				listOfIndicesForDeletion.clear();
 			}
 
 			@Override
@@ -192,11 +228,11 @@ public class EncounterLobbyActivity extends Activity {
 				View selectedView = lvAvailableCharacters.getChildAt(position);
 				if (checked){
 					selectedView.setAlpha(0.3f);
-					listOfSelectedViewsForDeletion.add(position);
+					listOfIndicesForDeletion.add(position);
 				}
 				else {
 					selectedView.setAlpha(1);
-					listOfSelectedViewsForDeletion.remove((Object)position);
+					listOfIndicesForDeletion.remove((Object)position);
 				}
 			}
 			
