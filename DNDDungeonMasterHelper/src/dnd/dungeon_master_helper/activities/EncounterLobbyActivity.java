@@ -2,6 +2,9 @@ package dnd.dungeon_master_helper.activities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -10,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import dnd.dungeon_master_helper.DBHelper;
 import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.R;
@@ -36,8 +40,12 @@ public class EncounterLobbyActivity extends Activity {
 		
 		initializeViews();
 		
+		refreshAvailableCharactersList();
 	}
 
+	/**
+	 * Loads all saved characters from the database
+	 */
 	private void loadCharactersFromDB() {
 		DNDCharacter.getCharacters().clear();
 		
@@ -78,5 +86,29 @@ public class EncounterLobbyActivity extends Activity {
 		
 		lvAvailableCharacters = (ListView) findViewById(R.id.lvAvailableCharacters);
 		lvSelectedCharacters = (ListView) findViewById(R.id.lvSelectedCharacters);
+		
 	}
+	
+	/**
+	 * Fills the ListView which holds all available characters with characters previously loaded from the database
+	 */
+	private void refreshAvailableCharactersList(){
+		
+		List<Map<String,String>> listCharactersDataToFillList = new ArrayList<>();
+		Map<String, String> mapCharacterData;
+		
+		String[] takeDataFromKey = {"name", "class"};
+		int[] writeDataToKey = {R.id.tvAvCharacterName, R.id.tvAvCharacterClass};
+		
+		for (DNDCharacter character : DNDCharacter.getCharacters()){
+			mapCharacterData = new HashMap<>();
+			mapCharacterData.put("name", character.getCharName());
+			mapCharacterData.put("class", "(" + character.getCharClass() + ")");
+			listCharactersDataToFillList.add(mapCharacterData);
+		}
+		
+		SimpleAdapter adapter = new SimpleAdapter(this, listCharactersDataToFillList, R.layout.available_character_item, takeDataFromKey, writeDataToKey);
+		lvAvailableCharacters.setAdapter(adapter);
+	}
+
 }

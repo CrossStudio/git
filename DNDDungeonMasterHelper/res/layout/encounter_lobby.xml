@@ -3,14 +3,7 @@
     android:layout_height="fill_parent" >
 
 
-    <Button
-        android:id="@+id/btnAddCharacter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/lvAvailableCharacters"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="108dp"
-        android:text="Add Character" />
+    
 
     <TextView 
         android:id="@+id/tvAvailableCharactersLabel"
@@ -43,11 +36,18 @@
 	    android:layout_centerHorizontal="true" >
 
     </ListView>
+    <Button
+        android:id="@+id/btnAddCharacter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/lvSelectedCharacters"
+        android:text="Add Character" />
      <Button 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btnStartEncounter"
         android:text="Start Encounter"
         android:layout_below="@+id/lvSelectedCharacters"
-        android:layout_centerHorizontal="true"/>
+        android:layout_alignParentRight="true"/>
 </RelativeLayout>
