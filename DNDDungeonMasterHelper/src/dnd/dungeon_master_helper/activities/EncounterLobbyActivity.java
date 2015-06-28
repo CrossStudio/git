@@ -62,7 +62,7 @@ public class EncounterLobbyActivity extends Activity {
 	 * Loads all saved characters from the database
 	 */
 	private void loadCharactersFromDB() {
-		DNDCharacter.getCharacters().clear();
+		DNDCharacter.getAllCharacters().clear();
 		
 		dbHelper = new DBHelper(this);
 		
@@ -115,7 +115,7 @@ public class EncounterLobbyActivity extends Activity {
 		String[] takeDataFromKey = {"name", "class"};
 		int[] writeDataToKey = {R.id.tvAvCharacterName, R.id.tvAvCharacterClass};
 		
-		for (DNDCharacter character : DNDCharacter.getCharacters()){
+		for (DNDCharacter character : DNDCharacter.getAllCharacters()){
 			mapCharacterData = new HashMap<>();
 			mapCharacterData.put("name", character.getCharName());
 			mapCharacterData.put("class", "(" + character.getCharClass() + ")");
@@ -129,7 +129,7 @@ public class EncounterLobbyActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
 				int idCharacterClicked = lvAvailableCharacters.indexOfChild(v);
-				DNDCharacter clickedCharacter = DNDCharacter.getCharacters().get(idCharacterClicked);
+				DNDCharacter clickedCharacter = DNDCharacter.getAllCharacters().get(idCharacterClicked);
 				
 				addCharacterToSelectedCharactersList(clickedCharacter);
 			}
@@ -166,7 +166,7 @@ public class EncounterLobbyActivity extends Activity {
 				arrayOfCharacterNamesForDeletion = new String[listOfIndicesForDeletion.size()];
 				int counter = 0;
 				for (int i : listOfIndicesForDeletion){
-					arrayOfCharacterNamesForDeletion[counter] = DNDCharacter.getCharacters().get(i).getCharName();
+					arrayOfCharacterNamesForDeletion[counter] = DNDCharacter.getAllCharacters().get(i).getCharName();
 					counter++;
 				}
 			}
@@ -257,14 +257,14 @@ public class EncounterLobbyActivity extends Activity {
 		Map<String, String> mapCharacterData;
 		
 		String[] takeDataFromKey = {"name", "class", "current HP", "initiative"};
-		int[] writeDataToKey = {R.id.tvSelCharacterName, R.id.tvSelCharacterClass, R.id.tvSelCharacterHP, R.id.tvSelCharacterInit};
+		int[] writeDataToKey = {R.id.etSelCharacterName, R.id.tvSelCharacterClass, R.id.etSelCharacterHP, R.id.etSelCharacterInit};
 		
 		for (DNDCharacter selectedCharacter : DNDCharacter.getSelectedCharacters()){
 			mapCharacterData = new HashMap<>();
 			mapCharacterData.put("name", selectedCharacter.getCharName());
 			mapCharacterData.put("class", "(" + selectedCharacter.getCharClass() + ")");
-			mapCharacterData.put("current HP", "HP: " + selectedCharacter.getCharHPCurrent());
-			mapCharacterData.put("initiative", "Initiative: " + selectedCharacter.getCharInitiativeEncounter());
+			mapCharacterData.put("current HP", ""+selectedCharacter.getCharHPCurrent());
+			mapCharacterData.put("initiative", ""+selectedCharacter.getCharInitiativeEncounter());
 			listCharactersDataToFillList.add(mapCharacterData);
 		}
 		

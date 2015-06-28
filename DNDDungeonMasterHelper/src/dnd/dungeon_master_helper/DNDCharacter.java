@@ -132,7 +132,7 @@ public class DNDCharacter {
      * Basic getter of list of allCharacters
      * @return list of all allCharacters in the game
      */
-    public static ArrayList<DNDCharacter> getCharacters() {
+    public static ArrayList<DNDCharacter> getAllCharacters() {
     	return allCharacters;
     }
     

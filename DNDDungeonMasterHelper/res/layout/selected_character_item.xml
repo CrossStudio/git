@@ -3,33 +3,67 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal" >
-    <TextView 
-        android:id="@+id/tvSelCharacterName"
-        android:layout_width="wrap_content"
+
+    <EditText
+        android:id="@+id/etSelCharacterName"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+	    android:layout_marginBottom="5dp"
+        android:layout_weight="0.15"
         android:text="Name"
-        android:layout_margin="5dp"/>
-	<TextView 
-        android:id="@+id/tvSelCharacterClass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="(Class)"
-        android:layout_margin="5dp"/>
-	<TextView 
-        android:id="@+id/tvSelCharacterHP"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="HP"
-        android:layout_margin="5dp"/>
-	<TextView 
-        android:id="@+id/tvSelCharacterInit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Initiative"
-        android:layout_margin="5dp"/>
+        android:textSize="10sp" />
+
+	<TextView
+	    android:id="@+id/tvSelCharacterClass"
+	    android:layout_width="0dp"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="5dp"
+	    android:layout_marginBottom="5dp"
+	    android:layout_weight="0.15"
+	    android:text="(Class)"
+	    android:textSize="10sp" />
+	
+	<TextView
+	    android:layout_width="0dp"
+	    android:layout_weight="0.05"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="5dp"
+	    android:layout_marginBottom="5dp"
+	    android:text="HP:"
+	    android:textSize="10sp"/>
+	<EditText
+	    android:id="@+id/etSelCharacterHP"
+	    android:layout_width="0dp"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="5dp"
+	    android:layout_marginBottom="5dp"
+	    android:layout_weight="0.1"
+	    android:text="0"
+	    android:textSize="10sp" />
+
+	<TextView
+	    android:layout_width="0dp"
+	    android:layout_weight="0.05"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="5dp"
+	    android:layout_marginBottom="5dp"
+	    android:text="Init:"
+	    android:textSize="10sp"/>
+	<EditText
+	    android:id="@+id/etSelCharacterInit"
+	    android:layout_width="0dp"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="5dp"
+	    android:layout_marginBottom="5dp"
+	    android:layout_weight="0.1"
+	    android:text="0"
+	    android:textSize="10sp" />
+
 	<Button 
 	    android:id="@+id/btnCopyCharacter"
-	    android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="0.35"
 	    android:layout_height="wrap_content"
 	    android:text="~"
 	    android:onClick="copyCharacterClickHandler"/>

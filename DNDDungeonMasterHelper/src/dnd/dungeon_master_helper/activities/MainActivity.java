@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
 	/**
 	 * List of all the characters (player controlled, NPCs and monsters) that are currently in the game
 	 */
-	public static ArrayList<DNDCharacter> dndCharacterArrayList = DNDCharacter.getCharacters();
+	public static ArrayList<DNDCharacter> dndCharacterArrayList = DNDCharacter.getAllCharacters();
 	
 	static LinearLayout llInitiativeOrder;
 	
