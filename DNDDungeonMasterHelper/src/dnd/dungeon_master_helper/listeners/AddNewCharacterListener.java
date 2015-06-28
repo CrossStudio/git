@@ -1,11 +1,8 @@
 package dnd.dungeon_master_helper.listeners;
 
-import dnd.dungeon_master_helper.DBHelper;
-import dnd.dungeon_master_helper.DNDCharacter;
-import dnd.dungeon_master_helper.R;
-import dnd.dungeon_master_helper.R.id;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +10,9 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+import dnd.dungeon_master_helper.DBHelper;
+import dnd.dungeon_master_helper.DNDCharacter;
+import dnd.dungeon_master_helper.R;
 
 public class AddNewCharacterListener implements OnClickListener {
 
@@ -29,8 +29,7 @@ public class AddNewCharacterListener implements OnClickListener {
 		int charMaxHP = Integer.valueOf(((EditText) activity.findViewById(R.id.etMaxHP)).getText().toString());
 		
 		addNewCharacterToGame(charName, charClass, charInitiative, charMaxHP);
-		Toast.makeText(activity, "New Character created", Toast.LENGTH_SHORT).show();
-	}
+		}
 
 	/**
 	 * Adds new character with passed parameters to the game
@@ -40,8 +39,34 @@ public class AddNewCharacterListener implements OnClickListener {
 	 * @param charMaxHP - maximum health points of the character
 	 */
 	private void addNewCharacterToGame(String charName, String charClass, int charInitiative, int charMaxHP) {
-		DNDCharacter newCharacter = DNDCharacter.addNewCharacterToGame(charName, charClass, charInitiative, charMaxHP);
-		saveNewCharacterToDB(newCharacter);
+		if (checkForDuplicates(charName)){
+			DNDCharacter newCharacter = DNDCharacter.addNewCharacterToGame(charName, charClass, charInitiative, charMaxHP);
+			saveNewCharacterToDB(newCharacter);
+			Toast.makeText(activity, charName + " created", Toast.LENGTH_SHORT).show();
+		}
+		else {
+			Toast.makeText(activity, charName + " is already playing", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	/**
+	 * Checks whether the new character has the same name as some character in the database
+	 * @param newCharacter - new character, whose name will be checked against the database
+	 * @return true if the new character's name is unique; false - otherwise
+	 */
+	private boolean checkForDuplicates(String charName) {
+		dbHelper = new DBHelper(activity);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		String[] columnsToCheck = {"name"};
+		String[] nameToCheck = {charName};
+		
+		Cursor cursor = db.query("characters", columnsToCheck, "name=?", nameToCheck, null, null, null);
+		if (cursor.getCount() == 0){
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**
