@@ -29,8 +29,82 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/llInitiativeOrder"
         android:layout_margin="5dp"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp"
         android:text="Active Character" />
-
+    <TextView 
+        android:id="@+id/tvHPLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_below="@+id/tvActiveCharName"
+        android:layout_alignParentLeft="true"
+        android:text="HP:"/>
+    <TextView 
+        android:id="@+id/tvHPCurrentValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_toRightOf="@+id/tvHPLabel"
+        android:layout_below="@+id/tvActiveCharName"
+        android:text="30"
+        />
+    <TextView 
+        android:id="@+id/tvHPMaxValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="-7dp"
+        android:layout_above="@+id/tvHPCurrentValue"
+        android:layout_toRightOf="@+id/tvHPLabel"
+        android:text="40"
+        android:textSize="10sp"
+        />
+    <Button 
+        android:id="@+id/btnHeal"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_toRightOf="@+id/tvHPCurrentValue"
+        android:layout_below="@+id/tvActiveCharName"
+        android:text="Heal"
+        android:textSize="12dp"
+        android:padding="0dp"
+        />
+    <Button 
+        android:id="@+id/btnDamage"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_toRightOf="@+id/btnHeal"
+        android:layout_below="@+id/tvActiveCharName"
+        android:text="Damage"
+        android:textSize="12dp"
+        android:padding="0dp"
+        />
+	<TextView 
+        android:id="@+id/tvBloodiedLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_below="@+id/tvActiveCharName"
+        android:layout_toRightOf="@+id/btnDamage"
+        android:text="Bloodied"
+        />
+	<TextView 
+	    android:id="@+id/tvBloodiedValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_below="@+id/tvActiveCharName"
+        android:layout_toRightOf="@+id/tvBloodiedLabel"
+        android:text="15"
+	    />
+	<CheckBox 
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop ="-2dp"
+        android:layout_below="@+id/tvActiveCharName"
+        android:layout_toRightOf="@+id/tvBloodiedValue"
+	    />
     <Button
         android:id="@+id/btnNextCharacter"
         android:layout_width="wrap_content"
@@ -45,7 +119,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_below="@+id/tvActiveCharName">
+        android:layout_below="@+id/tvHPLabel">
 
         <EditText 
             android:id="@+id/etModifierValue"

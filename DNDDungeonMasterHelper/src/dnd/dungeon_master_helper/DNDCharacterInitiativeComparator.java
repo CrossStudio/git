@@ -8,7 +8,7 @@ public class DNDCharacterInitiativeComparator implements
 	@Override
 	public int compare(DNDCharacter lhs, DNDCharacter rhs) {
 		
-		return lhs.getCharInitiativeEncounter() - rhs.getCharInitiativeEncounter();
+		return rhs.getCharInitiativeEncounter() - lhs.getCharInitiativeEncounter();
 	}
 
 }

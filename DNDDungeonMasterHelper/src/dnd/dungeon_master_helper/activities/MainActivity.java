@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
 	/**
 	 * List of all the characters (player controlled, NPCs and monsters) that are currently in the game
 	 */
-	public static ArrayList<DNDCharacter> dndCharacterArrayList = DNDCharacter.getAllCharacters();
+	public static ArrayList<DNDCharacter> dndCharacterArrayList = DNDCharacter.getSelectedCharacters();
 	
 	static LinearLayout llInitiativeOrder;
 	
@@ -84,8 +84,9 @@ public class MainActivity extends Activity {
 		
 		if (dndCharacterArrayList.size() > 0)
 		{
+			sortCharactersByInitiative();
 			activeCharacter = dndCharacterArrayList.get(0);
-			tvActiveCharacter.setText("Active Character: " + activeCharacter.getCharName());
+			tvActiveCharacter.setText(activeCharacter.getCharName() + " (" + activeCharacter.getCharClass() + ")");
 			loadActiveCharacterModifiers();
 		}
 		
