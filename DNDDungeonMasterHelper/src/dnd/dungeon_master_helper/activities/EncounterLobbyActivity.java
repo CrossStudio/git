@@ -304,6 +304,9 @@ public class EncounterLobbyActivity extends Activity {
 		refreshSelectedCharacterParams();
 	}
 	
+	/**
+	 * Sets parameters of all the selected characters to corresponding values in layout list view
+	 */
 	public static void refreshSelectedCharacterParams() {
 		for (int i = 0; i < lvSelectedCharacters.getChildCount(); i++){
 			View listItem = lvSelectedCharacters.getChildAt(i);
