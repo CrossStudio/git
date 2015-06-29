@@ -3,26 +3,12 @@ package dnd.dungeon_master_helper.activities;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import dnd.dungeon_master_helper.DBHelper;
-import dnd.dungeon_master_helper.DNDCharacter;
-import dnd.dungeon_master_helper.DNDCharacterInitiativeComparator;
-import dnd.dungeon_master_helper.R;
-import dnd.dungeon_master_helper.R.id;
-import dnd.dungeon_master_helper.R.layout;
-import dnd.dungeon_master_helper.R.menu;
-import dnd.dungeon_master_helper.listeners.AddModifierClickListener;
-import dnd.dungeon_master_helper.listeners.ModifierTargetSelectedListener;
-import dnd.dungeon_master_helper.listeners.ModifierTypeSelectedListener;
-import dnd.dungeon_master_helper.listeners.NextCharacterClickListener;
 import android.app.Activity;
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,6 +16,16 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import dnd.dungeon_master_helper.DBHelper;
+import dnd.dungeon_master_helper.DNDCharacter;
+import dnd.dungeon_master_helper.DNDCharacterInitiativeComparator;
+import dnd.dungeon_master_helper.R;
+import dnd.dungeon_master_helper.listeners.AddModifierClickListener;
+import dnd.dungeon_master_helper.listeners.DamageClickListener;
+import dnd.dungeon_master_helper.listeners.HealClickListener;
+import dnd.dungeon_master_helper.listeners.ModifierTargetSelectedListener;
+import dnd.dungeon_master_helper.listeners.ModifierTypeSelectedListener;
+import dnd.dungeon_master_helper.listeners.NextCharacterClickListener;
 
 public class MainActivity extends Activity {
 
@@ -44,7 +40,17 @@ public class MainActivity extends Activity {
 	
 	static Button btnAddModifier;
 	
+	static Button btnHeal;
+	
+	static Button btnDamage;
+	
 	public static TextView tvActiveCharacter;
+	
+	public static TextView tvHPCurrentValue;
+	
+	public static TextView tvHPMaxValue;
+	
+	public static TextView tvBloodiedValue;
 	
 	public static EditText etModifierValue;
 	
@@ -87,12 +93,22 @@ public class MainActivity extends Activity {
 			sortCharactersByInitiative();
 			activeCharacter = dndCharacterArrayList.get(0);
 			tvActiveCharacter.setText(activeCharacter.getCharName() + " (" + activeCharacter.getCharClass() + ")");
-			loadActiveCharacterModifiers();
+			loadActiveCharacterParams();
 		}
 		
 		
 	}
 	
+	/**
+	 * Fills layout views with parameters of current active player
+	 */
+	public static void loadActiveCharacterParams() {
+		tvHPCurrentValue.setText(""+activeCharacter.getCharHPCurrent());
+		tvHPMaxValue.setText(""+activeCharacter.getCharHPMax());
+		tvBloodiedValue.setText(activeCharacter.getCharHPMax() / 2 + "");
+		loadActiveCharacterModifiers();
+	}
+
 	@Override
 	protected void onResume(){
 		super.onResume();
@@ -141,6 +157,7 @@ public class MainActivity extends Activity {
 	private void fillModifierTargetsSpinner() {
 		for (DNDCharacter character : dndCharacterArrayList)
 		{
+			Log.d("myLog", character.getCharName() + " added to spinner");
 			arrayOfModifierTargets[dndCharacterArrayList.indexOf(character)] = character.getCharName();
 		}
 		ArrayAdapter<String> modifierTargetAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrayOfModifierTargets);
@@ -187,6 +204,11 @@ public class MainActivity extends Activity {
 		llInitiativeOrder = (LinearLayout) findViewById(R.id.llInitiativeOrder);
 		btnNextCharacter = (Button) findViewById(R.id.btnNextCharacter);
 		tvActiveCharacter = (TextView) findViewById(R.id.tvActiveCharName);
+		tvHPCurrentValue = (TextView) findViewById(R.id.tvHPCurrentValue);
+		tvHPMaxValue = (TextView) findViewById(R.id.tvHPMaxValue);
+		btnHeal = (Button) findViewById(R.id.btnHeal);
+		btnDamage = (Button) findViewById(R.id.btnDamage);
+		tvBloodiedValue = (TextView) findViewById(R.id.tvBloodiedValue);
 		btnAddModifier = (Button) findViewById(R.id.btnAddModifier);
 		etCharModifiers = (EditText) findViewById(R.id.etCharModifiers);
 		etModifierValue = (EditText) findViewById(R.id.etModifierValue);
@@ -195,6 +217,8 @@ public class MainActivity extends Activity {
 		
 		btnNextCharacter.setOnClickListener(new NextCharacterClickListener());
 		btnAddModifier.setOnClickListener(new AddModifierClickListener());
+		btnHeal.setOnClickListener(new HealClickListener());
+		btnDamage.setOnClickListener(new DamageClickListener());
 		spinModifierTarget.setOnItemSelectedListener(new ModifierTargetSelectedListener());
 		spinModifierType.setOnItemSelectedListener(new ModifierTypeSelectedListener());
 	}

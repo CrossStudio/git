@@ -22,10 +22,19 @@ public class NextCharacterClickListener implements OnClickListener {
 	public void onClick(View v) {
 		
 		DNDCharacter activeCharacter = MainActivity.activeCharacter;
-		saveActiveCharacterModifiers(activeCharacter);
+		saveActiveCharacterParams(activeCharacter);
 		nextCharacter(activeCharacter);	
 	}
 	
+	/**
+	 * Saves parameters of currently active player
+	 * @param activeCharacter
+	 */
+	private void saveActiveCharacterParams(DNDCharacter activeCharacter) {
+		activeCharacter.setCharHPCurrent(Integer.valueOf(MainActivity.tvHPCurrentValue.getText().toString()));
+		saveActiveCharacterModifiers(activeCharacter);
+	}
+
 	/**
 	 * Saves modifiers of currently active character
 	 * @param activeCharacter
@@ -51,8 +60,8 @@ public class NextCharacterClickListener implements OnClickListener {
 		{
 			MainActivity.setActiveCharacter(0);
 		}
-		MainActivity.tvActiveCharacter.setText("Active Character: " + MainActivity.activeCharacter.getCharName());
-		MainActivity.loadActiveCharacterModifiers();
+		MainActivity.tvActiveCharacter.setText(MainActivity.activeCharacter.getCharName() + " (" + MainActivity.activeCharacter.getCharClass() + ")");
+		MainActivity.loadActiveCharacterParams();
 	}
 
 

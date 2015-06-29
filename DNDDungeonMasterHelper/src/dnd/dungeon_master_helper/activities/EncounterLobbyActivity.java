@@ -21,9 +21,11 @@ import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 import dnd.dungeon_master_helper.DBHelper;
 import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.R;
@@ -36,9 +38,7 @@ public class EncounterLobbyActivity extends Activity {
 	Button btnStartEncounter;
 	
 	ListView lvAvailableCharacters;
-	ListView lvSelectedCharacters;
-	
-
+	static ListView lvSelectedCharacters;
 	
 	DBHelper dbHelper;
 	
@@ -120,18 +120,23 @@ public class EncounterLobbyActivity extends Activity {
 			mapCharacterData.put("name", character.getCharName());
 			mapCharacterData.put("class", "(" + character.getCharClass() + ")");
 			listCharactersDataToFillList.add(mapCharacterData);
+			Log.d("myLog", "Character in the list: " + character.getCharName());
 		}
 		
 		final SimpleAdapter adapter = new SimpleAdapter(this, listCharactersDataToFillList, R.layout.available_character_item, takeDataFromKey, writeDataToKey);
 		lvAvailableCharacters.setAdapter(adapter);
 		lvAvailableCharacters.setOnItemClickListener(new OnItemClickListener(){
-
+			
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
-				int idCharacterClicked = lvAvailableCharacters.indexOfChild(v);
+				int idCharacterClicked = lvAvailableCharacters.getPositionForView(v);
 				DNDCharacter clickedCharacter = DNDCharacter.getAllCharacters().get(idCharacterClicked);
-				
-				addCharacterToSelectedCharactersList(clickedCharacter);
+				if (clickedCharacter.isSelected()){
+					Toast.makeText(EncounterLobbyActivity.this, clickedCharacter.getCharName() + " already chosen", Toast.LENGTH_SHORT).show();
+				}
+				else{
+					addCharacterToSelectedCharactersList(clickedCharacter);
+				}
 			}
 			
 		});
@@ -150,7 +155,8 @@ public class EncounterLobbyActivity extends Activity {
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				// Respond to clicks on the actions in the CAB
 		        fillArrayOfCharacterNamesForDeletion();
-				switch (item.getItemId()) {
+		        
+		        switch (item.getItemId()) {
 		            case R.id.action_delete:
 		            	deleteSelectedItems();
 		                mode.finish(); // Action picked, so close the CAB
@@ -185,10 +191,12 @@ public class EncounterLobbyActivity extends Activity {
 				Collections.sort(listOfIndicesForDeletion);
 				for (int i = listOfIndicesForDeletion.size() - 1; i >= 0 ; i--){
 					listCharactersDataToFillList.remove((int)listOfIndicesForDeletion.get(i));
+					DNDCharacter.getAllCharacters().remove(i);
 					Log.d("myLog", "Item deleted " + listOfIndicesForDeletion.get(i));
 				}
 				listOfIndicesForDeletion.clear();
 				((SimpleAdapter) lvAvailableCharacters.getAdapter()).notifyDataSetChanged();
+				
 			}
 			
 			/**
@@ -224,7 +232,11 @@ public class EncounterLobbyActivity extends Activity {
 
 			@Override
 			public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-				View selectedView = lvAvailableCharacters.getChildAt(position);
+				int firstPosition = lvAvailableCharacters.getFirstVisiblePosition();
+				View selectedView = lvAvailableCharacters.getChildAt(position - firstPosition);
+				Log.d("myLog", "Child count = " + lvAvailableCharacters.getChildCount());
+				Log.d("myLog", "Item id = " + lvAvailableCharacters);
+				Log.d("myLog", "selectedView = " + selectedView);
 				if (checked){
 					selectedView.setAlpha(0.3f);
 					listOfIndicesForDeletion.add(position);
@@ -245,7 +257,7 @@ public class EncounterLobbyActivity extends Activity {
 	private void addCharacterToSelectedCharactersList(DNDCharacter clickedCharacter) {
 		ArrayList<DNDCharacter> selectedCharacters = DNDCharacter.getSelectedCharacters();
 		selectedCharacters.add(clickedCharacter);
-		
+		clickedCharacter.setSelected(true);
 		refreshSelectedCharactersList();
 	}
 	
@@ -284,5 +296,25 @@ public class EncounterLobbyActivity extends Activity {
 		DNDCharacter clickedCharacter = DNDCharacter.getSelectedCharacters().get(lvSelectedCharacters.getPositionForView(vwParentRow));
 				
 		Log.d("myLog", "Copy button clicked " + clickedCharacter.getCharName());
+	}
+
+	@Override
+	public void onPause(){
+		super.onPause();
+		refreshSelectedCharacterParams();
+	}
+	
+	public static void refreshSelectedCharacterParams() {
+		for (int i = 0; i < lvSelectedCharacters.getChildCount(); i++){
+			View listItem = lvSelectedCharacters.getChildAt(i);
+			EditText etSelCharacterName = (EditText) listItem.findViewById(R.id.etSelCharacterName);
+			EditText etSelCharacterHP = (EditText) listItem.findViewById(R.id.etSelCharacterHP);
+			EditText etSelCharacterInit = (EditText) listItem.findViewById(R.id.etSelCharacterInit);
+			
+			DNDCharacter character = DNDCharacter.getSelectedCharacters().get(i);
+			character.setCharName(etSelCharacterName.getText().toString());
+			character.setCharHPCurrent(Integer.valueOf(etSelCharacterHP.getText().toString()));
+			character.setCharInitiativeEncounter(Integer.valueOf(etSelCharacterInit.getText().toString()));
+		}
 	}
 }

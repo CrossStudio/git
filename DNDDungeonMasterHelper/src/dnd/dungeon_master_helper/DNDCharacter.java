@@ -20,6 +20,7 @@ public class DNDCharacter {
 			selectedCharacters = new ArrayList<>();
 		}
 	}
+	private boolean selected = false;
 	
 	private String charName;
     private String charRace;
@@ -271,4 +272,18 @@ public class DNDCharacter {
     public ArrayList<String> getListOfAppliedModifiers(){
     	return listOfAppliedModifiers;
     }
+
+	/**
+	 * @return the selected
+	 */
+	public boolean isSelected() {
+		return selected;
+	}
+
+	/**
+	 * @param selected the selected to set
+	 */
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
 }
