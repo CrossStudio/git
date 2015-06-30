@@ -63,8 +63,15 @@
 	<Button 
 	    android:id="@+id/btnCopyCharacter"
         android:layout_width="0dp"
-        android:layout_weight="0.35"
+        android:layout_weight="0.175"
 	    android:layout_height="wrap_content"
 	    android:text="~"
 	    android:onClick="copyCharacterClickHandler"/>
+	<Button 
+	    android:id="@+id/btnRemoveSelCharacter"
+        android:layout_width="0dp"
+        android:layout_weight="0.175"
+	    android:layout_height="wrap_content"
+	    android:text="X"
+	    android:onClick="removeCharacterClickHandler"/>
 </LinearLayout>

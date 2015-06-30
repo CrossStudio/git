@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.hardware.camera2.CameraManager.AvailabilityCallback;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
@@ -51,7 +53,15 @@ public class EncounterLobbyActivity extends Activity {
 		
 		initializeViews();
 		
+		ArrayList<DNDCharacter> availableCharacters = DNDCharacter.getNotSelectedCharacters();
+		
+		availableCharacters.clear();
+		
+		availableCharacters.addAll(DNDCharacter.getAllCharacters());
+		
 		refreshAvailableCharactersList();
+		
+		DNDCharacter.getSelectedCharacters().clear();
 		refreshSelectedCharactersList();
 		
 		
@@ -89,6 +99,37 @@ public class EncounterLobbyActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * Save changes made to selected characters to the database
+	 */
+	private void saveCharactersToDB(){
+		dbHelper = new DBHelper(this);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		ArrayList<DNDCharacter> selectedCharacters = DNDCharacter.getSelectedCharacters();
+		for (DNDCharacter character : selectedCharacters){
+			cv.put("class", character.getCharClass());
+			cv.put("name", character.getCharName());
+			cv.put("maxhp", character.getCharHPMax());
+			cv.put("currenthp",character.getCharHPCurrent());
+			String modifiers = "";
+			for (String modifier : character.getListOfAppliedModifiers()){
+				if (character.getListOfAppliedModifiers().indexOf(modifier) == 0){
+					modifiers += modifier;
+				}
+				else {
+					modifiers += "\n" + modifier;
+				}
+			}
+			cv.put("modifiers", modifiers);
+			int updCount = db.update("characters", cv, "name = ?", new String[] {character.getCharName()});
+			if (updCount == 0){
+				long rowID = db.insert("characters", null, cv);
+				Log.d("myLog", "Inserted new row, number: " + rowID);
+			}
+		}
+	}
+	
 	private void initializeViews() {
 		btnAddCharacter = (Button) findViewById(R.id.btnAddCharacter);
 		btnStartEncounter = (Button) findViewById(R.id.btnStartEncounter);
@@ -114,10 +155,6 @@ public class EncounterLobbyActivity extends Activity {
 		
 		final ArrayList<DNDCharacter> availableCharacters = DNDCharacter.getNotSelectedCharacters();
 		
-		availableCharacters.clear();
-		
-		availableCharacters.addAll(DNDCharacter.getAllCharacters());
-		
 		for (DNDCharacter character : availableCharacters){
 			mapCharacterData = new HashMap<>();
 			mapCharacterData.put("name", character.getCharName());
@@ -134,12 +171,12 @@ public class EncounterLobbyActivity extends Activity {
 				int idCharacterClicked = lvAvailableCharacters.getPositionForView(v);
 				Log.d("myLog", "Id of clicked view = " + idCharacterClicked);
 				DNDCharacter clickedCharacter = availableCharacters.get(idCharacterClicked);
-				if (clickedCharacter.isSelected()){
-					Toast.makeText(EncounterLobbyActivity.this, clickedCharacter.getCharName() + " already chosen", Toast.LENGTH_SHORT).show();
-				}
-				else{
-					addCharacterToSelectedCharactersList(clickedCharacter);
-				}
+
+				addCharacterToSelectedCharactersList(clickedCharacter);
+				availableCharacters.remove(clickedCharacter);
+				listCharactersDataToFillList.remove(idCharacterClicked);
+				adapter.notifyDataSetChanged();
+
 			}
 			
 		});
@@ -273,10 +310,12 @@ public class EncounterLobbyActivity extends Activity {
 		List<Map<String,String>> listCharactersDataToFillList = new ArrayList<>();
 		Map<String, String> mapCharacterData;
 		
+		ArrayList<DNDCharacter> selectedCharacters = DNDCharacter.getSelectedCharacters();
+		
 		String[] takeDataFromKey = {"name", "class", "current HP", "initiative"};
 		int[] writeDataToKey = {R.id.etSelCharacterName, R.id.tvSelCharacterClass, R.id.etSelCharacterHP, R.id.etSelCharacterInit};
 		
-		for (DNDCharacter selectedCharacter : DNDCharacter.getSelectedCharacters()){
+		for (DNDCharacter selectedCharacter : selectedCharacters){
 			mapCharacterData = new HashMap<>();
 			mapCharacterData.put("name", selectedCharacter.getCharName());
 			mapCharacterData.put("class", "(" + selectedCharacter.getCharClass() + ")");
@@ -299,13 +338,44 @@ public class EncounterLobbyActivity extends Activity {
 		LinearLayout vwParentRow = (LinearLayout)v.getParent();
 		
 		DNDCharacter clickedCharacter = DNDCharacter.getSelectedCharacters().get(lvSelectedCharacters.getPositionForView(vwParentRow));
-				
+		
+		String name = clickedCharacter.getCharName();
+		String charClass = clickedCharacter.getCharClass();
+		int charMaxHP = clickedCharacter.getCharHPMax();
+		int charCurrentHP = clickedCharacter.getCharHPCurrent();
+		ArrayList<String> modifiers = clickedCharacter.getListOfAppliedModifiers();
+		
+		DNDCharacter newCharacter = DNDCharacter.addNewCharacterToGame(name, charClass, charMaxHP, charCurrentHP, modifiers);
+		
+		ArrayList<DNDCharacter> selectedCharacters = DNDCharacter.getSelectedCharacters();
+		selectedCharacters.add(newCharacter);
+		
+		refreshSelectedCharactersList();
 	}
-
+	
+	/**
+	 * Removes character from the selected characters list
+	 * @param v - remove button of the character that will be removed
+	 */
+	public void removeCharacterClickHandler(View v){
+		LinearLayout vwParentRow = (LinearLayout)v.getParent();
+		
+		DNDCharacter clickedCharacter = DNDCharacter.getSelectedCharacters().get(lvSelectedCharacters.getPositionForView(vwParentRow));
+		
+		ArrayList<DNDCharacter> selectedCharacters = DNDCharacter.getSelectedCharacters();
+		ArrayList<DNDCharacter> availableCharacters = DNDCharacter.getNotSelectedCharacters();
+		
+		selectedCharacters.remove(clickedCharacter);
+		availableCharacters.add(clickedCharacter);
+		refreshAvailableCharactersList();
+		refreshSelectedCharactersList();
+	}
+	
 	@Override
 	public void onPause(){
 		super.onPause();
 		refreshSelectedCharacterParams();
+		saveCharactersToDB();
 	}
 	
 	/**
