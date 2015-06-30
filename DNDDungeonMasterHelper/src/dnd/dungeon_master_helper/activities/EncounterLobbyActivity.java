@@ -78,13 +78,11 @@ public class EncounterLobbyActivity extends Activity {
 			int idCurrentHPIndex = cursor.getColumnIndex("currenthp");
 			int idModifiersIndex = cursor.getColumnIndex("modifiers");
 			do {
-				Log.d("myLog", "ID = " + cursor.getInt(idColIndex) + ", name = " + cursor.getString(idNameIndex));
 				ArrayList<String> modifiers = new ArrayList<>();
 				String longStringOfModifiers = cursor.getString(idModifiersIndex);
 				if (longStringOfModifiers != null){
 					modifiers.addAll(Arrays.asList(longStringOfModifiers.split(" \\n")));
 				}
-				Log.d("myLog", "Modifiers: " + modifiers);
 				DNDCharacter.addNewCharacterToGame(cursor.getString(idNameIndex), cursor.getString(idClassIndex), cursor.getInt(idMaxHPIndex), 
 						cursor.getInt(idCurrentHPIndex), modifiers);
 			}
@@ -120,7 +118,6 @@ public class EncounterLobbyActivity extends Activity {
 			mapCharacterData.put("name", character.getCharName());
 			mapCharacterData.put("class", "(" + character.getCharClass() + ")");
 			listCharactersDataToFillList.add(mapCharacterData);
-			Log.d("myLog", "Character in the list: " + character.getCharName());
 		}
 		
 		final SimpleAdapter adapter = new SimpleAdapter(this, listCharactersDataToFillList, R.layout.available_character_item, takeDataFromKey, writeDataToKey);
@@ -130,6 +127,7 @@ public class EncounterLobbyActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
 				int idCharacterClicked = lvAvailableCharacters.getPositionForView(v);
+				Log.d("myLog", "Id of clicked view = " + idCharacterClicked);
 				DNDCharacter clickedCharacter = DNDCharacter.getAllCharacters().get(idCharacterClicked);
 				if (clickedCharacter.isSelected()){
 					Toast.makeText(EncounterLobbyActivity.this, clickedCharacter.getCharName() + " already chosen", Toast.LENGTH_SHORT).show();
@@ -190,9 +188,9 @@ public class EncounterLobbyActivity extends Activity {
 			private void removeItemsFromList() {
 				Collections.sort(listOfIndicesForDeletion);
 				for (int i = listOfIndicesForDeletion.size() - 1; i >= 0 ; i--){
-					listCharactersDataToFillList.remove((int)listOfIndicesForDeletion.get(i));
-					DNDCharacter.getAllCharacters().remove(i);
-					Log.d("myLog", "Item deleted " + listOfIndicesForDeletion.get(i));
+					int indexOfCharacterToDelete = (int)listOfIndicesForDeletion.get(i);
+					listCharactersDataToFillList.remove(indexOfCharacterToDelete);
+					DNDCharacter.getAllCharacters().remove(indexOfCharacterToDelete);
 				}
 				listOfIndicesForDeletion.clear();
 				((SimpleAdapter) lvAvailableCharacters.getAdapter()).notifyDataSetChanged();
@@ -234,9 +232,7 @@ public class EncounterLobbyActivity extends Activity {
 			public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
 				int firstPosition = lvAvailableCharacters.getFirstVisiblePosition();
 				View selectedView = lvAvailableCharacters.getChildAt(position - firstPosition);
-				Log.d("myLog", "Child count = " + lvAvailableCharacters.getChildCount());
-				Log.d("myLog", "Item id = " + lvAvailableCharacters);
-				Log.d("myLog", "selectedView = " + selectedView);
+
 				if (checked){
 					selectedView.setAlpha(0.3f);
 					listOfIndicesForDeletion.add(position);
@@ -295,7 +291,6 @@ public class EncounterLobbyActivity extends Activity {
 		
 		DNDCharacter clickedCharacter = DNDCharacter.getSelectedCharacters().get(lvSelectedCharacters.getPositionForView(vwParentRow));
 				
-		Log.d("myLog", "Copy button clicked " + clickedCharacter.getCharName());
 	}
 
 	@Override
