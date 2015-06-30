@@ -11,13 +11,16 @@ public class DNDCharacter {
 	
 	private static ArrayList<DNDCharacter> allCharacters;
 	private static ArrayList<DNDCharacter> selectedCharacters;
-	
+	private static ArrayList<DNDCharacter> notSelectedCharacters;
 	static {
 		if (allCharacters == null){
 			allCharacters = new ArrayList<>();
 		}
 		if (selectedCharacters == null){
 			selectedCharacters = new ArrayList<>();
+		}
+		if (notSelectedCharacters == null){
+			notSelectedCharacters = new ArrayList<>();
 		}
 	}
 	private boolean selected = false;
@@ -143,6 +146,14 @@ public class DNDCharacter {
      */
     public static ArrayList<DNDCharacter> getSelectedCharacters(){
     	return selectedCharacters;
+    }
+    
+    /**
+     * Basic getter of list of not selected characters
+     * @return list of selected characters in the game
+     */
+    public static ArrayList<DNDCharacter> getNotSelectedCharacters(){
+    	return notSelectedCharacters;
     }
     
     /**
@@ -285,5 +296,10 @@ public class DNDCharacter {
 	 */
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+	}
+	
+	@Override
+	public String toString(){
+		return this.charName + " (" + this.charClass + ")";
 	}
 }

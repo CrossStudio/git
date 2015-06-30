@@ -49,7 +49,6 @@ public class EncounterLobbyActivity extends Activity {
 		
 		loadCharactersFromDB();
 		
-		
 		initializeViews();
 		
 		refreshAvailableCharactersList();
@@ -113,7 +112,13 @@ public class EncounterLobbyActivity extends Activity {
 		String[] takeDataFromKey = {"name", "class"};
 		int[] writeDataToKey = {R.id.tvAvCharacterName, R.id.tvAvCharacterClass};
 		
-		for (DNDCharacter character : DNDCharacter.getAllCharacters()){
+		final ArrayList<DNDCharacter> availableCharacters = DNDCharacter.getNotSelectedCharacters();
+		
+		availableCharacters.clear();
+		
+		availableCharacters.addAll(DNDCharacter.getAllCharacters());
+		
+		for (DNDCharacter character : availableCharacters){
 			mapCharacterData = new HashMap<>();
 			mapCharacterData.put("name", character.getCharName());
 			mapCharacterData.put("class", "(" + character.getCharClass() + ")");
@@ -128,7 +133,7 @@ public class EncounterLobbyActivity extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
 				int idCharacterClicked = lvAvailableCharacters.getPositionForView(v);
 				Log.d("myLog", "Id of clicked view = " + idCharacterClicked);
-				DNDCharacter clickedCharacter = DNDCharacter.getAllCharacters().get(idCharacterClicked);
+				DNDCharacter clickedCharacter = availableCharacters.get(idCharacterClicked);
 				if (clickedCharacter.isSelected()){
 					Toast.makeText(EncounterLobbyActivity.this, clickedCharacter.getCharName() + " already chosen", Toast.LENGTH_SHORT).show();
 				}
@@ -170,7 +175,7 @@ public class EncounterLobbyActivity extends Activity {
 				arrayOfCharacterNamesForDeletion = new String[listOfIndicesForDeletion.size()];
 				int counter = 0;
 				for (int i : listOfIndicesForDeletion){
-					arrayOfCharacterNamesForDeletion[counter] = DNDCharacter.getAllCharacters().get(i).getCharName();
+					arrayOfCharacterNamesForDeletion[counter] = availableCharacters.get(i).getCharName();
 					counter++;
 				}
 			}
@@ -188,9 +193,12 @@ public class EncounterLobbyActivity extends Activity {
 			private void removeItemsFromList() {
 				Collections.sort(listOfIndicesForDeletion);
 				for (int i = listOfIndicesForDeletion.size() - 1; i >= 0 ; i--){
-					int indexOfCharacterToDelete = (int)listOfIndicesForDeletion.get(i);
+					int indexOfCharacterToDelete = listOfIndicesForDeletion.get(i);
+					DNDCharacter characterToDelete = availableCharacters.get(indexOfCharacterToDelete);
 					listCharactersDataToFillList.remove(indexOfCharacterToDelete);
-					DNDCharacter.getAllCharacters().remove(indexOfCharacterToDelete);
+					Log.d("myLog", characterToDelete + " will be deleted from all characters list");
+					DNDCharacter.getAllCharacters().remove(characterToDelete);
+					availableCharacters.remove(characterToDelete);
 				}
 				listOfIndicesForDeletion.clear();
 				((SimpleAdapter) lvAvailableCharacters.getAdapter()).notifyDataSetChanged();
@@ -203,8 +211,9 @@ public class EncounterLobbyActivity extends Activity {
 			private void removeItemsFromDatabase() {
 				dbHelper = new DBHelper(getBaseContext());
 				SQLiteDatabase db = dbHelper.getWritableDatabase();
-				db.delete("characters", "name IN (" + new String(new char[arrayOfCharacterNamesForDeletion.length-1]).replace("\0","?,") + "?)",
+				int numRows = db.delete("characters", "name IN (" + new String(new char[arrayOfCharacterNamesForDeletion.length-1]).replace("\0","?,") + "?)",
 						arrayOfCharacterNamesForDeletion);
+				Log.d("myLog", "Number of rows deleted = " + numRows);
 			}
 			
 			@Override
