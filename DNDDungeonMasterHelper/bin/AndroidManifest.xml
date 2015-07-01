@@ -27,6 +27,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.EncounterLobbyActivity"></activity>
+        <activity android:name=".activities.AddPowerActivity"
+            android:theme="@android:style/Theme.Holo.Dialog"></activity>
     </application>
 
 </manifest>

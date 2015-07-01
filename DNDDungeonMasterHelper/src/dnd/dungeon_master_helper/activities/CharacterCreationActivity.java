@@ -1,22 +1,22 @@
 package dnd.dungeon_master_helper.activities;
 
-import dnd.dungeon_master_helper.R;
-import dnd.dungeon_master_helper.R.id;
-import dnd.dungeon_master_helper.R.layout;
-import dnd.dungeon_master_helper.listeners.AddNewCharacterListener;
-import dnd.dungeon_master_helper.listeners.CharClassSelectedListener;
-import dnd.dungeon_master_helper.listeners.ProceedToGameListener;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import dnd.dungeon_master_helper.R;
+import dnd.dungeon_master_helper.listeners.AddNewCharacterListener;
+import dnd.dungeon_master_helper.listeners.AddNewPowerListener;
+import dnd.dungeon_master_helper.listeners.CharClassSelectedListener;
+import dnd.dungeon_master_helper.listeners.ProceedToGameListener;
 
 public class CharacterCreationActivity extends Activity {
 
 	Button btnAddNewCharacter;
 	Button btnProceedToGame;
+	Button btnAddNewPower;
 	EditText etCharName;
 	EditText etCurrentInitiative;
 	EditText etMaxHP;
@@ -40,6 +40,7 @@ public class CharacterCreationActivity extends Activity {
 	private void initializeViews() {
 		btnAddNewCharacter = (Button) findViewById(R.id.btnAddNewCharacter);
 		btnProceedToGame = (Button) findViewById(R.id.btnProceedToGame);
+		btnAddNewPower = (Button) findViewById(R.id.btnAddNewPower);
 		etCharName = (EditText) findViewById(R.id.etCharName);
 		etCurrentInitiative = (EditText) findViewById(R.id.etCurrentInitiative);
 		etMaxHP = (EditText) findViewById(R.id.etMaxHP);
@@ -47,6 +48,7 @@ public class CharacterCreationActivity extends Activity {
 		
 		btnAddNewCharacter.setOnClickListener(new AddNewCharacterListener());
 		btnProceedToGame.setOnClickListener(new ProceedToGameListener());
+		btnAddNewPower.setOnClickListener(new AddNewPowerListener());
 		
 		spCharClass.setOnItemSelectedListener(new CharClassSelectedListener());
 	}

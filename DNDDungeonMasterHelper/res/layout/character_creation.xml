@@ -101,12 +101,18 @@
             android:layout_alignParentRight="true" 
             android:layout_centerVertical="true"/>
     </RelativeLayout>
-
+	<Button 
+	    android:id="@+id/btnAddNewPower"
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout4"
+        android:layout_centerHorizontal="true"
+        android:text="Add Power"/>
     <Button
         android:id="@+id/btnAddNewCharacter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout4"
+        android:layout_below="@+id/btnAddNewPower"
         android:layout_centerHorizontal="true"
         android:text="Add Character" />
     <Button
