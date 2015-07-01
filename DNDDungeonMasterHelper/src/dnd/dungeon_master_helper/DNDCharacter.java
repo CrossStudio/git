@@ -12,6 +12,7 @@ public class DNDCharacter {
 	private static ArrayList<DNDCharacter> allCharacters;
 	private static ArrayList<DNDCharacter> selectedCharacters;
 	private static ArrayList<DNDCharacter> notSelectedCharacters;
+	private static ArrayList<Power> charPowers;
 	static {
 		if (allCharacters == null){
 			allCharacters = new ArrayList<>();
@@ -154,6 +155,14 @@ public class DNDCharacter {
      */
     public static ArrayList<DNDCharacter> getNotSelectedCharacters(){
     	return notSelectedCharacters;
+    }
+    
+    /**
+     * Basic getter of list of character's powers
+     * @return list of character's powers
+     */
+    public static ArrayList<Power> getCharPowers(){
+    	return charPowers;
     }
     
     /**
