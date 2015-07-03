@@ -8,11 +8,13 @@ package dnd.dungeon_master_helper;
 public class Power {
 	
 	private String title;
-	private String type;
+	private PowerType type;
 	private int maxAmount;
 	private int currentAmount;
 	
-	public Power (String title, String type, int maxAmount){
+	
+	
+	public Power (String title, PowerType type, int maxAmount){
 		this.setTitle(title);
 		this.setType(type);
 		this.setMaxAmount(maxAmount);
@@ -36,14 +38,14 @@ public class Power {
 	/**
 	 * @return the type
 	 */
-	public String getType() {
+	public PowerType getType() {
 		return type;
 	}
 
 	/**
 	 * @param type the type to set
 	 */
-	public void setType(String type) {
+	public void setType(PowerType type) {
 		this.type = type;
 	}
 

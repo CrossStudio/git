@@ -1,5 +1,8 @@
 package dnd.dungeon_master_helper.activities;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,7 +29,12 @@ public class AddPowerActivity extends Activity {
 		super.onCreate(savedState);
 		setContentView(R.layout.power_creation);
 		setTitle("Create New Power");
-		
+		try {
+			Class.forName("Power");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		initializeViews();
 	}
 
