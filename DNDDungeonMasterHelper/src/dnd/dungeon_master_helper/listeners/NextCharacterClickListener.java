@@ -22,8 +22,10 @@ public class NextCharacterClickListener implements OnClickListener {
 	public void onClick(View v) {
 		
 		DNDCharacter activeCharacter = MainActivity.activeCharacter;
-		saveActiveCharacterParams(activeCharacter);
-		nextCharacter(activeCharacter);	
+		if (activeCharacter != null){
+			saveActiveCharacterParams(activeCharacter);
+			nextCharacter(activeCharacter);
+		}
 	}
 	
 	/**

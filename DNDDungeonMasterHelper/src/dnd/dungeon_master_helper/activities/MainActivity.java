@@ -2,6 +2,9 @@ package dnd.dungeon_master_helper.activities;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -10,15 +13,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import dnd.dungeon_master_helper.DBHelper;
 import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.DNDCharacterInitiativeComparator;
+import dnd.dungeon_master_helper.Power;
 import dnd.dungeon_master_helper.R;
 import dnd.dungeon_master_helper.listeners.AddModifierClickListener;
 import dnd.dungeon_master_helper.listeners.DamageClickListener;
@@ -43,6 +51,8 @@ public class MainActivity extends Activity {
 	static Button btnHeal;
 	
 	static Button btnDamage;
+	
+	static ListView lvCharPowers;
 	
 	public static TextView tvActiveCharacter;
 	
@@ -94,6 +104,7 @@ public class MainActivity extends Activity {
 			activeCharacter = dndCharacterArrayList.get(0);
 			tvActiveCharacter.setText(activeCharacter.getCharName() + " (" + activeCharacter.getCharClass() + ")");
 			loadActiveCharacterParams();
+			loadActiveCharacterPowers();
 		}
 		
 		
@@ -107,7 +118,9 @@ public class MainActivity extends Activity {
 		tvHPMaxValue.setText(""+activeCharacter.getCharHPMax());
 		tvBloodiedValue.setText(activeCharacter.getCharHPMax() / 2 + "");
 		loadActiveCharacterModifiers();
+		
 	}
+
 
 	@Override
 	protected void onResume(){
@@ -127,7 +140,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Fills EditText responsible for modifier handling with applied modifier of the active character
 	 */
-	public static void loadActiveCharacterModifiers() {
+	private static void loadActiveCharacterModifiers() {
 		etCharModifiers.setText("");
 		for (String appliedModifier : activeCharacter.getListOfAppliedModifiers()){
 			String longStringOfModifiers = "";
@@ -140,6 +153,43 @@ public class MainActivity extends Activity {
 			etCharModifiers.setText(longStringOfModifiers);
 		}
 	}
+
+	/**
+	 * Fills listView of active character's powers
+	 */
+	private void loadActiveCharacterPowers() {
+		List<Map<String, String>> listPowersData = new ArrayList<>();
+		Map<String, String> mapPowersData = new HashMap<>();
+		String[] takeDataFromKey = {"title", "type"};
+		int[] writeDataToKey = {R.id.tvPowerTitle, R.id.tvPowerType};
+		
+		ArrayList<Power> powers = activeCharacter.getCharPowers();
+		if (powers != null){
+			for (Power power : powers){
+				mapPowersData.put("title", power.getTitle());
+				mapPowersData.put("type", power.getType().toString());
+			}	
+		}
+		SimpleAdapter adapter = new SimpleAdapter(this, listPowersData, R.layout.power_creation, takeDataFromKey, writeDataToKey);
+		lvCharPowers.setAdapter(adapter);
+		
+		addAmountOfPowersCheckBoxes(adapter);
+	}
+	
+	private void addAmountOfPowersCheckBoxes(SimpleAdapter adapter) {
+		LinearLayout llPowerCheckBoxes = (LinearLayout) lvCharPowers.findViewById(R.id.llPowerCheckBoxes);
+		CheckBox cbAmount = new CheckBox(this);
+		if (llPowerCheckBoxes != null){
+			ArrayList<Power> powers = activeCharacter.getCharPowers();
+			for (Power power : powers){
+				for (int i = 1; i < power.getMaxAmount(); i++){
+					llPowerCheckBoxes.addView(cbAmount);
+				}
+			}
+		}
+	}
+	
+	
 
 	/**
 	 * Fills String array of modifier with initial values
@@ -214,6 +264,8 @@ public class MainActivity extends Activity {
 		etModifierValue = (EditText) findViewById(R.id.etModifierValue);
 		spinModifierType = (Spinner) findViewById(R.id.spinModifierType);
 		spinModifierTarget = (Spinner) findViewById(R.id.spinModifierTarget);
+		lvCharPowers = (ListView) findViewById(R.id.lvCharPowers);
+		
 		
 		btnNextCharacter.setOnClickListener(new NextCharacterClickListener());
 		btnAddModifier.setOnClickListener(new AddModifierClickListener());
