@@ -88,6 +88,7 @@ public class EncounterLobbyActivity extends Activity {
 			int idMaxHPIndex = cursor.getColumnIndex("maxhp");
 			int idCurrentHPIndex = cursor.getColumnIndex("currenthp");
 			int idModifiersIndex = cursor.getColumnIndex("modifiers");
+			int idInit = cursor.getColumnIndex("init");
 			do {
 				ArrayList<String> modifiers = new ArrayList<>();
 				String longStringOfModifiers = cursor.getString(idModifiersIndex);
@@ -107,24 +108,28 @@ public class EncounterLobbyActivity extends Activity {
 	private void saveCharactersToDB(){
 		dbHelper = new DBHelper(this);
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		
-		
-		
-		
+	
 		ArrayList<DNDCharacter> selectedCharacters = DNDCharacter.getSelectedCharacters();
 		
 		for (DNDCharacter character : selectedCharacters){
 			ContentValues cvToCharactersTable = fillContentValuesCharacters(character);
 			ContentValues cvToPowersTable = fillContentValuesPowers(character);
+			
 			int updCount = db.update("characters", cvToCharactersTable, "name = ?", new String[] {character.getCharName()});
 			if (updCount == 0){
 				long rowID = db.insert("characters", null, cvToCharactersTable);
-				Log.d("myLog", "Inserted new row, number: " + rowID);
+				Log.d("myLog", "Inserted new row to characters table, number: " + rowID);
+				
+				if (cvToPowersTable != null){
+					rowID = db.insert("powers", null, cvToPowersTable);
+					Log.d("myLog", "Inserted new row to powers table, number: " + rowID);
+				}
 			}
+			
+			
 		}
 	}
 	
-
 
 	/**
 	 * Put all the data that will be written to database table Characters into ContentValues object and return it
@@ -151,16 +156,23 @@ public class EncounterLobbyActivity extends Activity {
 		return cvToCharactersTable;
 	}
 
-	
+	/**
+	 * Put all the data that will be written to database table Power into ContentValues object and return it
+	 * @param character - character whose stats will be written to the ContentValues object
+	 * @return - ContentValues object containing info about one character that will be written to the DB
+	 */
 	private ContentValues fillContentValuesPowers(DNDCharacter character) {
-		ContentValues cvToPowersTable = new ContentValues();
+		ContentValues cvToPowersTable = null;
 		ArrayList<Power> charPowers = character.getCharPowers();
-		for (int i = 0; i < charPowers.size(); i++){
-			Power power = charPowers.get(i);
-			cvToPowersTable.put("title", power.getTitle());
-			cvToPowersTable.put("type", power.getType().toString());
-			cvToPowersTable.put("maxamount", power.getMaxAmount());
-			cvToPowersTable.put("encamount", power.getCurrentAmount());
+		if (charPowers != null){
+			cvToPowersTable = new ContentValues();
+			for (int i = 0; i < charPowers.size(); i++){
+				Power power = charPowers.get(i);
+				cvToPowersTable.put("title", power.getTitle());
+				cvToPowersTable.put("type", power.getType().toString());
+				cvToPowersTable.put("maxamount", power.getMaxAmount());
+				cvToPowersTable.put("encamount", power.getCurrentAmount());
+			}
 		}
 		return cvToPowersTable;
 	}
