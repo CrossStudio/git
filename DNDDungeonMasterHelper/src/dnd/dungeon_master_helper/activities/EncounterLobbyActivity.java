@@ -1,5 +1,6 @@
 package dnd.dungeon_master_helper.activities;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +31,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import dnd.dungeon_master_helper.DBHelper;
 import dnd.dungeon_master_helper.DNDCharacter;
+import dnd.dungeon_master_helper.Power;
 import dnd.dungeon_master_helper.R;
 import dnd.dungeon_master_helper.listeners.GoToCharacterCreationListener;
 import dnd.dungeon_master_helper.listeners.GoToMainActivityClickListener;
@@ -105,29 +107,62 @@ public class EncounterLobbyActivity extends Activity {
 	private void saveCharactersToDB(){
 		dbHelper = new DBHelper(this);
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		ContentValues cv = new ContentValues();
+		
+		
+		
+		
 		ArrayList<DNDCharacter> selectedCharacters = DNDCharacter.getSelectedCharacters();
+		
 		for (DNDCharacter character : selectedCharacters){
-			cv.put("class", character.getCharClass());
-			cv.put("name", character.getCharName());
-			cv.put("maxhp", character.getCharHPMax());
-			cv.put("currenthp",character.getCharHPCurrent());
-			String modifiers = "";
-			for (String modifier : character.getListOfAppliedModifiers()){
-				if (character.getListOfAppliedModifiers().indexOf(modifier) == 0){
-					modifiers += modifier;
-				}
-				else {
-					modifiers += "\n" + modifier;
-				}
-			}
-			cv.put("modifiers", modifiers);
-			int updCount = db.update("characters", cv, "name = ?", new String[] {character.getCharName()});
+			ContentValues cvToCharactersTable = fillContentValuesCharacters(character);
+			ContentValues cvToPowersTable = fillContentValuesPowers(character);
+			int updCount = db.update("characters", cvToCharactersTable, "name = ?", new String[] {character.getCharName()});
 			if (updCount == 0){
-				long rowID = db.insert("characters", null, cv);
+				long rowID = db.insert("characters", null, cvToCharactersTable);
 				Log.d("myLog", "Inserted new row, number: " + rowID);
 			}
 		}
+	}
+	
+
+
+	/**
+	 * Put all the data that will be written to database table Characters into ContentValues object and return it
+	 * @param character - character whose stats will be written to the ContentValues object
+	 * @return - ContentValues object containing info about one character that will be written to the DB
+	 */
+	private ContentValues fillContentValuesCharacters(DNDCharacter character) {
+		ContentValues cvToCharactersTable = new ContentValues();
+		cvToCharactersTable.put("class", character.getCharClass());
+		cvToCharactersTable.put("name", character.getCharName());
+		cvToCharactersTable.put("maxhp", character.getCharHPMax());
+		cvToCharactersTable.put("currenthp",character.getCharHPCurrent());
+		cvToCharactersTable.put("init", character.getCharInitiativeEncounter());
+		StringBuilder modifiers = new StringBuilder("");
+		for (String modifier : character.getListOfAppliedModifiers()){
+			if (character.getListOfAppliedModifiers().indexOf(modifier) == 0){
+				modifiers.append(modifier);
+			}
+			else {
+				modifiers.append("\n" + modifier);
+			}
+		}
+		cvToCharactersTable.put("modifiers", modifiers.toString());
+		return cvToCharactersTable;
+	}
+
+	
+	private ContentValues fillContentValuesPowers(DNDCharacter character) {
+		ContentValues cvToPowersTable = new ContentValues();
+		ArrayList<Power> charPowers = character.getCharPowers();
+		for (int i = 0; i < charPowers.size(); i++){
+			Power power = charPowers.get(i);
+			cvToPowersTable.put("title", power.getTitle());
+			cvToPowersTable.put("type", power.getType().toString());
+			cvToPowersTable.put("maxamount", power.getMaxAmount());
+			cvToPowersTable.put("encamount", power.getCurrentAmount());
+		}
+		return cvToPowersTable;
 	}
 	
 	private void initializeViews() {
