@@ -2,8 +2,10 @@ package dnd.dungeon_master_helper.listeners;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.sax.StartElementListener;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 import dnd.dungeon_master_helper.DBHelper;
 import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.R;
+import dnd.dungeon_master_helper.activities.EncounterLobbyActivity;
 
 public class AddNewCharacterListener implements OnClickListener {
 
@@ -29,6 +32,10 @@ public class AddNewCharacterListener implements OnClickListener {
 		int charMaxHP = Integer.valueOf(((EditText) activity.findViewById(R.id.etMaxHP)).getText().toString());
 		
 		addNewCharacterToGame(charName, charClass, charInitiative, charMaxHP);
+		
+		Intent intent = new Intent(activity, EncounterLobbyActivity.class);
+		activity.startActivity(intent);
+		
 		}
 
 	/**
