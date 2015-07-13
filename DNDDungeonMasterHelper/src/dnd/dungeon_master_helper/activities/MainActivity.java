@@ -88,6 +88,24 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+	}
+	
+	/**
+	 * Fills layout views with parameters of current active player
+	 */
+	public static void loadActiveCharacterParams() {
+		tvHPCurrentValue.setText(""+activeCharacter.getCharHPCurrent());
+		tvHPMaxValue.setText(""+activeCharacter.getCharHPMax());
+		tvBloodiedValue.setText(activeCharacter.getCharHPMax() / 2 + "");
+		loadActiveCharacterModifiers();
+		
+	}
+
+
+	@Override
+	protected void onResume(){
+		super.onResume();
+		
 		initializeViews();
 		
 		arrayOfModifierTargets = new String[dndCharacterArrayList.size()];	
@@ -107,24 +125,6 @@ public class MainActivity extends Activity {
 			loadActiveCharacterPowers();
 		}
 		
-		
-	}
-	
-	/**
-	 * Fills layout views with parameters of current active player
-	 */
-	public static void loadActiveCharacterParams() {
-		tvHPCurrentValue.setText(""+activeCharacter.getCharHPCurrent());
-		tvHPMaxValue.setText(""+activeCharacter.getCharHPMax());
-		tvBloodiedValue.setText(activeCharacter.getCharHPMax() / 2 + "");
-		loadActiveCharacterModifiers();
-		
-	}
-
-
-	@Override
-	protected void onResume(){
-		super.onResume();
 		sortCharactersByInitiative();
 		LayoutInflater inflater = getLayoutInflater();
 		fillInitiativeOrderLine(inflater);

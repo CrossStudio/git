@@ -49,23 +49,7 @@ public class EncounterLobbyActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedBundle){
 		super.onCreate(savedBundle);
-		setContentView(R.layout.encounter_lobby);
-		
-		loadCharactersFromDB();
-		
-		initializeViews();
-		
-		ArrayList<DNDCharacter> availableCharacters = DNDCharacter.getNotSelectedCharacters();
-		
-		availableCharacters.clear();
-		
-		availableCharacters.addAll(DNDCharacter.getAllCharacters());
-		
-		refreshAvailableCharactersList();
-		
-		DNDCharacter.getSelectedCharacters().clear();
-		refreshSelectedCharactersList();
-		
+		setContentView(R.layout.encounter_lobby);		
 		
 	}
 
@@ -423,6 +407,25 @@ public class EncounterLobbyActivity extends Activity {
 		super.onPause();
 		refreshSelectedCharacterParams();
 		saveCharactersToDB();
+	}
+	
+	public void onResume(){
+		super.onResume();
+		
+		loadCharactersFromDB();
+		
+		initializeViews();
+		
+		ArrayList<DNDCharacter> availableCharacters = DNDCharacter.getNotSelectedCharacters();
+		
+		availableCharacters.clear();
+		
+		availableCharacters.addAll(DNDCharacter.getAllCharacters());
+		
+		refreshAvailableCharactersList();
+		
+		DNDCharacter.getSelectedCharacters().clear();
+		refreshSelectedCharactersList();
 	}
 	
 	/**
