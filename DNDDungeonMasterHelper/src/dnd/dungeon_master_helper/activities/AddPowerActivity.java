@@ -1,19 +1,17 @@
 package dnd.dungeon_master_helper.activities;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.Power;
+import dnd.dungeon_master_helper.PowerType;
 import dnd.dungeon_master_helper.R;
 
 public class AddPowerActivity extends Activity {
@@ -24,11 +22,17 @@ public class AddPowerActivity extends Activity {
 	EditText etPowerTitle;
 	EditText etPowerAmount;
 	
+	DNDCharacter currentCharacter;
+	
 	@Override
 	public void onCreate(Bundle savedState){
 		super.onCreate(savedState);
 		setContentView(R.layout.power_creation);
 		setTitle("Create New Power");
+		
+		Intent intent = getIntent();
+		currentCharacter = (DNDCharacter) intent.getExtras().get("character");
+		
 		try {
 			Class.forName("Power");
 		} catch (ClassNotFoundException e) {
@@ -71,14 +75,21 @@ public class AddPowerActivity extends Activity {
 			private void addNewPowerToPowersList() {
 				String title = etPowerTitle.getText().toString();
 				
-				RadioButton rbClicked = (RadioButton) rgPowerType.findViewById(rgPowerType.getCheckedRadioButtonId());
-				String type = (String) rbClicked.getText();
+				int typeID = rgPowerType.getCheckedRadioButtonId();
 				
 				int maxAmount = Integer.valueOf(etPowerAmount.getText().toString());
-
-				intent.putExtra("title", title);
-				intent.putExtra("type", type);
-				intent.putExtra("maxAmount", maxAmount);
+				
+				switch (typeID) {
+					case 0: 
+						currentCharacter.getCharPowers().add(new Power(title, PowerType.ATWILL, maxAmount));
+						break;
+					case 1:
+						currentCharacter.getCharPowers().add(new Power(title, PowerType.ENCOUNTER, maxAmount));
+						break;
+					case 2:
+						currentCharacter.getCharPowers().add(new Power(title, PowerType.DAILY, maxAmount));
+						break;
+				}
 			}
 		});
 	}

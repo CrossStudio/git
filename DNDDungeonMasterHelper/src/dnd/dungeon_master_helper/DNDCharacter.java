@@ -1,5 +1,6 @@
 package dnd.dungeon_master_helper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -7,7 +8,12 @@ import java.util.ArrayList;
  * @author XAM
  *
  */
-public class DNDCharacter {
+public class DNDCharacter implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6313883700901597100L;
 	
 	private static ArrayList<DNDCharacter> allCharacters;
 	private static ArrayList<DNDCharacter> selectedCharacters;
@@ -124,6 +130,15 @@ public class DNDCharacter {
     }
 
     /**
+     * Creates a dummy of a character, character parameters are set to default values "" and 0
+     * @return dummy character
+     */
+    public static DNDCharacter createDummyCharacter(){
+    	DNDCharacter character = new DNDCharacter("", "", 0, 0);
+		return character;
+    }
+    
+    /**
      * Creates a copy of a given character with slightly changed name
      * @param characterToBeCopied - character that will be copied
      * @return copy of a given character
@@ -171,6 +186,14 @@ public class DNDCharacter {
      */
     public String getCharClass(){
     	return this.charClass;
+    }
+    
+    /**
+     * Basic setter for character's class
+     * @param charClass
+     */
+    public void setCharClass(String charClass){
+    	this.charClass = charClass;
     }
     
     /**

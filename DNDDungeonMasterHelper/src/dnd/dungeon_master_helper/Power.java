@@ -1,11 +1,18 @@
 package dnd.dungeon_master_helper;
 
+import java.io.Serializable;
+
 /**
  * Represents character's special moves/spells/attacks 
  * @author XAM
  *
  */
-public class Power {
+public class Power implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 896822509048731250L;
 	
 	private String title;
 	private PowerType type;
