@@ -75,7 +75,6 @@
             android:layout_alignParentRight="true" 
             android:layout_centerVertical="true">
 
-            <requestFocus />
         </EditText>
     </RelativeLayout>
     <RelativeLayout
@@ -105,21 +104,21 @@
 	    android:id="@+id/btnAddNewPower"
 	    android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout4"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
         android:text="Add Power"/>
     <Button
         android:id="@+id/btnAddNewCharacter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnAddNewPower"
-        android:layout_centerHorizontal="true"
-        android:text="Add Character" />
-    <Button
-        android:id="@+id/btnProceedToGame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Proceed" />
+        android:text="Add Character" />
+
+     <ListView 
+        android:id="@+id/lvCharPowersCreation"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout4"
+        android:layout_above="@+id/btnAddNewCharacter"></ListView>
 </RelativeLayout>

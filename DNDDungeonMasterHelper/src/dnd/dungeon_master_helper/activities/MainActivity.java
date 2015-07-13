@@ -264,7 +264,7 @@ public class MainActivity extends Activity {
 		etModifierValue = (EditText) findViewById(R.id.etModifierValue);
 		spinModifierType = (Spinner) findViewById(R.id.spinModifierType);
 		spinModifierTarget = (Spinner) findViewById(R.id.spinModifierTarget);
-		lvCharPowers = (ListView) findViewById(R.id.lvCharPowers);
+		lvCharPowers = (ListView) findViewById(R.id.lvCharPowersMain);
 		
 		
 		btnNextCharacter.setOnClickListener(new NextCharacterClickListener());

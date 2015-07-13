@@ -5,22 +5,23 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import dnd.dungeon_master_helper.R;
 import dnd.dungeon_master_helper.listeners.AddNewCharacterListener;
 import dnd.dungeon_master_helper.listeners.AddNewPowerListener;
 import dnd.dungeon_master_helper.listeners.CharClassSelectedListener;
-import dnd.dungeon_master_helper.listeners.ProceedToGameListener;
 
 public class CharacterCreationActivity extends Activity {
 
 	Button btnAddNewCharacter;
-	Button btnProceedToGame;
 	Button btnAddNewPower;
 	EditText etCharName;
 	EditText etCurrentInitiative;
 	EditText etMaxHP;
 	Spinner spCharClass;
+	
+	ListView lvCharPowers;
 	
 	String classes[] = {"Cleric", "Fighter", "Paladin", "Ranger", "Rogue", "Warlock", "Warlord", "Wizard", "Monster"};
 	
@@ -39,15 +40,14 @@ public class CharacterCreationActivity extends Activity {
 	 */
 	private void initializeViews() {
 		btnAddNewCharacter = (Button) findViewById(R.id.btnAddNewCharacter);
-		btnProceedToGame = (Button) findViewById(R.id.btnProceedToGame);
 		btnAddNewPower = (Button) findViewById(R.id.btnAddNewPower);
 		etCharName = (EditText) findViewById(R.id.etCharName);
 		etCurrentInitiative = (EditText) findViewById(R.id.etCurrentInitiative);
 		etMaxHP = (EditText) findViewById(R.id.etMaxHP);
 		spCharClass = (Spinner) findViewById(R.id.spCharClass);
+		lvCharPowers = (ListView) findViewById(R.id.lvCharPowersMain);
 		
 		btnAddNewCharacter.setOnClickListener(new AddNewCharacterListener());
-		btnProceedToGame.setOnClickListener(new ProceedToGameListener());
 		btnAddNewPower.setOnClickListener(new AddNewPowerListener());
 		
 		spCharClass.setOnItemSelectedListener(new CharClassSelectedListener());

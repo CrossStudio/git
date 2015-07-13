@@ -10,7 +10,6 @@ public class AddNewPowerListener implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		Intent intent = new Intent(v.getContext(), AddPowerActivity.class);
 		v.getContext().startActivity(intent);
 	}
