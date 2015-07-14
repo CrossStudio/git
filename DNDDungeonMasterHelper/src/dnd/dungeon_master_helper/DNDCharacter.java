@@ -18,7 +18,7 @@ public class DNDCharacter implements Serializable{
 	private static ArrayList<DNDCharacter> allCharacters;
 	private static ArrayList<DNDCharacter> selectedCharacters;
 	private static ArrayList<DNDCharacter> notSelectedCharacters;
-	private ArrayList<Power> charPowers;
+	private ArrayList<Power> charPowers = new ArrayList<Power>();
 	static {
 		if (allCharacters == null){
 			allCharacters = new ArrayList<>();

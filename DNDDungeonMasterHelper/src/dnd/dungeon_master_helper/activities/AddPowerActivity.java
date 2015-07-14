@@ -2,12 +2,13 @@ package dnd.dungeon_master_helper.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.Power;
@@ -16,6 +17,8 @@ import dnd.dungeon_master_helper.R;
 
 public class AddPowerActivity extends Activity {
 
+	SharedPreferences prefs;
+	
 	Button btnPowerCancel;
 	Button btnPowerAdd;
 	RadioGroup rgPowerType;
@@ -29,16 +32,7 @@ public class AddPowerActivity extends Activity {
 		super.onCreate(savedState);
 		setContentView(R.layout.power_creation);
 		setTitle("Create New Power");
-		
-		Intent intent = getIntent();
-		currentCharacter = (DNDCharacter) intent.getExtras().get("character");
-		
-		try {
-			Class.forName("Power");
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		initializeViews();
 	}
 
@@ -65,7 +59,6 @@ public class AddPowerActivity extends Activity {
 				intent = new Intent(AddPowerActivity.this, CharacterCreationActivity.class);
 				
 				addNewPowerToPowersList();
-				
 				AddPowerActivity.this.startActivity(intent);
 			}
 
@@ -73,23 +66,19 @@ public class AddPowerActivity extends Activity {
 			 * Creates new power based on the entered data and sends it to CharacterCreationActivity
 			 */
 			private void addNewPowerToPowersList() {
+				prefs = getSharedPreferences("NewPower", MODE_PRIVATE);
+				Editor editor = prefs.edit();
+				
 				String title = etPowerTitle.getText().toString();
+				editor.putString("newPowerTitle", title);
 				
 				int typeID = rgPowerType.getCheckedRadioButtonId();
+				editor.putInt("newPowerTypeID", typeID);
 				
 				int maxAmount = Integer.valueOf(etPowerAmount.getText().toString());
+				editor.putInt("newPowerAmount", maxAmount);
 				
-				switch (typeID) {
-					case 0: 
-						currentCharacter.getCharPowers().add(new Power(title, PowerType.ATWILL, maxAmount));
-						break;
-					case 1:
-						currentCharacter.getCharPowers().add(new Power(title, PowerType.ENCOUNTER, maxAmount));
-						break;
-					case 2:
-						currentCharacter.getCharPowers().add(new Power(title, PowerType.DAILY, maxAmount));
-						break;
-				}
+				editor.commit();
 			}
 		});
 	}

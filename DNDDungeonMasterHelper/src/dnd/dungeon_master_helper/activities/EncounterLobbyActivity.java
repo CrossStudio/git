@@ -72,7 +72,7 @@ public class EncounterLobbyActivity extends Activity {
 			int idMaxHPIndex = cursor.getColumnIndex("maxhp");
 			int idCurrentHPIndex = cursor.getColumnIndex("currenthp");
 			int idModifiersIndex = cursor.getColumnIndex("modifiers");
-			int idInit = cursor.getColumnIndex("init");
+			int idInit = cursor.getColumnIndex("initiative");
 			do {
 				ArrayList<String> modifiers = new ArrayList<>();
 				String longStringOfModifiers = cursor.getString(idModifiersIndex);
@@ -126,7 +126,7 @@ public class EncounterLobbyActivity extends Activity {
 		cvToCharactersTable.put("name", character.getCharName());
 		cvToCharactersTable.put("maxhp", character.getCharHPMax());
 		cvToCharactersTable.put("currenthp",character.getCharHPCurrent());
-		cvToCharactersTable.put("init", character.getCharInitiativeEncounter());
+		cvToCharactersTable.put("initiative", character.getCharInitiativeEncounter());
 		StringBuilder modifiers = new StringBuilder("");
 		for (String modifier : character.getListOfAppliedModifiers()){
 			if (character.getListOfAppliedModifiers().indexOf(modifier) == 0){

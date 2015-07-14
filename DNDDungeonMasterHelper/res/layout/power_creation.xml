@@ -31,17 +31,21 @@
 	    <RadioGroup 
 		    android:id="@+id/rgPowerType"
 		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content">
+		    android:layout_height="wrap_content"
+		    android:checkedButton="@+id/rbAtWill">
 	        <RadioButton
 	            android:text="At-Will"
+	            android:id="@+id/rbAtWill"
 	            android:layout_width="wrap_content"
 		    	android:layout_height="wrap_content"/>
 	        <RadioButton 
 	            android:text="Encounter"
+	            android:id="@+id/rbEncounter"
 	            android:layout_width="wrap_content"
 		    	android:layout_height="wrap_content"/>
 	        <RadioButton 
 	            android:text="Daily"
+	            android:id="@+id/rbDaily"
 	            android:layout_width="wrap_content"
 		    	android:layout_height="wrap_content"/>
 	    </RadioGroup>
