@@ -32,6 +32,7 @@ import android.widget.Toast;
 import dnd.dungeon_master_helper.DBHelper;
 import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.Power;
+import dnd.dungeon_master_helper.PowerType;
 import dnd.dungeon_master_helper.R;
 import dnd.dungeon_master_helper.listeners.GoToCharacterCreationListener;
 import dnd.dungeon_master_helper.listeners.GoToMainActivityClickListener;
@@ -86,6 +87,48 @@ public class EncounterLobbyActivity extends Activity {
 		}
 	}
 	
+	private void loadPowersFromDB() {
+		dbHelper = new DBHelper(this);
+		
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		
+		String sqlQuery = "select characters.id, characters.name, powers.title, powers.type, powers.maxamount, powers.encamount "
+				+ "from powers "
+				+ "inner join characters "
+				+ "on powers.characterid = characters.id ";
+		
+		Cursor cursor = db.rawQuery(sqlQuery, null);
+		if (cursor.moveToFirst()){
+			do {
+				Log.d("myLog", "-----inside cursor loadPowersFromDB() EncounterLobby-----");
+				for (DNDCharacter character : DNDCharacter.getAllCharacters()){
+					Log.d("myLog", cursor.getString(1) + " = cursor.getString(1)");
+					if (character.getCharName().equals(cursor.getString(1))){
+						
+						String type = cursor.getString(3);
+						
+						ArrayList<Power> powers = character.getCharPowers();
+						switch (type) {
+							case "ATWILL": 
+								powers.add(new Power(cursor.getString(2), PowerType.ATWILL, cursor.getInt(4)));
+								break;
+							case "ENCOUNTER":
+								powers.add(new Power(cursor.getString(2), PowerType.ENCOUNTER, cursor.getInt(4)));
+								break;
+							case "DAILY":
+								powers.add(new Power(cursor.getString(2), PowerType.DAILY, cursor.getInt(4)));
+								break;
+						}
+						Log.d("myLog", "Added " + powers.get(powers.size()-1) + " to " + character);
+						break;
+					}
+				}
+				
+			}
+			while (cursor.moveToNext());
+		}
+	}
+	
 	/**
 	 * Save changes made to selected characters to the database
 	 */
@@ -97,17 +140,12 @@ public class EncounterLobbyActivity extends Activity {
 		
 		for (DNDCharacter character : selectedCharacters){
 			ContentValues cvToCharactersTable = fillContentValuesCharacters(character);
-			ContentValues cvToPowersTable = fillContentValuesPowers(character);
 			
 			int updCount = db.update("characters", cvToCharactersTable, "name = ?", new String[] {character.getCharName()});
 			if (updCount == 0){
 				long rowID = db.insert("characters", null, cvToCharactersTable);
 				Log.d("myLog", "Inserted new row to characters table, number: " + rowID);
-				
-				if (cvToPowersTable != null){
-					rowID = db.insert("powers", null, cvToPowersTable);
-					Log.d("myLog", "Inserted new row to powers table, number: " + rowID);
-				}
+
 			}
 			
 			
@@ -138,27 +176,6 @@ public class EncounterLobbyActivity extends Activity {
 		}
 		cvToCharactersTable.put("modifiers", modifiers.toString());
 		return cvToCharactersTable;
-	}
-
-	/**
-	 * Put all the data that will be written to database table Power into ContentValues object and return it
-	 * @param character - character whose stats will be written to the ContentValues object
-	 * @return - ContentValues object containing info about one character that will be written to the DB
-	 */
-	private ContentValues fillContentValuesPowers(DNDCharacter character) {
-		ContentValues cvToPowersTable = null;
-		ArrayList<Power> charPowers = character.getCharPowers();
-		if (charPowers != null){
-			cvToPowersTable = new ContentValues();
-			for (int i = 0; i < charPowers.size(); i++){
-				Power power = charPowers.get(i);
-				cvToPowersTable.put("title", power.getTitle());
-				cvToPowersTable.put("type", power.getType().toString());
-				cvToPowersTable.put("maxamount", power.getMaxAmount());
-				cvToPowersTable.put("encamount", power.getCurrentAmount());
-			}
-		}
-		return cvToPowersTable;
 	}
 	
 	private void initializeViews() {
@@ -413,6 +430,7 @@ public class EncounterLobbyActivity extends Activity {
 		super.onResume();
 		
 		loadCharactersFromDB();
+		loadPowersFromDB();
 		
 		initializeViews();
 		
@@ -427,7 +445,8 @@ public class EncounterLobbyActivity extends Activity {
 		DNDCharacter.getSelectedCharacters().clear();
 		refreshSelectedCharactersList();
 	}
-	
+
+
 	/**
 	 * Sets parameters of all the selected characters to corresponding values in layout list view
 	 */

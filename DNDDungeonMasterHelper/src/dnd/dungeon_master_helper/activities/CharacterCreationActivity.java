@@ -24,7 +24,7 @@ public class CharacterCreationActivity extends Activity {
 	
 	SharedPreferences prefs;
 	
-	static DNDCharacter currentCharacter = DNDCharacter.createDummyCharacter();
+	public static DNDCharacter currentCharacter = DNDCharacter.createDummyCharacter();
 	
 	Button btnAddNewCharacter;
 	Button btnAddNewPower;

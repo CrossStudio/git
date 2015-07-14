@@ -83,4 +83,8 @@ public class Power implements Serializable{
 	public void setCurrentAmount(int currentAmount) {
 		this.currentAmount = currentAmount;
 	}
+	
+	public String toString(){
+		return title;
+	}
 }

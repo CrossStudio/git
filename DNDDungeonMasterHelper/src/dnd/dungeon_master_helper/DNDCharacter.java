@@ -129,6 +129,11 @@ public class DNDCharacter implements Serializable{
     	return newCharacter;
     }
 
+    public static DNDCharacter addNewCharacterToGame(DNDCharacter character){
+    	allCharacters.add(character);
+    	return character;
+    }
+    
     /**
      * Creates a dummy of a character, character parameters are set to default values "" and 0
      * @return dummy character

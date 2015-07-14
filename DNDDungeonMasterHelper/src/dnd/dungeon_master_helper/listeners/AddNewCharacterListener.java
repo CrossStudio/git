@@ -1,5 +1,7 @@
 package dnd.dungeon_master_helper.listeners;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -14,7 +16,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import dnd.dungeon_master_helper.DBHelper;
 import dnd.dungeon_master_helper.DNDCharacter;
+import dnd.dungeon_master_helper.Power;
 import dnd.dungeon_master_helper.R;
+import dnd.dungeon_master_helper.activities.CharacterCreationActivity;
 import dnd.dungeon_master_helper.activities.EncounterLobbyActivity;
 
 public class AddNewCharacterListener implements OnClickListener {
@@ -25,17 +29,13 @@ public class AddNewCharacterListener implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		activity = (Activity) v.getContext();
-		String charName = ((EditText) activity.findViewById(R.id.etCharName)).getText().toString();
-		Spinner spCharClass = ((Spinner) activity.findViewById(R.id.spCharClass));
-		String charClass = spCharClass.getSelectedItem().toString();
-		int charInitiative = Integer.valueOf(((EditText) activity.findViewById(R.id.etCurrentInitiative)).getText().toString());
-		int charMaxHP = Integer.valueOf(((EditText) activity.findViewById(R.id.etMaxHP)).getText().toString());
 		
-		addNewCharacterToGame(charName, charClass, charInitiative, charMaxHP);
+		DNDCharacter character = CharacterCreationActivity.currentCharacter;
+		
+		addNewCharacterToGame(character);
 		
 		Intent intent = new Intent(activity, EncounterLobbyActivity.class);
 		activity.startActivity(intent);
-		
 		}
 
 	/**
@@ -45,14 +45,15 @@ public class AddNewCharacterListener implements OnClickListener {
 	 * @param charInitiative - encounter initiative of the character
 	 * @param charMaxHP - maximum health points of the character
 	 */
-	private void addNewCharacterToGame(String charName, String charClass, int charInitiative, int charMaxHP) {
-		if (checkForDuplicates(charName)){
-			DNDCharacter newCharacter = DNDCharacter.addNewCharacterToGame(charName, charClass, charInitiative, charMaxHP);
+	private void addNewCharacterToGame(DNDCharacter character) {
+		if (checkForDuplicates(character.getCharName())){			
+			DNDCharacter newCharacter = DNDCharacter.addNewCharacterToGame(character);
 			saveNewCharacterToDB(newCharacter);
-			Toast.makeText(activity, charName + " created", Toast.LENGTH_SHORT).show();
+			saveCharacterPowersToDB(newCharacter);
+			Toast.makeText(activity, character.getCharName() + " created", Toast.LENGTH_SHORT).show();
 		}
 		else {
-			Toast.makeText(activity, charName + " is already playing", Toast.LENGTH_SHORT).show();
+			Toast.makeText(activity, character.getCharName() + " is already playing", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -102,4 +103,40 @@ public class AddNewCharacterListener implements OnClickListener {
 		long rowID = db.insert("characters", null, cv);
 		Log.d("myLog", "Row number: " + rowID);
 	}
+	
+	private void saveCharacterPowersToDB(DNDCharacter newCharacter) {
+		fillContentValuesPowers(newCharacter);
+	}
+	/**
+	 * Put all the data that will be written to database table Power into ContentValues object and return it
+	 * @param character - character whose stats will be written to the ContentValues object
+	 * @return - ContentValues object containing info about one character that will be written to the DB
+	 */
+	private void fillContentValuesPowers(DNDCharacter character) {
+		ContentValues cvToPowersTable = null;
+		ArrayList<Power> charPowers = character.getCharPowers();
+
+		dbHelper = new DBHelper(activity);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		
+		Cursor cursor = db.query("characters", null, "name = ?", new String[]{character.getCharName()},
+				null, null, null);
+		
+		int characterID = 0;
+		if (cursor.moveToFirst()){
+			characterID = cursor.getInt(0);
+		}
+		
+		cvToPowersTable = new ContentValues();
+		for (int i = 0; i < charPowers.size(); i++){
+			Power power = charPowers.get(i);
+			cvToPowersTable.put("characterid", characterID);
+			cvToPowersTable.put("title", power.getTitle());
+			cvToPowersTable.put("type", power.getType().toString());
+			cvToPowersTable.put("maxamount", power.getMaxAmount());
+			cvToPowersTable.put("encamount", power.getCurrentAmount());
+			db.insert("powers", null, cvToPowersTable);
+		}
+	}
+
 }

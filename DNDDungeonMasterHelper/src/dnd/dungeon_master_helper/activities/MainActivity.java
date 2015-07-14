@@ -13,7 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Adapter;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -33,7 +33,6 @@ import dnd.dungeon_master_helper.listeners.DamageClickListener;
 import dnd.dungeon_master_helper.listeners.HealClickListener;
 import dnd.dungeon_master_helper.listeners.ModifierTargetSelectedListener;
 import dnd.dungeon_master_helper.listeners.ModifierTypeSelectedListener;
-import dnd.dungeon_master_helper.listeners.NextCharacterClickListener;
 
 public class MainActivity extends Activity {
 
@@ -52,7 +51,7 @@ public class MainActivity extends Activity {
 	
 	static Button btnDamage;
 	
-	static ListView lvCharPowers;
+	ListView lvCharPowers;
 	
 	public static TextView tvActiveCharacter;
 	
@@ -89,18 +88,6 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 	}
-	
-	/**
-	 * Fills layout views with parameters of current active player
-	 */
-	public static void loadActiveCharacterParams() {
-		tvHPCurrentValue.setText(""+activeCharacter.getCharHPCurrent());
-		tvHPMaxValue.setText(""+activeCharacter.getCharHPMax());
-		tvBloodiedValue.setText(activeCharacter.getCharHPMax() / 2 + "");
-		loadActiveCharacterModifiers();
-		
-	}
-
 
 	@Override
 	protected void onResume(){
@@ -137,10 +124,72 @@ public class MainActivity extends Activity {
 	private void sortCharactersByInitiative() {
 		Collections.sort(dndCharacterArrayList, new DNDCharacterInitiativeComparator());
 	}
+	
+	/**
+	 * Fills layout views with parameters of current active player
+	 */
+	public void loadActiveCharacterParams() {
+		tvHPCurrentValue.setText(""+activeCharacter.getCharHPCurrent());
+		tvHPMaxValue.setText(""+activeCharacter.getCharHPMax());
+		tvBloodiedValue.setText(activeCharacter.getCharHPMax() / 2 + "");
+		loadActiveCharacterModifiers();
+		btnNextCharacter.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				
+				if (activeCharacter != null){
+					saveActiveCharacterParams();
+					nextCharacter();
+				}
+			}
+			
+			/**
+			 * Saves parameters of currently active player
+			 * @param activeCharacter
+			 */
+			private void saveActiveCharacterParams() {
+				activeCharacter.setCharHPCurrent(Integer.valueOf(tvHPCurrentValue.getText().toString()));
+				saveActiveCharacterModifiers();
+			}
+
+			/**
+			 * Saves modifiers of currently active character
+			 * @param activeCharacter
+			 */
+			private void saveActiveCharacterModifiers() {
+				activeCharacter.getListOfAppliedModifiers().clear();
+				activeCharacter.getListOfAppliedModifiers().add(etCharModifiers.getText().toString());
+			}
+
+			/**
+			 * Sets currently active character equal to the next character with regards to the character sent to the method
+			 * Also changes text in the "Active Character" TextView
+			 * @param activeCharacter - currently active character
+			 */
+			private void nextCharacter()
+			{
+				int indexOfActiveCharacter = dndCharacterArrayList.indexOf(activeCharacter);
+				Log.d("myLog", "Index of active character = " + indexOfActiveCharacter);
+				if (indexOfActiveCharacter < dndCharacterArrayList.size() - 1)
+				{
+					setActiveCharacter(indexOfActiveCharacter + 1);
+				}
+				else
+				{
+					setActiveCharacter(0);
+				}
+				tvActiveCharacter.setText(activeCharacter.getCharName() + " (" + activeCharacter.getCharClass() + ")");
+				loadActiveCharacterParams();
+				loadActiveCharacterPowers();
+			}
+		});
+	}
+	
 	/**
 	 * Fills EditText responsible for modifier handling with applied modifier of the active character
 	 */
-	private static void loadActiveCharacterModifiers() {
+	private void loadActiveCharacterModifiers() {
 		etCharModifiers.setText("");
 		for (String appliedModifier : activeCharacter.getListOfAppliedModifiers()){
 			String longStringOfModifiers = "";
@@ -159,18 +208,19 @@ public class MainActivity extends Activity {
 	 */
 	private void loadActiveCharacterPowers() {
 		List<Map<String, String>> listPowersData = new ArrayList<>();
-		Map<String, String> mapPowersData = new HashMap<>();
+		
 		String[] takeDataFromKey = {"title", "type"};
 		int[] writeDataToKey = {R.id.tvPowerTitle, R.id.tvPowerType};
 		
 		ArrayList<Power> powers = activeCharacter.getCharPowers();
-		if (powers != null){
-			for (Power power : powers){
-				mapPowersData.put("title", power.getTitle());
-				mapPowersData.put("type", power.getType().toString());
-			}	
+		for (Power power : powers){
+			Map<String, String> mapPowersData = new HashMap<>();
+			mapPowersData.put("title", power.getTitle());
+			mapPowersData.put("type", power.getType().toString());
+			listPowersData.add(mapPowersData);
+			Log.d("myLog", "Power: " + power.getTitle());
 		}
-		SimpleAdapter adapter = new SimpleAdapter(this, listPowersData, R.layout.power_creation, takeDataFromKey, writeDataToKey);
+		SimpleAdapter adapter = new SimpleAdapter(this, listPowersData, R.layout.power_item, takeDataFromKey, writeDataToKey);
 		lvCharPowers.setAdapter(adapter);
 		
 		addAmountOfPowersCheckBoxes(adapter);
@@ -267,7 +317,7 @@ public class MainActivity extends Activity {
 		lvCharPowers = (ListView) findViewById(R.id.lvCharPowersMain);
 		
 		
-		btnNextCharacter.setOnClickListener(new NextCharacterClickListener());
+		
 		btnAddModifier.setOnClickListener(new AddModifierClickListener());
 		btnHeal.setOnClickListener(new HealClickListener());
 		btnDamage.setOnClickListener(new DamageClickListener());
