@@ -7,11 +7,17 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.LinearLayout.LayoutParams;
 import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.Power;
 import dnd.dungeon_master_helper.PowerType;
@@ -57,7 +63,7 @@ public class CharacterCreationActivity extends Activity {
 		etCurrentInitiative = (EditText) findViewById(R.id.etCurrentInitiative);
 		etMaxHP = (EditText) findViewById(R.id.etMaxHP);
 		spCharClass = (Spinner) findViewById(R.id.spCharClass);
-		lvCharPowers = (ListView) findViewById(R.id.lvCharPowersMain);
+		//lvCharPowers = (ListView) findViewById(R.id.lvCharPowersMain);
 		
 		btnAddNewCharacter.setOnClickListener(new AddNewCharacterListener());
 		btnAddNewPower.setOnClickListener(new AddNewPowerListener());
@@ -129,6 +135,7 @@ public class CharacterCreationActivity extends Activity {
 		super.onResume();
 		
 		loadCharacterParameters();
+		loadCurrentCharacterPowers();
 	}
 
 	/**
@@ -209,4 +216,35 @@ public class CharacterCreationActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Draws powers of current active character on MainActivity using LayoutInflater
+	 */
+	private void loadCurrentCharacterPowers(){
+		LayoutInflater inflater = getLayoutInflater();
+		LinearLayout llCharPowers = (LinearLayout) findViewById(R.id.llCharPowersCreation);
+		llCharPowers.removeAllViews();
+		ArrayList<Power> powers = currentCharacter.getCharPowers();
+		for (Power power : powers){
+			LinearLayout item = (LinearLayout) inflater.inflate(R.layout.power_item, llCharPowers, false);
+			
+			TextView tvPowerTitle = (TextView) item.findViewById(R.id.tvPowerTitle);
+			tvPowerTitle.setText(power.getTitle());
+			
+			TextView tvPowerType = (TextView) item.findViewById(R.id.tvPowerType);
+			tvPowerType.setText(power.getType()+"");
+			
+			
+			LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			params.gravity = Gravity.CENTER_VERTICAL;
+			
+			for (int i = 0; i < power.getMaxAmount(); i++){
+				CheckBox cbPowerAmount = new CheckBox(this);
+				cbPowerAmount.setLayoutParams(params);
+				item.addView(cbPowerAmount);
+			}
+			llCharPowers.addView(item);
+			
+		}
+	}
+	
 }

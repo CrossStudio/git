@@ -115,10 +115,12 @@
         android:layout_alignParentBottom="true"
         android:text="Add Character" />
 
-     <ListView 
-        android:id="@+id/lvCharPowersCreation"
+     <LinearLayout 
+        android:orientation="vertical"
+        android:id="@+id/llCharPowersCreation"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linearLayout4"
-        android:layout_above="@+id/btnAddNewCharacter"></ListView>
+        android:layout_above="@+id/btnAddNewCharacter">
+     </LinearLayout>
 </RelativeLayout>

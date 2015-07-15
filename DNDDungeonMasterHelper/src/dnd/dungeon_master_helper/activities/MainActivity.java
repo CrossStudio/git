@@ -11,6 +11,7 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,6 +20,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
@@ -206,7 +208,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Fills listView of active character's powers
 	 */
-	private void loadActiveCharacterPowers() {
+	/*private void loadActiveCharacterPowers() {
 		List<Map<String, String>> listPowersData = new ArrayList<>();
 		
 		String[] takeDataFromKey = {"title", "type"};
@@ -224,22 +226,38 @@ public class MainActivity extends Activity {
 		lvCharPowers.setAdapter(adapter);
 		
 		addAmountOfPowersCheckBoxes(adapter);
-	}
+	}*/
 	
-	private void addAmountOfPowersCheckBoxes(SimpleAdapter adapter) {
-		LinearLayout llPowerCheckBoxes = (LinearLayout) lvCharPowers.findViewById(R.id.llPowerCheckBoxes);
-		CheckBox cbAmount = new CheckBox(this);
-		if (llPowerCheckBoxes != null){
-			ArrayList<Power> powers = activeCharacter.getCharPowers();
-			for (Power power : powers){
-				for (int i = 1; i < power.getMaxAmount(); i++){
-					llPowerCheckBoxes.addView(cbAmount);
-				}
+	/**
+	 * Draws powers of current active character on MainActivity using LayoutInflater
+	 */
+	private void loadActiveCharacterPowers(){
+		LayoutInflater inflater = getLayoutInflater();
+		LinearLayout llCharPowers = (LinearLayout) findViewById(R.id.llCharPowersMain);
+		llCharPowers.removeAllViews();
+		ArrayList<Power> powers = activeCharacter.getCharPowers();
+		for (Power power : powers){
+			LinearLayout item = (LinearLayout) inflater.inflate(R.layout.power_item, llCharPowers, false);
+			
+			TextView tvPowerTitle = (TextView) item.findViewById(R.id.tvPowerTitle);
+			tvPowerTitle.setText(power.getTitle());
+			
+			TextView tvPowerType = (TextView) item.findViewById(R.id.tvPowerType);
+			tvPowerType.setText(power.getType()+"");
+			
+			
+			LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			params.gravity = Gravity.CENTER_VERTICAL;
+			
+			for (int i = 0; i < power.getMaxAmount(); i++){
+				CheckBox cbPowerAmount = new CheckBox(this);
+				cbPowerAmount.setLayoutParams(params);
+				item.addView(cbPowerAmount);
 			}
+			llCharPowers.addView(item);
+			
 		}
-	}
-	
-	
+	}	
 
 	/**
 	 * Fills String array of modifier with initial values
@@ -314,7 +332,7 @@ public class MainActivity extends Activity {
 		etModifierValue = (EditText) findViewById(R.id.etModifierValue);
 		spinModifierType = (Spinner) findViewById(R.id.spinModifierType);
 		spinModifierTarget = (Spinner) findViewById(R.id.spinModifierTarget);
-		lvCharPowers = (ListView) findViewById(R.id.lvCharPowersMain);
+		//lvCharPowers = (ListView) findViewById(R.id.lvCharPowersMain);
 		
 		
 		
