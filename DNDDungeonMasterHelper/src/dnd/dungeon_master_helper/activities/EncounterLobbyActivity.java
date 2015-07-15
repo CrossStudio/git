@@ -387,16 +387,13 @@ public class EncounterLobbyActivity extends Activity {
 		
 		DNDCharacter clickedCharacter = DNDCharacter.getSelectedCharacters().get(lvSelectedCharacters.getPositionForView(vwParentRow));
 		
-		String name = clickedCharacter.getCharName();
-		String charClass = clickedCharacter.getCharClass();
-		int charMaxHP = clickedCharacter.getCharHPMax();
-		int charCurrentHP = clickedCharacter.getCharHPCurrent();
-		ArrayList<String> modifiers = clickedCharacter.getListOfAppliedModifiers();
+		DNDCharacter character = DNDCharacter.createDummyCharacter();
+		character.copyCharacter(clickedCharacter);
 		
-		DNDCharacter newCharacter = DNDCharacter.addNewCharacterToGame(name, charClass, charMaxHP, charCurrentHP, modifiers);
+		DNDCharacter.addNewCharacterToGame(character);
 		
 		ArrayList<DNDCharacter> selectedCharacters = DNDCharacter.getSelectedCharacters();
-		selectedCharacters.add(newCharacter);
+		selectedCharacters.add(character);
 		
 		refreshSelectedCharactersList();
 	}

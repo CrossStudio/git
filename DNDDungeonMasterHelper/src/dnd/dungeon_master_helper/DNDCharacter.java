@@ -2,6 +2,7 @@ package dnd.dungeon_master_helper;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class represents a general character from DND game with loads of parameters along with their getters and setters
@@ -148,8 +149,15 @@ public class DNDCharacter implements Serializable{
      * @param characterToBeCopied - character that will be copied
      * @return copy of a given character
      */
-    public static DNDCharacter copyCharacter(DNDCharacter characterToBeCopied){
-    	//TODO
+    public DNDCharacter copyCharacter(DNDCharacter characterToBeCopied){
+    	
+    	this.charName = characterToBeCopied.getCharName();
+		this.charClass = characterToBeCopied.getCharClass();
+		this.charHPMax = characterToBeCopied.getCharHPMax();
+		this.charHPCurrent = characterToBeCopied.getCharHPCurrent();
+		this.listOfAppliedModifiers = new ArrayList<>(characterToBeCopied.getListOfAppliedModifiers());
+		this.charPowers = new ArrayList<>(characterToBeCopied.getCharPowers());
+    	
     	return characterToBeCopied;
     }
     
