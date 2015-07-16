@@ -152,25 +152,19 @@
         android:inputType="textMultiLine" >
 
     </EditText>
-    
-    <LinearLayout 
-        android:orientation="vertical"
-        android:id="@+id/llCharPowersMain"
+    <ScrollView 
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/etCharModifiers"
-        android:layout_above="@+id/btnNextCharacter">
-        
-    </LinearLayout>
-    
-    <!-- <ListView 
-        android:id="@+id/lvCharPowersMain"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/etCharModifiers"
-        android:layout_above="@+id/btnNextCharacter"></ListView>
-     -->
-     
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/etCharModifiers"
+	    android:layout_above="@+id/btnNextCharacter">
+	    <LinearLayout 
+	        android:orientation="vertical"
+	        android:id="@+id/llCharPowersMain"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content">
+	        
+	    </LinearLayout>
+	</ScrollView>
     <Button
         android:id="@+id/btnNextCharacter"
         android:layout_width="wrap_content"

@@ -114,13 +114,16 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:text="Add Character" />
-
-     <LinearLayout 
-        android:orientation="vertical"
-        android:id="@+id/llCharPowersCreation"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout4"
-        android:layout_above="@+id/btnAddNewCharacter">
-     </LinearLayout>
+	<ScrollView 
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/linearLayout4"
+	    android:layout_above="@+id/btnAddNewCharacter">
+	    <LinearLayout 
+	        android:orientation="vertical"
+	        android:id="@+id/llCharPowersCreation"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content">
+	    </LinearLayout>
+     </ScrollView>
 </RelativeLayout>
