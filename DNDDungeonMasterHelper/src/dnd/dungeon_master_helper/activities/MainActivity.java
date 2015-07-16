@@ -2,9 +2,6 @@ package dnd.dungeon_master_helper.activities;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -18,11 +15,12 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import dnd.dungeon_master_helper.DBHelper;
@@ -236,7 +234,7 @@ public class MainActivity extends Activity {
 		LinearLayout llCharPowers = (LinearLayout) findViewById(R.id.llCharPowersMain);
 		llCharPowers.removeAllViews();
 		ArrayList<Power> powers = activeCharacter.getCharPowers();
-		for (Power power : powers){
+		for (final Power power : powers){
 			LinearLayout item = (LinearLayout) inflater.inflate(R.layout.power_item, llCharPowers, false);
 			
 			TextView tvPowerTitle = (TextView) item.findViewById(R.id.tvPowerTitle);
@@ -249,10 +247,32 @@ public class MainActivity extends Activity {
 			LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 			params.gravity = Gravity.CENTER_VERTICAL;
 			
+			int usedPowerCounter = power.getMaxAmount() - power.getCurrentAmount();
+			
 			for (int i = 0; i < power.getMaxAmount(); i++){
 				CheckBox cbPowerAmount = new CheckBox(this);
 				cbPowerAmount.setLayoutParams(params);
+				
+				if (usedPowerCounter > 0){
+					cbPowerAmount.setChecked(true);
+					usedPowerCounter--;
+				}
+				
 				item.addView(cbPowerAmount);
+
+				cbPowerAmount.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+						if (isChecked){
+							power.setCurrentAmount(power.getCurrentAmount() - 1);
+						}
+						else {
+							power.setCurrentAmount(power.getCurrentAmount() + 1);
+						}
+						Log.d("myLog", "Current amount of uses = " + power.getCurrentAmount());
+					}
+				});
 			}
 			llCharPowers.addView(item);
 			
