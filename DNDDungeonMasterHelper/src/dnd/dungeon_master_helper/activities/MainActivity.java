@@ -29,6 +29,7 @@ import dnd.dungeon_master_helper.DNDCharacterInitiativeComparator;
 import dnd.dungeon_master_helper.Power;
 import dnd.dungeon_master_helper.R;
 import dnd.dungeon_master_helper.listeners.AddModifierClickListener;
+import dnd.dungeon_master_helper.listeners.CurrentHPClickListener;
 import dnd.dungeon_master_helper.listeners.DamageClickListener;
 import dnd.dungeon_master_helper.listeners.HealClickListener;
 import dnd.dungeon_master_helper.listeners.ModifierTargetSelectedListener;
@@ -318,6 +319,8 @@ public class MainActivity extends Activity {
 		btnNextCharacter = (Button) findViewById(R.id.btnNextCharacter);
 		tvActiveCharacter = (TextView) findViewById(R.id.tvActiveCharName);
 		tvHPCurrentValue = (TextView) findViewById(R.id.tvHPCurrentValue);
+		tvHPCurrentValue.setOnClickListener(new CurrentHPClickListener());
+		
 		tvHPMaxValue = (TextView) findViewById(R.id.tvHPMaxValue);
 		btnHeal = (Button) findViewById(R.id.btnHeal);
 		btnDamage = (Button) findViewById(R.id.btnDamage);

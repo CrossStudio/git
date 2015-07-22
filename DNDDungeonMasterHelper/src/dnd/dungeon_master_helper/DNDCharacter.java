@@ -364,6 +364,7 @@ public class DNDCharacter implements Serializable{
 	 */
 	public void getHealing(int healing){
 		this.charHPCurrent += healing;
+		this.charHPChanges.add("Healing received: " + healing + " HP");
 	}
 	
 	/**
@@ -372,6 +373,7 @@ public class DNDCharacter implements Serializable{
 	 */
 	public void sufferDamage(int damage){
 		this.charHPCurrent -= damage;
+		this.charHPChanges.add("Damage suffered: " + damage + " HP");	
 	}
 
 }
