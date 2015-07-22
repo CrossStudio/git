@@ -11,7 +11,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
-import android.widget.NumberPicker.OnValueChangeListener;
 import dnd.dungeon_master_helper.R;
 
 public class HealClickListener implements OnClickListener {
@@ -24,16 +23,16 @@ public class HealClickListener implements OnClickListener {
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		activity = (Activity) v.getContext();
-		DialogFragment dialog = new FireMissilesDialogFragment();
+		DialogFragment dialog = new HealDialogFragment();
 		dialog.show(activity.getFragmentManager(), "heal dialog");
 	}
 
-	class FireMissilesDialogFragment extends DialogFragment implements OnClickListener{
+	class HealDialogFragment extends DialogFragment implements OnClickListener{
 		final String LOG_TAG = "myLogs";
 
 		  public View onCreateView(LayoutInflater inflater, ViewGroup container,
 		      Bundle savedInstanceState) {
-		    getDialog().setTitle("Title!");
+		    getDialog().setTitle("HP Healed:");
 		    View v = inflater.inflate(R.layout.heal_dialog, null);
 		    
 		    NumberPicker npHeal = (NumberPicker) v.findViewById(R.id.npHeal);
