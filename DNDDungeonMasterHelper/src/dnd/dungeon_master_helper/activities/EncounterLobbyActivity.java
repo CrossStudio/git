@@ -92,7 +92,8 @@ public class EncounterLobbyActivity extends Activity {
 		
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
-		String sqlQuery = "select characters.id, characters.name, powers.title, powers.type, powers.maxamount, powers.encamount "
+		String sqlQuery = 
+				"select characters.id, characters.name, powers.title, powers.type, powers.maxamount, powers.encamount "
 				+ "from powers "
 				+ "inner join characters "
 				+ "on powers.characterid = characters.id ";
@@ -127,55 +128,6 @@ public class EncounterLobbyActivity extends Activity {
 			}
 			while (cursor.moveToNext());
 		}
-	}
-	
-	/**
-	 * Save changes made to selected characters to the database
-	 */
-	private void saveCharactersToDB(){
-		dbHelper = new DBHelper(this);
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
-	
-		ArrayList<DNDCharacter> selectedCharacters = DNDCharacter.getSelectedCharacters();
-		
-		for (DNDCharacter character : selectedCharacters){
-			ContentValues cvToCharactersTable = fillContentValuesCharacters(character);
-			
-			int updCount = db.update("characters", cvToCharactersTable, "name = ?", new String[] {character.getCharName()});
-			if (updCount == 0){
-				long rowID = db.insert("characters", null, cvToCharactersTable);
-				Log.d("myLog", "Inserted new row to characters table, number: " + rowID);
-
-			}
-			
-			
-		}
-	}
-	
-
-	/**
-	 * Put all the data that will be written to database table Characters into ContentValues object and return it
-	 * @param character - character whose stats will be written to the ContentValues object
-	 * @return - ContentValues object containing info about one character that will be written to the DB
-	 */
-	private ContentValues fillContentValuesCharacters(DNDCharacter character) {
-		ContentValues cvToCharactersTable = new ContentValues();
-		cvToCharactersTable.put("class", character.getCharClass());
-		cvToCharactersTable.put("name", character.getCharName());
-		cvToCharactersTable.put("maxhp", character.getCharHPMax());
-		cvToCharactersTable.put("currenthp",character.getCharHPCurrent());
-		cvToCharactersTable.put("initiative", character.getCharInitiativeEncounter());
-		StringBuilder modifiers = new StringBuilder("");
-		for (String modifier : character.getListOfAppliedModifiers()){
-			if (character.getListOfAppliedModifiers().indexOf(modifier) == 0){
-				modifiers.append(modifier);
-			}
-			else {
-				modifiers.append("\n" + modifier);
-			}
-		}
-		cvToCharactersTable.put("modifiers", modifiers.toString());
-		return cvToCharactersTable;
 	}
 	
 	private void initializeViews() {
@@ -420,7 +372,13 @@ public class EncounterLobbyActivity extends Activity {
 	public void onPause(){
 		super.onPause();
 		refreshSelectedCharacterParams();
-		saveCharactersToDB();
+		
+		dbHelper = new DBHelper(this);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		
+		dbHelper.saveCharactersToDB(db);
+		dbHelper.close();
+
 	}
 	
 	public void onResume(){

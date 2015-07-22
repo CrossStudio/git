@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
@@ -34,23 +33,17 @@ public class CharacterCreationActivity extends Activity {
 	
 	Button btnAddNewCharacter;
 	Button btnAddNewPower;
-	EditText etCharName;
-	EditText etCurrentInitiative;
-	EditText etMaxHP;
+	static EditText etCharName;
+	static EditText etCurrentInitiative;
+	static EditText etMaxHP;
 	Spinner spCharClass;
-	
-	ListView lvCharPowers;
 	
 	String classes[] = {"Cleric", "Fighter", "Paladin", "Ranger", "Rogue", "Warlock", "Warlord", "Wizard", "Monster"};
 	
 	@Override
 	public void onCreate(Bundle savedBundle){
-		super.onCreate(savedBundle);
+		super.onCreate(null);
 		setContentView(R.layout.character_creation);		
-		
-		initializeViews();
-		
-		fillCharacterClassesSpinner();
 	}
 
 	/**
@@ -63,7 +56,6 @@ public class CharacterCreationActivity extends Activity {
 		etCurrentInitiative = (EditText) findViewById(R.id.etCurrentInitiative);
 		etMaxHP = (EditText) findViewById(R.id.etMaxHP);
 		spCharClass = (Spinner) findViewById(R.id.spCharClass);
-		//lvCharPowers = (ListView) findViewById(R.id.lvCharPowersMain);
 		
 		btnAddNewCharacter.setOnClickListener(new AddNewCharacterListener());
 		btnAddNewPower.setOnClickListener(new AddNewPowerListener());
@@ -104,7 +96,6 @@ public class CharacterCreationActivity extends Activity {
 	 * Saves character's parameters in Preferences
 	 */
 	private void saveCharacterParameters() {
-		// TODO Auto-generated method stub
 		prefs = getSharedPreferences("CurrentCharacter", MODE_PRIVATE);
 		Editor editor = prefs.edit();
 		editor.putString("charName", currentCharacter.getCharName());
@@ -134,8 +125,12 @@ public class CharacterCreationActivity extends Activity {
 	public void onResume(){
 		super.onResume();
 		
+		initializeViews();
+		
+		fillCharacterClassesSpinner();
+		
 		loadCharacterParameters();
-		loadCurrentCharacterPowers();
+		drawCurrentCharacterPowers();
 	}
 
 	/**
@@ -217,14 +212,15 @@ public class CharacterCreationActivity extends Activity {
 	}
 
 	/**
-	 * Draws powers of current active character on MainActivity using LayoutInflater
+	 * Draws powers of current active character on CharacterCreationActivity using LayoutInflater
 	 */
-	private void loadCurrentCharacterPowers(){
+	private void drawCurrentCharacterPowers(){
 		LayoutInflater inflater = getLayoutInflater();
 		LinearLayout llCharPowers = (LinearLayout) findViewById(R.id.llCharPowersCreation);
 		llCharPowers.removeAllViews();
 		ArrayList<Power> powers = currentCharacter.getCharPowers();
 		for (Power power : powers){
+			Log.d("myLog", "---Inside a loop of drawCurrentCharacterPowers(); CharacterCreationActivity---");
 			LinearLayout item = (LinearLayout) inflater.inflate(R.layout.power_item, llCharPowers, false);
 			
 			TextView tvPowerTitle = (TextView) item.findViewById(R.id.tvPowerTitle);

@@ -343,41 +343,13 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onPause(){
 		super.onPause();
-		saveCharactersToDB();
-	}
-
-	/**
-	 * Saves all the characters with their current parameters to the database
-	 */
-	private void saveCharactersToDB() {
+		
 		DBHelper dbHelper = new DBHelper(this);
 		
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
-		ContentValues cv = new ContentValues();
-		
-		for (DNDCharacter character : dndCharacterArrayList){
-			
-			cv.put("class", character.getCharClass());
-			cv.put("name", character.getCharName());
-			cv.put("maxhp", character.getCharHPMax());
-			cv.put("currenthp",character.getCharHPCurrent());
-			String modifiers = "";
-			for (String modifier : character.getListOfAppliedModifiers()){
-				if (character.getListOfAppliedModifiers().indexOf(modifier) == 0){
-					modifiers += modifier;
-				}
-				else {
-					modifiers += "\n" + modifier;
-				}
-			}
-			cv.put("modifiers", modifiers);
-			
-			int updCount = db.update("characters", cv, "name = ?", new String[] {character.getCharName()});
-			if (updCount == 0){
-				long rowID = db.insert("characters", null, cv);
-				Log.d("myLog", "Row number: " + rowID);
-			}
-		}
+		dbHelper.saveCharactersToDB(db);
+		dbHelper.close();
 	}
+
 }
