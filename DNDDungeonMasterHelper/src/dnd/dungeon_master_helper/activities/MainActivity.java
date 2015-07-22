@@ -200,29 +200,6 @@ public class MainActivity extends Activity {
 			etCharModifiers.setText(longStringOfModifiers);
 		}
 	}
-
-	/**
-	 * Fills listView of active character's powers
-	 */
-	/*private void loadActiveCharacterPowers() {
-		List<Map<String, String>> listPowersData = new ArrayList<>();
-		
-		String[] takeDataFromKey = {"title", "type"};
-		int[] writeDataToKey = {R.id.tvPowerTitle, R.id.tvPowerType};
-		
-		ArrayList<Power> powers = activeCharacter.getCharPowers();
-		for (Power power : powers){
-			Map<String, String> mapPowersData = new HashMap<>();
-			mapPowersData.put("title", power.getTitle());
-			mapPowersData.put("type", power.getType().toString());
-			listPowersData.add(mapPowersData);
-			Log.d("myLog", "Power: " + power.getTitle());
-		}
-		SimpleAdapter adapter = new SimpleAdapter(this, listPowersData, R.layout.power_item, takeDataFromKey, writeDataToKey);
-		lvCharPowers.setAdapter(adapter);
-		
-		addAmountOfPowersCheckBoxes(adapter);
-	}*/
 	
 	/**
 	 * Draws powers of current active character on MainActivity using LayoutInflater
