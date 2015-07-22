@@ -20,6 +20,8 @@ public class DNDCharacter implements Serializable{
 	private static ArrayList<DNDCharacter> selectedCharacters;
 	private static ArrayList<DNDCharacter> notSelectedCharacters;
 	private ArrayList<Power> charPowers = new ArrayList<Power>();
+	private ArrayList<String> charHPChanges = new ArrayList<String>();
+	
 	static {
 		if (allCharacters == null){
 			allCharacters = new ArrayList<>();
@@ -157,6 +159,7 @@ public class DNDCharacter implements Serializable{
 		this.charHPCurrent = characterToBeCopied.getCharHPCurrent();
 		this.listOfAppliedModifiers = new ArrayList<>(characterToBeCopied.getListOfAppliedModifiers());
 		this.charPowers = new ArrayList<>(characterToBeCopied.getCharPowers());
+		this.charHPChanges = new ArrayList<>(characterToBeCopied.getCharHPChanges());
     	
     	return characterToBeCopied;
     }
@@ -347,4 +350,12 @@ public class DNDCharacter implements Serializable{
 	public String toString(){
 		return this.charName + " (" + this.charClass + ")";
 	}
+
+	/**
+	 * @return the charHPChanges
+	 */
+	public ArrayList<String> getCharHPChanges() {
+		return charHPChanges;
+	}
+
 }
