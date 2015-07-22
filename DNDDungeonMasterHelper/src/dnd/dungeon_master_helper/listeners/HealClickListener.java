@@ -11,7 +11,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
+import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.R;
+import dnd.dungeon_master_helper.activities.MainActivity;
 
 public class HealClickListener implements OnClickListener {
 
@@ -19,23 +21,27 @@ public class HealClickListener implements OnClickListener {
 	
 	Activity activity;
 	
+	DNDCharacter activeCharacter;
+	
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		activity = (Activity) v.getContext();
+		activeCharacter = MainActivity.activeCharacter;
+		
 		DialogFragment dialog = new HealDialogFragment();
 		dialog.show(activity.getFragmentManager(), "heal dialog");
 	}
 
 	class HealDialogFragment extends DialogFragment implements OnClickListener{
 		final String LOG_TAG = "myLogs";
-
+		NumberPicker npHeal;
+		
 		  public View onCreateView(LayoutInflater inflater, ViewGroup container,
 		      Bundle savedInstanceState) {
 		    getDialog().setTitle("HP Healed:");
 		    View v = inflater.inflate(R.layout.heal_dialog, null);
 		    
-		    NumberPicker npHeal = (NumberPicker) v.findViewById(R.id.npHeal);
+		    npHeal = (NumberPicker) v.findViewById(R.id.npHeal);
 		    npHeal.setMinValue(0);
 		    npHeal.setMaxValue(100);
 		    npHeal.setWrapSelectorWheel(false);
@@ -51,7 +57,14 @@ public class HealClickListener implements OnClickListener {
 		  }
 
 		  public void onClick(View v) {
-		    Log.d(LOG_TAG, "Dialog 1: " + ((Button) v).getText());
+		    switch(v.getId()){
+		    	case R.id.btnHeal:
+		    		activeCharacter.getHealing(npHeal.getValue());
+		    		MainActivity.tvHPCurrentValue.setText(activeCharacter.getCharHPCurrent()+"");
+		    		break;
+		    	case R.id.btnCancelHeal:
+		    		break;
+		    }
 		    dismiss();
 		  }
 

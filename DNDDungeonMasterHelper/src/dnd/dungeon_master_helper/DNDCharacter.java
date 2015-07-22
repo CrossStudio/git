@@ -357,5 +357,21 @@ public class DNDCharacter implements Serializable{
 	public ArrayList<String> getCharHPChanges() {
 		return charHPChanges;
 	}
+	
+	/**
+	 * Heals character for an amount sent to the method
+	 * @param healing - amount of healing to be received by character
+	 */
+	public void getHealing(int healing){
+		this.charHPCurrent += healing;
+	}
+	
+	/**
+	 * Inflicts the sent amount of damage to the character
+	 * @param damage - amount of damage to be inflicted upon the character
+	 */
+	public void sufferDamage(int damage){
+		this.charHPCurrent -= damage;
+	}
 
 }
