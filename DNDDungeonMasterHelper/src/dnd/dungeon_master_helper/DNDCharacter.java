@@ -2,7 +2,8 @@ package dnd.dungeon_master_helper;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
+
+import android.util.Log;
 
 /**
  * Class represents a general character from DND game with loads of parameters along with their getters and setters
@@ -19,8 +20,10 @@ public class DNDCharacter implements Serializable{
 	private static ArrayList<DNDCharacter> allCharacters;
 	private static ArrayList<DNDCharacter> selectedCharacters;
 	private static ArrayList<DNDCharacter> notSelectedCharacters;
+	private static DNDCharacter dummyCharacter;
 	private ArrayList<Power> charPowers = new ArrayList<Power>();
 	private ArrayList<String> charHPChanges = new ArrayList<String>();
+	
 	
 	static {
 		if (allCharacters == null){
@@ -141,7 +144,7 @@ public class DNDCharacter implements Serializable{
      * Creates a dummy of a character, character parameters are set to default values "" and 0
      * @return dummy character
      */
-    public static DNDCharacter createDummyCharacter(){
+    private static DNDCharacter createDummyCharacter(){
     	DNDCharacter character = new DNDCharacter("", "", 0, 0);
 		return character;
     }
@@ -374,6 +377,25 @@ public class DNDCharacter implements Serializable{
 	public void sufferDamage(int damage){
 		this.charHPCurrent -= damage;
 		this.charHPChanges.add("Damage suffered: " + damage + " HP");	
+	}
+
+	/**
+	 * Creates and returns new or returns existing dummy character
+	 * @return dummy character
+	 */
+	public static DNDCharacter getDummyCharacter() {
+		if (dummyCharacter == null){
+			dummyCharacter = createDummyCharacter();
+			Log.d("myLog", "New Dummy Character created!");
+		}
+		return dummyCharacter;
+	}
+	
+	/**
+	 * Sets dummy character to null
+	 */
+	public static void removeDummyCharacter(){
+		dummyCharacter = null;
 	}
 
 }

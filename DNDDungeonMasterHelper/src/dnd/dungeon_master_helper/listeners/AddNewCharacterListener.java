@@ -33,7 +33,7 @@ public class AddNewCharacterListener implements OnClickListener {
 			dbHelper.saveCharactersToDB(db);
 			dbHelper.close();
 			
-			CharacterCreationActivity.currentCharacter = null;
+			DNDCharacter.removeDummyCharacter();
 			
 			Intent intent = new Intent(activity, EncounterLobbyActivity.class);
 			activity.startActivity(intent);

@@ -29,7 +29,7 @@ public class CharacterCreationActivity extends Activity {
 	
 	SharedPreferences prefs;
 	
-	public static DNDCharacter currentCharacter = DNDCharacter.createDummyCharacter();
+	public static DNDCharacter currentCharacter;
 	
 	Button btnAddNewCharacter;
 	Button btnAddNewPower;
@@ -43,7 +43,7 @@ public class CharacterCreationActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedBundle){
 		super.onCreate(null);
-		setContentView(R.layout.character_creation);		
+		setContentView(R.layout.character_creation);
 	}
 
 	/**
@@ -82,6 +82,8 @@ public class CharacterCreationActivity extends Activity {
 	 * Sets current character parameters
 	 */
 	private void setCharacterParameters() {
+		Log.d("myLog", "---setCharacterParameters() in CharacterCreationActivity---");
+		Log.d("myLog", "currentCharacter = " + currentCharacter);
 		currentCharacter.setCharName(etCharName.getText().toString());
 		currentCharacter.setCharClass(spCharClass.getSelectedItem().toString());
 		if (etMaxHP.getText().length() > 0){
@@ -124,6 +126,8 @@ public class CharacterCreationActivity extends Activity {
 
 	public void onResume(){
 		super.onResume();
+		
+		currentCharacter = DNDCharacter.getDummyCharacter();
 		
 		initializeViews();
 		
