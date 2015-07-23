@@ -28,6 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
 				+ " currenthplog text, modifiers text, initiative integer);");
 		db.execSQL("create table powers (id integer primary key autoincrement, "
 				+ "characterid integer, title text, type text, maxamount integer, encamount integer);");
+		db.execSQL("create table encounter (id integer primary key autoincrement, characters text, activecharacter text);");
 	}
 
 	@Override
@@ -157,7 +158,26 @@ public class DBHelper extends SQLiteOpenHelper {
 		
 	}
 
+	public synchronized void saveCurrentEncounter(ArrayList<DNDCharacter> characters, DNDCharacter activeCharacter, SQLiteDatabase db){
+		String[] charactersIDs = getCharactersIDs(characters, db);
+		putEncounterInfoToDB(charactersIDs, activeCharacter, db);
+	}
 	
+	private String[] getCharactersIDs(ArrayList<DNDCharacter> characters, SQLiteDatabase db) {
+		String sqlQuery = "select characters.id "
+				+ "from characters "
+				+ "where characters.name in ";
+		Cursor cursor = db.rawQuery(sqlQuery, (String[]) characters.toArray());
+		String[] charactersIDs = new String[characters.size()];
+		if (cursor.moveToFirst()){
+			int count = 0;
+			do {
+				charactersIDs[count++] = cursor.getString(0);
+			} while (cursor.moveToNext());
+		}
+		return charactersIDs;
+	}
+
 	public synchronized void loadCharactersFromDB(SQLiteDatabase db){
 		db.beginTransaction();
 		loadCharactersParamsFromDB(db);
