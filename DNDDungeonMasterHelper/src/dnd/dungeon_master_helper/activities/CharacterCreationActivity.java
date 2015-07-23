@@ -33,10 +33,10 @@ public class CharacterCreationActivity extends Activity {
 	
 	Button btnAddNewCharacter;
 	Button btnAddNewPower;
-	static EditText etCharName;
-	static EditText etCurrentInitiative;
-	static EditText etMaxHP;
-	Spinner spCharClass;
+	public static EditText etCharName;
+	public static EditText etCurrentInitiative;
+	public static EditText etMaxHP;
+	public static Spinner spCharClass;
 	
 	String classes[] = {"Cleric", "Fighter", "Paladin", "Ranger", "Rogue", "Warlock", "Warlord", "Wizard", "Monster"};
 	
@@ -64,7 +64,7 @@ public class CharacterCreationActivity extends Activity {
 	}
 	
 	/**
-	 * Sets the values of spinner items of character classes spinner
+	 * Sets the values of spinner items of currentCharacter classes spinner
 	 */
 	private void fillCharacterClassesSpinner() {
 		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, classes);
@@ -79,7 +79,7 @@ public class CharacterCreationActivity extends Activity {
 	}
 	
 	/**
-	 * Sets current character parameters
+	 * Sets current currentCharacter parameters
 	 */
 	private void setCharacterParameters() {
 		Log.d("myLog", "---setCharacterParameters() in CharacterCreationActivity---");
@@ -96,7 +96,7 @@ public class CharacterCreationActivity extends Activity {
 	}
 
 	/**
-	 * Saves character's parameters in Preferences
+	 * Saves currentCharacter's parameters in Preferences
 	 */
 	private void saveCharacterParameters() {
 		prefs = getSharedPreferences("CurrentCharacter", MODE_PRIVATE);
@@ -112,7 +112,7 @@ public class CharacterCreationActivity extends Activity {
 	}
 
 	/**
-	 * Saves character's powers to Preferences in form "power\i" where \i is power's index in character's list of powers
+	 * Saves currentCharacter's powers to Preferences in form "power\i" where \i is power's index in currentCharacter's list of powers
 	 * @param editor Editor object that edits preferences
 	 */
 	private void saveCharacterPowers(Editor editor) {
@@ -139,7 +139,7 @@ public class CharacterCreationActivity extends Activity {
 	}
 
 	/**
-	 * Loads character's parameters from Preferences
+	 * Loads currentCharacter's parameters from Preferences
 	 */
 	private void loadCharacterParameters() {
 		prefs = getSharedPreferences("CurrentCharacter", MODE_PRIVATE);
@@ -176,7 +176,7 @@ public class CharacterCreationActivity extends Activity {
 	}
 
 	/**
-	 * Loads character powers
+	 * Loads currentCharacter powers
 	 * @param prefs
 	 */
 	private void loadCharacterPowers(SharedPreferences prefs) {
@@ -219,7 +219,7 @@ public class CharacterCreationActivity extends Activity {
 	}
 
 	/**
-	 * Draws powers of current active character on CharacterCreationActivity using LayoutInflater
+	 * Draws powers of current active currentCharacter on CharacterCreationActivity using LayoutInflater
 	 */
 	private void drawCurrentCharacterPowers(){
 		LayoutInflater inflater = getLayoutInflater();

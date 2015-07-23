@@ -3,7 +3,7 @@ package dnd.dungeon_master_helper;
 import java.io.Serializable;
 
 /**
- * Represents character's special moves/spells/attacks 
+ * Represents currentCharacter's special moves/spells/attacks 
  * @author XAM
  *
  */

@@ -86,7 +86,6 @@ public class EncounterLobbyActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
 				int idCharacterClicked = lvAvailableCharacters.getPositionForView(v);
-				Log.d("myLog", "Id of clicked view = " + idCharacterClicked);
 				DNDCharacter clickedCharacter = availableCharacters.get(idCharacterClicked);
 
 				addCharacterToSelectedCharactersList(clickedCharacter);
@@ -138,7 +137,9 @@ public class EncounterLobbyActivity extends Activity {
 			 */
 			private void deleteSelectedItems() {
 				removeItemsFromList();
-				removeItemsFromDatabase();
+				dbHelper = new DBHelper(getBaseContext());
+				SQLiteDatabase db = dbHelper.getWritableDatabase();
+				dbHelper.deleteCharactersFromDB(arrayOfCharacterNamesForDeletion, db);
 			}
 
 			/**
@@ -150,24 +151,12 @@ public class EncounterLobbyActivity extends Activity {
 					int indexOfCharacterToDelete = listOfIndicesForDeletion.get(i);
 					DNDCharacter characterToDelete = availableCharacters.get(indexOfCharacterToDelete);
 					listCharactersDataToFillList.remove(indexOfCharacterToDelete);
-					Log.d("myLog", characterToDelete + " will be deleted from all characters list");
 					DNDCharacter.getAllCharacters().remove(characterToDelete);
 					availableCharacters.remove(characterToDelete);
 				}
 				listOfIndicesForDeletion.clear();
 				((SimpleAdapter) lvAvailableCharacters.getAdapter()).notifyDataSetChanged();
 				
-			}
-			
-			/**
-			 * Removes selected items from the database
-			 */
-			private void removeItemsFromDatabase() {
-				dbHelper = new DBHelper(getBaseContext());
-				SQLiteDatabase db = dbHelper.getWritableDatabase();
-				int numRows = db.delete("characters", "name IN (" + new String(new char[arrayOfCharacterNamesForDeletion.length-1]).replace("\0","?,") + "?)",
-						arrayOfCharacterNamesForDeletion);
-				Log.d("myLog", "Number of rows deleted = " + numRows);
 			}
 			
 			@Override
@@ -210,7 +199,7 @@ public class EncounterLobbyActivity extends Activity {
 	}
 
 	/**
-	 * Adds chosen character to the list of selected characters
+	 * Adds chosen currentCharacter to the list of selected characters
 	 * @param clickedCharacter
 	 */
 	private void addCharacterToSelectedCharactersList(DNDCharacter clickedCharacter) {
@@ -247,7 +236,7 @@ public class EncounterLobbyActivity extends Activity {
 	}
 	
 	/**
-	 * Makes a copy of a corresponding character and adds it to the selected characters list
+	 * Makes a copy of a corresponding currentCharacter and adds it to the selected characters list
 	 * @param v - clicked view
 	 */
 	public void copyCharacterClickHandler(View v){
@@ -270,8 +259,8 @@ public class EncounterLobbyActivity extends Activity {
 	}
 	
 	/**
-	 * Removes character from the selected characters list
-	 * @param v - remove button of the character that will be removed
+	 * Removes currentCharacter from the selected characters list
+	 * @param v - remove button of the currentCharacter that will be removed
 	 */
 	public void removeCharacterClickHandler(View v){
 		LinearLayout vwParentRow = (LinearLayout)v.getParent();

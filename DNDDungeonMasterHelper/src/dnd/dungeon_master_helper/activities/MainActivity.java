@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,6 +57,8 @@ public class MainActivity extends Activity {
 	public static TextView tvHPCurrentValue;
 	
 	public static TextView tvHPMaxValue;
+
+	public static TextView tvBloodiedLabel;
 	
 	public static TextView tvBloodiedValue;
 	
@@ -67,6 +71,8 @@ public class MainActivity extends Activity {
 	Spinner spinModifierType;
 	
 	Spinner spinModifierTarget;
+
+	
 	
 	public static void setActiveCharacter(int charactersIndex)
 	{
@@ -116,7 +122,7 @@ public class MainActivity extends Activity {
 	}
 	
 	/**
-	 * Sorts characters within character list by their encounter initiative
+	 * Sorts characters within currentCharacter list by their encounter initiative
 	 */
 	private void sortCharactersByInitiative() {
 		Collections.sort(dndCharacterArrayList, new DNDCharacterInitiativeComparator());
@@ -128,7 +134,9 @@ public class MainActivity extends Activity {
 	public void loadActiveCharacterParams() {
 		tvHPCurrentValue.setText(""+activeCharacter.getCharHPCurrent());
 		tvHPMaxValue.setText(""+activeCharacter.getCharHPMax());
-		tvBloodiedValue.setText(activeCharacter.getCharHPMax() / 2 + "");
+		tvBloodiedValue.setText(activeCharacter.getCharBloodiedValue() + "");
+		checkForBloodied();
+		
 		loadActiveCharacterModifiers();
 		btnNextCharacter.setOnClickListener(new OnClickListener(){
 
@@ -150,24 +158,15 @@ public class MainActivity extends Activity {
 				saveActiveCharacterModifiers();
 			}
 
-			/**
-			 * Saves modifiers of currently active character
-			 * @param activeCharacter
-			 */
-			private void saveActiveCharacterModifiers() {
-				activeCharacter.getListOfAppliedModifiers().clear();
-				activeCharacter.getListOfAppliedModifiers().add(etCharModifiers.getText().toString());
-			}
 
 			/**
-			 * Sets currently active character equal to the next character with regards to the character sent to the method
+			 * Sets currently active currentCharacter equal to the next currentCharacter with regards to the currentCharacter sent to the method
 			 * Also changes text in the "Active Character" TextView
-			 * @param activeCharacter - currently active character
+			 * @param activeCharacter - currently active currentCharacter
 			 */
 			private void nextCharacter()
 			{
 				int indexOfActiveCharacter = dndCharacterArrayList.indexOf(activeCharacter);
-				Log.d("myLog", "Index of active character = " + indexOfActiveCharacter);
 				if (indexOfActiveCharacter < dndCharacterArrayList.size() - 1)
 				{
 					setActiveCharacter(indexOfActiveCharacter + 1);
@@ -179,29 +178,56 @@ public class MainActivity extends Activity {
 				tvActiveCharacter.setText(activeCharacter.getCharName() + " (" + activeCharacter.getCharClass() + ")");
 				loadActiveCharacterParams();
 				loadActiveCharacterPowers();
+				checkForBloodied();
 			}
 		});
 	}
 	
 	/**
-	 * Fills EditText responsible for modifier handling with applied modifier of the active character
+	 * Saves modifiers of currently active currentCharacter
+	 * @param activeCharacter
+	 */
+	private void saveActiveCharacterModifiers() {
+		if (activeCharacter != null){
+			activeCharacter.getListOfAppliedModifiers().clear();
+			activeCharacter.getListOfAppliedModifiers().add(etCharModifiers.getText().toString());
+		}
+	}
+	
+	/**
+	 * Checks whether currently active currentCharacter is bloodied and paints his bloodied value accordingly 
+	 */
+	public static void checkForBloodied() {
+		if (activeCharacter.isBloodied()){
+			tvBloodiedLabel.setTextColor(Color.RED);
+			tvBloodiedValue.setTextColor(Color.RED);
+		}
+		else {
+			tvBloodiedLabel.setTextColor(Color.BLACK);
+			tvBloodiedValue.setTextColor(Color.BLACK);
+		}		
+	}
+	
+
+	/**
+	 * Fills EditText responsible for modifier handling with applied modifier of the active currentCharacter
 	 */
 	private void loadActiveCharacterModifiers() {
 		etCharModifiers.setText("");
+		String longStringOfModifiers = "";
 		for (String appliedModifier : activeCharacter.getListOfAppliedModifiers()){
-			String longStringOfModifiers = "";
 			if (activeCharacter.getListOfAppliedModifiers().indexOf(appliedModifier)==0){
 				longStringOfModifiers += appliedModifier;
 			}
 			else {
 				longStringOfModifiers += "\n" + appliedModifier;
 			}
-			etCharModifiers.setText(longStringOfModifiers);
 		}
+		etCharModifiers.setText(longStringOfModifiers);
 	}
 	
 	/**
-	 * Draws powers of current active character on MainActivity using LayoutInflater
+	 * Draws powers of current active currentCharacter on MainActivity using LayoutInflater
 	 */
 	private void loadActiveCharacterPowers(){
 		LayoutInflater inflater = getLayoutInflater();
@@ -244,7 +270,6 @@ public class MainActivity extends Activity {
 						else {
 							power.setCurrentAmount(power.getCurrentAmount() + 1);
 						}
-						Log.d("myLog", "Current amount of uses = " + power.getCurrentAmount());
 					}
 				});
 			}
@@ -269,7 +294,6 @@ public class MainActivity extends Activity {
 	private void fillModifierTargetsSpinner() {
 		for (DNDCharacter character : dndCharacterArrayList)
 		{
-			Log.d("myLog", character.getCharName() + " added to spinner");
 			arrayOfModifierTargets[dndCharacterArrayList.indexOf(character)] = character.getCharName();
 		}
 		ArrayAdapter<String> modifierTargetAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrayOfModifierTargets);
@@ -322,6 +346,7 @@ public class MainActivity extends Activity {
 		tvHPMaxValue = (TextView) findViewById(R.id.tvHPMaxValue);
 		btnHeal = (Button) findViewById(R.id.btnHeal);
 		btnDamage = (Button) findViewById(R.id.btnDamage);
+		tvBloodiedLabel = (TextView) findViewById(R.id.tvBloodiedLabel);
 		tvBloodiedValue = (TextView) findViewById(R.id.tvBloodiedValue);
 		btnAddModifier = (Button) findViewById(R.id.btnAddModifier);
 		etCharModifiers = (EditText) findViewById(R.id.etCharModifiers);
@@ -341,6 +366,8 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onPause(){
 		super.onPause();
+		
+		saveActiveCharacterModifiers();
 		
 		DBHelper dbHelper = new DBHelper(this);
 		

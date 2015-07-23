@@ -25,10 +25,9 @@ public class DBHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL("create table characters (id integer primary key autoincrement,"
 				+ " class text, name text, maxhp integer, currenthp integer,"
-				+ "currenthplog integer, modifiers text, initiative integer);");
+				+ " currenthplog text, modifiers text, initiative integer);");
 		db.execSQL("create table powers (id integer primary key autoincrement, "
 				+ "characterid integer, title text, type text, maxamount integer, encamount integer);");
-		Log.d("myLog", "New database has been created!");
 	}
 
 	@Override
@@ -53,55 +52,66 @@ public class DBHelper extends SQLiteOpenHelper {
 	@Override
 	public void onOpen(SQLiteDatabase db){
 		super.onOpen(db);
-		Log.d("myLog", "onOpen");
 	}
 	
 	public synchronized void saveCharactersToDB(SQLiteDatabase db){
 		for (DNDCharacter character : characters){
-			saveCharacterParamsToDB(character, db);
-			saveCharacterPowersToDB(character, db);
+			db.beginTransaction();
+				saveCharacterParamsToDB(character, db);
+			db.setTransactionSuccessful();
+			db.endTransaction();
+			db.beginTransaction();
+				saveCharacterPowersToDB(character, db);
+			db.setTransactionSuccessful();
+			db.endTransaction();
 		}
 	}
 	
 	private synchronized void saveCharacterParamsToDB(DNDCharacter character, SQLiteDatabase db){
-
+		Log.d("myLog", "Entered saveCharacterParamsToDB()");
+		String modifiers = "";
+		Log.d("myLog", character.getCharName() + "'s list of modifiers: " + character.getListOfAppliedModifiers());
+		for (String modifier : character.getListOfAppliedModifiers()){
+			Log.d("myLog", "Modifier " + character.getListOfAppliedModifiers().indexOf(modifier) + ": " + modifier);
+			modifiers += modifier;
+			/*if (character.getListOfAppliedModifiers().indexOf(modifier) == 0){
+				modifiers += modifier;
+			}
+			else {
+				modifiers += "\n" + modifier;
+			}*/
+			Log.d("myLog", "Modifiers string: " + modifiers);
+			Log.d("myLog", "---Modifiers string ended---");
+		}
+		
+		String currentHPLog = "";
+		for (String logItem : character.getCharHPChanges()){
+			if (character.getCharHPChanges().indexOf(logItem) == 0){
+				currentHPLog += logItem;
+			}
+			else {
+				currentHPLog  += "\n" + logItem;
+			}
+			Log.d("myLog", currentHPLog);
+		}
+		
 		ContentValues cv = new ContentValues();
 		cv.put("class", character.getCharClass());
 		cv.put("name", character.getCharName());
 		cv.put("maxhp", character.getCharHPMax());
 		cv.put("currenthp",character.getCharHPCurrent());
+		cv.put("modifiers", modifiers);
+		cv.put("currenthplog", currentHPLog);
 		cv.put("initiative", character.getCharInitiativeEncounter());
-		StringBuilder modifiers = new StringBuilder();
-		for (String modifier : character.getListOfAppliedModifiers()){
-			if (character.getListOfAppliedModifiers().indexOf(modifier) == 0){
-				modifiers.append(modifier);
-			}
-			else {
-				modifiers.append("\n" + modifier);
-			}
-		}
-		cv.put("modifiers", modifiers + "");
 		
-		StringBuilder currentHPLog = new StringBuilder();
-		for (String logItem : character.getCharHPChanges()){
-			if (character.getCharHPChanges().indexOf(logItem) == 0){
-				currentHPLog.append(logItem);
-			}
-			else {
-				currentHPLog.append("\n" + logItem);
-			}
-		}
-		cv.put("currenthplog", currentHPLog + "");
 		int updCount = db.update("characters", cv, "name = ?", new String[] {character.getCharName()});
 		if (updCount == 0){
-			long rowID = db.insert("characters", null, cv);
-			Log.d("myLog", "Row number: " + rowID);
+			long rowID = db.insertOrThrow("characters", null, cv);
 		}
-		
 	}
 	
 	private synchronized void saveCharacterPowersToDB(DNDCharacter character, SQLiteDatabase db){
-		
+		Log.d("myLog", "Entered saveCharacterPowersToDB()");
 		ContentValues cvToPowersTable = null;
 		ArrayList<Power> charPowers = character.getCharPowers();
 		
@@ -112,6 +122,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		if (cursor.moveToFirst()){
 			characterID = cursor.getInt(0);
 		}
+		cursor.close();
 		
 		cvToPowersTable = new ContentValues();
 		for (int i = 0; i < charPowers.size(); i++){
@@ -126,7 +137,7 @@ public class DBHelper extends SQLiteOpenHelper {
 				db.insert("powers", null, cvToPowersTable);
 			}
 		}
-
+		Log.d("myLog", "Leaving saveCharacterPowersToDB()");
 	}
 	
 	public synchronized boolean checkForDuplicates(String charName, SQLiteDatabase db) {
@@ -136,9 +147,11 @@ public class DBHelper extends SQLiteOpenHelper {
 		
 		Cursor cursor = db.query("characters", columnsToCheck, "name=?", nameToCheck, null, null, null);
 		if (cursor.getCount() == 0){
+			cursor.close();
 			return true;
 		}
 		else {
+			cursor.close();
 			return false;
 		}
 		
@@ -146,10 +159,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
 	
 	public synchronized void loadCharactersFromDB(SQLiteDatabase db){
+		db.beginTransaction();
 		loadCharactersParamsFromDB(db);
+		db.setTransactionSuccessful();
+		db.endTransaction();
+		db.beginTransaction();
 		loadCharactersPowersFromDB(db);
+		db.setTransactionSuccessful();
+		db.endTransaction();
 	}
-	
+ 
 	private synchronized void loadCharactersParamsFromDB(SQLiteDatabase db) {
 		DNDCharacter.getAllCharacters().clear();
 		
@@ -161,20 +180,31 @@ public class DBHelper extends SQLiteOpenHelper {
 			int idNameIndex = cursor.getColumnIndex("name");
 			int idMaxHPIndex = cursor.getColumnIndex("maxhp");
 			int idCurrentHPIndex = cursor.getColumnIndex("currenthp");
+			int idCurrentHPLog = cursor.getColumnIndex("currenthplog");
 			int idModifiersIndex = cursor.getColumnIndex("modifiers");
 			int idInit = cursor.getColumnIndex("initiative");
 			do {
 				ArrayList<String> modifiers = new ArrayList<>();
 				String longStringOfModifiers = cursor.getString(idModifiersIndex);
+
 				if (longStringOfModifiers != null){
 					modifiers.addAll(Arrays.asList(longStringOfModifiers.split(" \\n")));
 				}
+				
+				ArrayList<String> currentHPLog = new ArrayList<>();
+				String longStringOfLogs = cursor.getString(idCurrentHPLog);
+
+				if (longStringOfLogs != null){
+					currentHPLog.addAll(Arrays.asList(longStringOfLogs.split(" \\n")));
+				}
+				
 				DNDCharacter.addNewCharacterToGame(cursor.getString(idNameIndex), 
 						cursor.getString(idClassIndex), cursor.getInt(idMaxHPIndex), 
-						cursor.getInt(idCurrentHPIndex), cursor.getInt(idInit), modifiers);
+						cursor.getInt(idCurrentHPIndex), cursor.getInt(idInit), modifiers, currentHPLog);
 			}
 			while (cursor.moveToNext());
 		}
+		cursor.close();
 	}
 
 	private synchronized void loadCharactersPowersFromDB(SQLiteDatabase db) {
@@ -216,6 +246,33 @@ public class DBHelper extends SQLiteOpenHelper {
 			}
 			while (cursor.moveToNext());
 		}
+		cursor.close();
+	}
+
+	public synchronized void deleteCharactersFromDB(String[] characters, SQLiteDatabase db){
+		int numRows = db.delete("characters", "name IN (" + new String(new char[characters.length-1]).
+				replace("\0","?,") + "?)", characters);
 		
+		getPowersWithNoHost(db);
+		
+	}
+
+	private void getPowersWithNoHost(SQLiteDatabase db) {
+		String sqlQuery = "select powers.id "
+				+ "from powers "
+				+ "left join characters "
+				+ "on powers.characterid = characters.id "
+				+ "where characters.id is null ";
+		Cursor cursor = db.rawQuery(sqlQuery, null);
+		
+		
+		if (cursor.moveToFirst()){
+			do {
+				int numRows = db.delete("powers", "powers.id = ?", new String[]{cursor.getInt(0)+""});
+				Log.d("myLog", "Number of rows deleted = " + numRows);
+			}
+			while (cursor.moveToNext());
+		}
+			
 	}
 }

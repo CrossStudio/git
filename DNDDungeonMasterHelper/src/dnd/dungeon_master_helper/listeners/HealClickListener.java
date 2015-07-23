@@ -3,6 +3,7 @@ package dnd.dungeon_master_helper.listeners;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,6 +62,7 @@ public class HealClickListener implements OnClickListener {
 		    	case R.id.btnHeal:
 		    		activeCharacter.getHealing(npHeal.getValue());
 		    		MainActivity.tvHPCurrentValue.setText(activeCharacter.getCharHPCurrent()+"");
+		    		MainActivity.checkForBloodied();
 		    		break;
 		    	case R.id.btnCancelHeal:
 		    		break;
@@ -70,12 +72,10 @@ public class HealClickListener implements OnClickListener {
 
 		  public void onDismiss(DialogInterface dialog) {
 		    super.onDismiss(dialog);
-		    Log.d(LOG_TAG, "Dialog 1: onDismiss");
 		  }
 
 		  public void onCancel(DialogInterface dialog) {
 		    super.onCancel(dialog);
-		    Log.d(LOG_TAG, "Dialog 1: onCancel");
 		  }
 	}
 	

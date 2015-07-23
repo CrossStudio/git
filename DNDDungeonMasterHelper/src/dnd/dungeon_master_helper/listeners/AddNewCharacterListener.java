@@ -1,15 +1,19 @@
 package dnd.dungeon_master_helper.listeners;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 import dnd.dungeon_master_helper.DBHelper;
 import dnd.dungeon_master_helper.DNDCharacter;
+import dnd.dungeon_master_helper.Power;
 import dnd.dungeon_master_helper.activities.CharacterCreationActivity;
 import dnd.dungeon_master_helper.activities.EncounterLobbyActivity;
 
@@ -18,17 +22,22 @@ public class AddNewCharacterListener implements OnClickListener {
 	Activity activity;
 	DBHelper dbHelper;
 	
+	SharedPreferences prefs;
+	DNDCharacter currentCharacter;
+	
 	@Override
 	public void onClick(View v) {
 		activity = (Activity) v.getContext();
 		
-		DNDCharacter character = CharacterCreationActivity.currentCharacter;
+		currentCharacter = CharacterCreationActivity.currentCharacter;
+		
+		fillCharacterParameters();
 		
 		dbHelper = new DBHelper(activity);
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
-		if (dbHelper.checkForDuplicates(character.getCharName(), db)){
-			addNewCharacterToGame(character);
+		if (dbHelper.checkForDuplicates(currentCharacter.getCharName(), db)){
+			addNewCharacterToGame(currentCharacter);
 			
 			dbHelper.saveCharactersToDB(db);
 			dbHelper.close();
@@ -39,20 +48,72 @@ public class AddNewCharacterListener implements OnClickListener {
 			activity.startActivity(intent);
 		}
 		else {
-			Toast.makeText(activity, character.getCharName() + " is already playing", Toast.LENGTH_SHORT).show();
+			Toast.makeText(activity, currentCharacter.getCharName() + " is already playing", Toast.LENGTH_SHORT).show();
 		}
 	}
 
 	/**
-	 * Adds new character with passed parameters to the game
-	 * @param charName - name of the character
-	 * @param charClass - class of the character
-	 * @param charInitiative - encounter initiative of the character
-	 * @param charMaxHP - maximum health points of the character
+	 * Adds new currentCharacter with passed parameters to the game
+	 * @param charName - name of the currentCharacter
+	 * @param charClass - class of the currentCharacter
+	 * @param charInitiative - encounter initiative of the currentCharacter
+	 * @param charMaxHP - maximum health points of the currentCharacter
 	 */
 	private void addNewCharacterToGame(DNDCharacter character) {	
 		DNDCharacter newCharacter = DNDCharacter.addNewCharacterToGame(character);
 		Toast.makeText(activity, character.getCharName() + " created", Toast.LENGTH_SHORT).show();
 	}
 
+	private void fillCharacterParameters(){
+		setCharacterParameters();
+		saveCharacterParameters();
+	}
+	
+	/**
+	 * Sets current currentCharacter parameters
+	 */
+	private void setCharacterParameters() {
+		Log.d("myLog", "---setCharacterParameters() in CharacterCreationActivity---");
+		Log.d("myLog", "currentCharacter = " + currentCharacter);
+		currentCharacter.setCharName(CharacterCreationActivity.etCharName.getText().toString());
+		currentCharacter.setCharClass(CharacterCreationActivity.spCharClass.getSelectedItem().toString());
+		if (CharacterCreationActivity.etMaxHP.getText().length() > 0){
+			currentCharacter.setCharHPMax(Integer.parseInt(CharacterCreationActivity.etMaxHP.getText().toString()));
+			currentCharacter.setCharHPCurrent(currentCharacter.getCharHPMax());
+		}
+		if (CharacterCreationActivity.etCurrentInitiative.getText().length() > 0){
+			currentCharacter.setCharInitiativeEncounter(Integer.parseInt(CharacterCreationActivity.etCurrentInitiative.getText().toString()));
+		}
+	}
+
+	/**
+	 * Saves currentCharacter's parameters in Preferences
+	 */
+	private void saveCharacterParameters() {
+		prefs = activity.getSharedPreferences("CurrentCharacter", activity.MODE_PRIVATE);
+		Editor editor = prefs.edit();
+		editor.putString("charName", currentCharacter.getCharName());
+		editor.putString("charClass", currentCharacter.getCharClass());
+		editor.putInt("charInit", currentCharacter.getCharInitiativeEncounter());
+		editor.putInt("charMaxHP", currentCharacter.getCharHPMax());
+		
+		saveCharacterPowers(editor);
+		
+		editor.commit();
+	}
+
+	/**
+	 * Saves currentCharacter's powers to Preferences in form "power\i" where \i is power's index in currentCharacter's list of powers
+	 * @param editor Editor object that edits preferences
+	 */
+	private void saveCharacterPowers(Editor editor) {
+		ArrayList<Power> powers = currentCharacter.getCharPowers();
+		for (int i = 0; i < powers.size(); i++){
+			Power power = powers.get(i);
+			editor.putString("powerTitle" + i, power.getTitle());
+			editor.putString("powerType" + i, power.getType().toString());
+			editor.putInt("powerAmount" + i, power.getMaxAmount());
+		}
+	}
+	
 }

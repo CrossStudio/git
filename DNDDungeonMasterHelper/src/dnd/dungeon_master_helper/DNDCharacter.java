@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import android.util.Log;
 
 /**
- * Class represents a general character from DND game with loads of parameters along with their getters and setters
+ * Class represents a general currentCharacter from DND game with loads of parameters along with their getters and setters
  * @author XAM
  *
  */
@@ -37,6 +37,7 @@ public class DNDCharacter implements Serializable{
 		}
 	}
 	private boolean selected = false;
+	private boolean bloodied;
 	
 	private String charName;
     private String charRace;
@@ -58,6 +59,7 @@ public class DNDCharacter implements Serializable{
     private int charSpeed = 6;
     private int charHPMax;
     private int charHPCurrent;
+    private int charHPBloodied;
     private int charSurgeValue;
     private int charSurgesPerDay;
     private int charSurgesCurrent;
@@ -72,10 +74,10 @@ public class DNDCharacter implements Serializable{
     
     /**
      * Basic constructor of the DNDCharacter
-     * @param name - character's name
-     * @param race - character's race
-     * @param charClass - character's class
-     * @param charMaxHP - character's maximum health points
+     * @param name - currentCharacter's name
+     * @param race - currentCharacter's race
+     * @param charClass - currentCharacter's class
+     * @param charMaxHP - currentCharacter's maximum health points
      */
     private DNDCharacter(String name, String charClass, int charInitiativeEncounter, int charMaxHP){
     	this.charName = name;
@@ -83,10 +85,11 @@ public class DNDCharacter implements Serializable{
     	this.charInitiativeEncounter = charInitiativeEncounter;
     	this.charHPMax = charMaxHP;
     	this.charHPCurrent = this.charHPMax;
+    	this.charHPBloodied = this.charHPMax / 2;
     }
     
     /**
-     * Constructor to be used to load the character from the database
+     * Constructor to be used to load the currentCharacter from the database
      * @param name
      * @param charClass
      * @param charInitiativeEncounter
@@ -95,23 +98,25 @@ public class DNDCharacter implements Serializable{
      * @param modifiers
      */
     private DNDCharacter(String name, String charClass, int charMaxHP, int charCurrentHP,
-    		int charInitiativeEncounter, ArrayList<String> modifiers){
+    		int charInitiativeEncounter, ArrayList<String> modifiers, ArrayList<String> curHPLog){
     	this.charName = name;
     	this.charClass = charClass;
     	this.charInitiativeEncounter = charInitiativeEncounter;
     	this.charHPMax = charMaxHP;
     	this.charHPCurrent = charCurrentHP;
+    	this.charHPBloodied = this.charHPMax / 2;
     	this.listOfAppliedModifiers = modifiers;
+    	this.charHPChanges = curHPLog;
     }
     
     /**
-     * Method that adds one new character with four passed parameters to the game
+     * Method that adds one new currentCharacter with four passed parameters to the game
      * by adding it to the list of allCharacters that is also passed to it
-     * @param name - character's name
-     * @param race - character's race
-     * @param charClass - character's class
-     * @param listOfChars - list of allCharacters to get the newly created character
-     * @return - newly created character
+     * @param name - currentCharacter's name
+     * @param race - currentCharacter's race
+     * @param charClass - currentCharacter's class
+     * @param listOfChars - list of allCharacters to get the newly created currentCharacter
+     * @return - newly created currentCharacter
      */
     public static DNDCharacter addNewCharacterToGame(String name, String charClass, int charInitiativeEncounter, int charMaxHP){
     	DNDCharacter newCharacter = new DNDCharacter(name, charClass, charInitiativeEncounter, charMaxHP);
@@ -120,19 +125,19 @@ public class DNDCharacter implements Serializable{
     }
     
     /**
-     * Method that adds one new character with 6 passed parameters to the game 
+     * Method that adds one new currentCharacter with 6 passed parameters to the game 
      * @param name
      * @param charClass
      * @param charInitiativeEncounter
      * @param charMaxHP
      * @param charCurrentHP
      * @param modifiers
-     * @return - newly created character
+     * @return - newly created currentCharacter
      */
     public static DNDCharacter addNewCharacterToGame(String name, String charClass, int charMaxHP, int charCurrentHP,
-    		int charInitiativeEncounter, ArrayList<String> modifiers){
+    		int charInitiativeEncounter, ArrayList<String> modifiers, ArrayList<String> curHPLog){
     	DNDCharacter newCharacter = new DNDCharacter(name, charClass, charMaxHP, charCurrentHP, 
-    			charInitiativeEncounter, modifiers);
+    			charInitiativeEncounter, modifiers, curHPLog);
     	allCharacters.add(newCharacter);
     	return newCharacter;
     }
@@ -143,8 +148,8 @@ public class DNDCharacter implements Serializable{
     }
     
     /**
-     * Creates a dummy of a character, character parameters are set to default values "" and 0
-     * @return dummy character
+     * Creates a dummy of a currentCharacter, currentCharacter parameters are set to default values "" and 0
+     * @return dummy currentCharacter
      */
     private static DNDCharacter createDummyCharacter(){
     	DNDCharacter character = new DNDCharacter("", "", 0, 0);
@@ -152,9 +157,9 @@ public class DNDCharacter implements Serializable{
     }
     
     /**
-     * Creates a copy of a given character with slightly changed name
-     * @param characterToBeCopied - character that will be copied
-     * @return copy of a given character
+     * Creates a copy of a given currentCharacter with slightly changed name
+     * @param characterToBeCopied - currentCharacter that will be copied
+     * @return copy of a given currentCharacter
      */
     public DNDCharacter copyCharacter(DNDCharacter characterToBeCopied){
     	
@@ -162,6 +167,7 @@ public class DNDCharacter implements Serializable{
 		this.charClass = characterToBeCopied.getCharClass();
 		this.charHPMax = characterToBeCopied.getCharHPMax();
 		this.charHPCurrent = characterToBeCopied.getCharHPCurrent();
+		this.charHPBloodied = this.charHPMax / 2;
 		this.listOfAppliedModifiers = new ArrayList<>(characterToBeCopied.getListOfAppliedModifiers());
 		this.charPowers = new ArrayList<>(characterToBeCopied.getCharPowers());
 		this.charHPChanges = new ArrayList<>(characterToBeCopied.getCharHPChanges());
@@ -194,23 +200,45 @@ public class DNDCharacter implements Serializable{
     }
     
     /**
-     * Basic getter of list of character's powers
-     * @return list of character's powers
+     * Basic getter of list of currentCharacter's powers
+     * @return list of currentCharacter's powers
      */
     public ArrayList<Power> getCharPowers(){
     	return charPowers;
     }
     
     /**
-     * Basic getter for character's class
-     * @return character's class
+     * Basic getter of currentCharacter's bloodied HP value
+     * @return
+     */
+    public int getCharBloodiedValue(){
+    	return this.charHPBloodied;
+    }
+    
+    /**
+     * Basic getter of bloodied value of currentCharacter
+     * @return true if bloodied, false if not
+     */
+    public boolean isBloodied(){
+    	if (charHPBloodied >= charHPCurrent){
+    		this.bloodied = true;
+    	}
+    	else {
+    		this.bloodied = false;
+    	}
+    	return bloodied;
+    }
+    
+    /**
+     * Basic getter for currentCharacter's class
+     * @return currentCharacter's class
      */
     public String getCharClass(){
     	return this.charClass;
     }
     
     /**
-     * Basic setter for character's class
+     * Basic setter for currentCharacter's class
      * @param charClass
      */
     public void setCharClass(String charClass){
@@ -218,112 +246,112 @@ public class DNDCharacter implements Serializable{
     }
     
     /**
-     * Basic getter for character's name
-     * @return character's name
+     * Basic getter for currentCharacter's name
+     * @return currentCharacter's name
      */
     public String getCharName() {
         return charName;
     }
 
     /**
-     * Basic setter of character's name
-     * @param charName - character's name to be set
+     * Basic setter of currentCharacter's name
+     * @param charName - currentCharacter's name to be set
      */
     public void setCharName(String charName) {
         this.charName = charName;
     }
 
     /**
-     * Basic getter for character's encounter initiative
-     * @return character's encounter initiative
+     * Basic getter for currentCharacter's encounter initiative
+     * @return currentCharacter's encounter initiative
      */
     public int getCharInitiativeEncounter(){
     	return charInitiativeEncounter;
     }
     
     /**
-     * Basic setter of character's encounter initiative
-     * @param initiative - character's encounter initiative to be set
+     * Basic setter of currentCharacter's encounter initiative
+     * @param initiative - currentCharacter's encounter initiative to be set
      */
     public void setCharInitiativeEncounter(int initiative){
     	this.charInitiativeEncounter = initiative;
     }
     
     /**
-     * Basic getter for character's maximum Health Points
-     * @return character's maximum Health Points
+     * Basic getter for currentCharacter's maximum Health Points
+     * @return currentCharacter's maximum Health Points
      */
     public int getCharHPMax() {
         return charHPMax;
     }
 
     /**
-     * Basic setter of character's maximum Health Points
-     * @param charHPMax - character's maximum Health Points to be set
+     * Basic setter of currentCharacter's maximum Health Points
+     * @param charHPMax - currentCharacter's maximum Health Points to be set
      */
     public void setCharHPMax(int charHPMax) {
         this.charHPMax = charHPMax;
     }
     
     /**
-     * Basic getter for character's current Health Points
-     * @return character's current Health Points
+     * Basic getter for currentCharacter's current Health Points
+     * @return currentCharacter's current Health Points
      */
     public int getCharHPCurrent() {
         return charHPCurrent;
     }
 
     /**
-     * Basic setter of character's current Health Points
-     * @param charHPCurrent - character's current Health Points
+     * Basic setter of currentCharacter's current Health Points
+     * @param charHPCurrent - currentCharacter's current Health Points
      */
     public void setCharHPCurrent(int charHPCurrent) {
         this.charHPCurrent = charHPCurrent;
     }
 
     /**
-     * Basic getter for character's attack modifier
-     * @return character's attack modifier
+     * Basic getter for currentCharacter's attack modifier
+     * @return currentCharacter's attack modifier
      */
     public int getCharAttackModifier() {
         return charAttackModifier;
     }
 
     /**
-     * Basic setter of character's attack modifier
-     * @param charAttackModifier - character's attack modifier
+     * Basic setter of currentCharacter's attack modifier
+     * @param charAttackModifier - currentCharacter's attack modifier
      */
     public void setCharAttackModifier(int charAttackModifier) {
         this.charAttackModifier = charAttackModifier;
     }
 
     /**
-     * Basic getter for character's Armor Class modifier
-     * @return character's Armor Class modifier
+     * Basic getter for currentCharacter's Armor Class modifier
+     * @return currentCharacter's Armor Class modifier
      */
     public int getCharACModifier() {
         return charACModifier;
     }
 
     /**
-     * Basic setter of character's Armor Class modifier
-     * @param charACModifier - character's Armor Class modifier
+     * Basic setter of currentCharacter's Armor Class modifier
+     * @param charACModifier - currentCharacter's Armor Class modifier
      */
     public void setCharACModifier(int charACModifier) {
         this.charACModifier = charACModifier;
     }
 
     /**
-     * Basic getter for character's ongoing damage suffered
-     * @return character's ongoing damage suffered
+     * Basic getter for currentCharacter's ongoing damage suffered
+     * @return currentCharacter's ongoing damage suffered
      */
     public int getCharOngoingDamage() {
         return charOngoingDamage;
     }
 
     /**
-     * Basic setter of character's ongoing damage suffered
-     * @param charOngoingDamage - character's ongoing damage suffered
+     * Basic setter of currentCharacter's ongoing damage suffered
+     * @param charOngoingDamage - currentCharacter's ongoing damage suffered
      */
     public void setCharOngoingDamage(int charOngoingDamage) {
 	        this.charOngoingDamage = charOngoingDamage;
@@ -364,8 +392,8 @@ public class DNDCharacter implements Serializable{
 	}
 	
 	/**
-	 * Heals character for an amount sent to the method
-	 * @param healing - amount of healing to be received by character
+	 * Heals currentCharacter for an amount sent to the method
+	 * @param healing - amount of healing to be received by currentCharacter
 	 */
 	public void getHealing(int healing){
 		this.charHPCurrent += healing;
@@ -373,17 +401,17 @@ public class DNDCharacter implements Serializable{
 	}
 	
 	/**
-	 * Inflicts the sent amount of damage to the character
-	 * @param damage - amount of damage to be inflicted upon the character
+	 * Inflicts the sent amount of damage to the currentCharacter
+	 * @param damage - amount of damage to be inflicted upon the currentCharacter
 	 */
 	public void sufferDamage(int damage){
 		this.charHPCurrent -= damage;
-		this.charHPChanges.add("Damage suffered: " + damage + " HP");	
+		this.charHPChanges.add("Damage suffered: " + damage + " HP");
 	}
 
 	/**
-	 * Creates and returns new or returns existing dummy character
-	 * @return dummy character
+	 * Creates and returns new or returns existing dummy currentCharacter
+	 * @return dummy currentCharacter
 	 */
 	public static DNDCharacter getDummyCharacter() {
 		if (dummyCharacter == null){
@@ -394,7 +422,7 @@ public class DNDCharacter implements Serializable{
 	}
 	
 	/**
-	 * Sets dummy character to null
+	 * Sets dummy currentCharacter to null
 	 */
 	public static void removeDummyCharacter(){
 		dummyCharacter = null;
