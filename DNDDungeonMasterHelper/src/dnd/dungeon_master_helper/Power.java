@@ -21,11 +21,11 @@ public class Power implements Serializable{
 	
 	
 	
-	public Power (String title, PowerType type, int maxAmount){
+	public Power (String title, PowerType type, int maxAmount, int curAmount){
 		this.setTitle(title);
 		this.setType(type);
 		this.setMaxAmount(maxAmount);
-		this.setCurrentAmount(maxAmount);
+		this.setCurrentAmount(curAmount);
 	}
 
 	/**

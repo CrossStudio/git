@@ -88,6 +88,7 @@ public class CharacterCreationActivity extends Activity {
 		currentCharacter.setCharClass(spCharClass.getSelectedItem().toString());
 		if (etMaxHP.getText().length() > 0){
 			currentCharacter.setCharHPMax(Integer.parseInt(etMaxHP.getText().toString()));
+			currentCharacter.setCharHPCurrent(currentCharacter.getCharHPMax());
 		}
 		if (etCurrentInitiative.getText().length() > 0){
 			currentCharacter.setCharInitiativeEncounter(Integer.parseInt(etCurrentInitiative.getText().toString()));
@@ -196,17 +197,19 @@ public class CharacterCreationActivity extends Activity {
 			
 			int typeID = prefs.getInt("newPowerTypeID", -1);
 			
-			int maxAmount = prefs.getInt("newPowerAmount", 0);
+			int maxAmount = prefs.getInt("newPowerMaxAmount", 0);
+			
+			int curAmount = prefs.getInt("newPowerCurAmount", 0);
 
 			switch (typeID) {
 				case R.id.rbAtWill: 
-					powers.add(new Power(title, PowerType.ATWILL, maxAmount));
+					powers.add(new Power(title, PowerType.ATWILL, maxAmount, curAmount));
 					break;
 				case R.id.rbEncounter:
-					powers.add(new Power(title, PowerType.ENCOUNTER, maxAmount));
+					powers.add(new Power(title, PowerType.ENCOUNTER, maxAmount, curAmount));
 					break;
 				case R.id.rbDaily:
-					powers.add(new Power(title, PowerType.DAILY, maxAmount));
+					powers.add(new Power(title, PowerType.DAILY, maxAmount, curAmount));
 					break;
 			}
 			Log.d("myLog", "Added new Power: " + powers.get(powers.size()-1).getTitle());

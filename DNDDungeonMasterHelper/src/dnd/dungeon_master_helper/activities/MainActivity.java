@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +19,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import dnd.dungeon_master_helper.DBHelper;

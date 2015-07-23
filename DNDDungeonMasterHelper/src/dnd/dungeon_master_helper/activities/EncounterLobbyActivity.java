@@ -2,17 +2,13 @@ package dnd.dungeon_master_helper.activities;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
-import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.hardware.camera2.CameraManager.AvailabilityCallback;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
@@ -28,11 +24,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
 import dnd.dungeon_master_helper.DBHelper;
 import dnd.dungeon_master_helper.DNDCharacter;
-import dnd.dungeon_master_helper.Power;
-import dnd.dungeon_master_helper.PowerType;
 import dnd.dungeon_master_helper.R;
 import dnd.dungeon_master_helper.listeners.GoToCharacterCreationListener;
 import dnd.dungeon_master_helper.listeners.GoToMainActivityClickListener;
@@ -52,82 +45,6 @@ public class EncounterLobbyActivity extends Activity {
 		super.onCreate(savedBundle);
 		setContentView(R.layout.encounter_lobby);		
 		
-	}
-
-	/**
-	 * Loads all saved characters from the database
-	 */
-	private void loadCharactersFromDB() {
-		DNDCharacter.getAllCharacters().clear();
-		
-		dbHelper = new DBHelper(this);
-		
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		
-		Cursor cursor = db.query("characters",null,null,null,null,null,null);
-		
-		if (cursor.moveToFirst()){
-			int idColIndex = cursor.getColumnIndex("id");
-			int idClassIndex = cursor.getColumnIndex("class");
-			int idNameIndex = cursor.getColumnIndex("name");
-			int idMaxHPIndex = cursor.getColumnIndex("maxhp");
-			int idCurrentHPIndex = cursor.getColumnIndex("currenthp");
-			int idModifiersIndex = cursor.getColumnIndex("modifiers");
-			int idInit = cursor.getColumnIndex("initiative");
-			do {
-				ArrayList<String> modifiers = new ArrayList<>();
-				String longStringOfModifiers = cursor.getString(idModifiersIndex);
-				if (longStringOfModifiers != null){
-					modifiers.addAll(Arrays.asList(longStringOfModifiers.split(" \\n")));
-				}
-				DNDCharacter.addNewCharacterToGame(cursor.getString(idNameIndex), cursor.getString(idClassIndex), cursor.getInt(idMaxHPIndex), 
-						cursor.getInt(idCurrentHPIndex), modifiers);
-			}
-			while (cursor.moveToNext());
-		}
-	}
-	
-	private void loadPowersFromDB() {
-		dbHelper = new DBHelper(this);
-		
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		
-		String sqlQuery = 
-				"select characters.id, characters.name, powers.title, powers.type, powers.maxamount, powers.encamount "
-				+ "from powers "
-				+ "inner join characters "
-				+ "on powers.characterid = characters.id ";
-		
-		Cursor cursor = db.rawQuery(sqlQuery, null);
-		if (cursor.moveToFirst()){
-			do {
-				Log.d("myLog", "-----inside cursor loadPowersFromDB() EncounterLobby-----");
-				for (DNDCharacter character : DNDCharacter.getAllCharacters()){
-					Log.d("myLog", cursor.getString(1) + " = cursor.getString(1)");
-					if (character.getCharName().equals(cursor.getString(1))){
-						
-						String type = cursor.getString(3);
-						
-						ArrayList<Power> powers = character.getCharPowers();
-						switch (type) {
-							case "ATWILL": 
-								powers.add(new Power(cursor.getString(2), PowerType.ATWILL, cursor.getInt(4)));
-								break;
-							case "ENCOUNTER":
-								powers.add(new Power(cursor.getString(2), PowerType.ENCOUNTER, cursor.getInt(4)));
-								break;
-							case "DAILY":
-								powers.add(new Power(cursor.getString(2), PowerType.DAILY, cursor.getInt(4)));
-								break;
-						}
-						Log.d("myLog", "Added " + powers.get(powers.size()-1) + " to " + character);
-						break;
-					}
-				}
-				
-			}
-			while (cursor.moveToNext());
-		}
 	}
 	
 	private void initializeViews() {
@@ -386,9 +303,11 @@ public class EncounterLobbyActivity extends Activity {
 	public void onResume(){
 		super.onResume();
 		
-		loadCharactersFromDB();
-		loadPowersFromDB();
+		DBHelper dbHelper = new DBHelper(this);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
+		dbHelper.loadCharactersFromDB(db);
+
 		initializeViews();
 		
 		ArrayList<DNDCharacter> availableCharacters = DNDCharacter.getNotSelectedCharacters();

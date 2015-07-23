@@ -94,10 +94,11 @@ public class DNDCharacter implements Serializable{
      * @param charCurrentHP
      * @param modifiers
      */
-    private DNDCharacter(String name, String charClass, int charMaxHP, int charCurrentHP, ArrayList<String> modifiers){
+    private DNDCharacter(String name, String charClass, int charMaxHP, int charCurrentHP,
+    		int charInitiativeEncounter, ArrayList<String> modifiers){
     	this.charName = name;
     	this.charClass = charClass;
-    	this.charInitiativeEncounter = (int) (Math.random() * 10);
+    	this.charInitiativeEncounter = charInitiativeEncounter;
     	this.charHPMax = charMaxHP;
     	this.charHPCurrent = charCurrentHP;
     	this.listOfAppliedModifiers = modifiers;
@@ -129,8 +130,9 @@ public class DNDCharacter implements Serializable{
      * @return - newly created character
      */
     public static DNDCharacter addNewCharacterToGame(String name, String charClass, int charMaxHP, int charCurrentHP,
-    		ArrayList<String> modifiers){
-    	DNDCharacter newCharacter = new DNDCharacter(name, charClass, charMaxHP, charCurrentHP, modifiers);
+    		int charInitiativeEncounter, ArrayList<String> modifiers){
+    	DNDCharacter newCharacter = new DNDCharacter(name, charClass, charMaxHP, charCurrentHP, 
+    			charInitiativeEncounter, modifiers);
     	allCharacters.add(newCharacter);
     	return newCharacter;
     }

@@ -76,7 +76,10 @@ public class AddPowerActivity extends Activity {
 				editor.putInt("newPowerTypeID", typeID);
 				
 				int maxAmount = Integer.valueOf(etPowerAmount.getText().toString());
-				editor.putInt("newPowerAmount", maxAmount);
+				editor.putInt("newPowerMaxAmount", maxAmount);
+				
+				int curAmount = maxAmount;
+				editor.putInt("newPowerCurAmount", curAmount);
 				
 				editor.commit();
 			}
