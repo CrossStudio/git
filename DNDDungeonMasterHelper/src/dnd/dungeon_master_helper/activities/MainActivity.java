@@ -309,7 +309,7 @@ public class MainActivity extends Activity {
 	 * Sets initiative order line to its initial value
 	 * @param inflater
 	 */
-	private void fillInitiativeOrderLine(LayoutInflater inflater) {
+	public static void fillInitiativeOrderLine(LayoutInflater inflater) {
 		/**
 		 * Check whether there are no characters in the initiative line yet (there have to be only one object - initiative line nametag)
 		 */

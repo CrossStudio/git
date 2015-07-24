@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import dnd.dungeon_master_helper.activities.MainActivity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -216,18 +217,18 @@ public class DBHelper extends SQLiteOpenHelper {
 		long rowID = db.insertOrThrow("encounter", null, cv);
 	}
 	
-	public synchronized void loadCharactersFromDB(SQLiteDatabase db){
+	public synchronized void loadAllCharactersFromDB(SQLiteDatabase db){
 		db.beginTransaction();
-		loadCharactersParamsFromDB(db);
+		loadAllCharactersParamsFromDB(db);
 		db.setTransactionSuccessful();
 		db.endTransaction();
 		db.beginTransaction();
-		loadCharactersPowersFromDB(db);
+		loadAllCharactersPowersFromDB(db);
 		db.setTransactionSuccessful();
 		db.endTransaction();
 	}
  
-	private synchronized void loadCharactersParamsFromDB(SQLiteDatabase db) {
+	private synchronized void loadAllCharactersParamsFromDB(SQLiteDatabase db) {
 		DNDCharacter.getAllCharacters().clear();
 		
 		Cursor cursor = db.query("characters",null,null,null,null,null,null);
@@ -265,7 +266,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		cursor.close();
 	}
 
-	private synchronized void loadCharactersPowersFromDB(SQLiteDatabase db) {
+	private synchronized void loadAllCharactersPowersFromDB(SQLiteDatabase db) {
 		
 		String sqlQuery = 
 				"select characters.id, characters.name, powers.title, powers.type, powers.maxamount, powers.encamount "
@@ -305,6 +306,28 @@ public class DBHelper extends SQLiteOpenHelper {
 			while (cursor.moveToNext());
 		}
 		cursor.close();
+	}
+
+	/**
+	 * 
+	 * @param db
+	 * @return arraylist of characters in loaded encounter with active character being the first item in the list
+	 */
+	public ArrayList<DNDCharacter> loadEncounterFromDB(SQLiteDatabase db){
+		ArrayList<String> charactersNames = getEncounterCharactersNamesFromDB(db);
+		return loadEncounterCharactersFromDB(charactersNames, db);
+	}
+	
+	private ArrayList<String> getEncounterCharactersNamesFromDB(
+			SQLiteDatabase db) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private ArrayList<DNDCharacter> loadEncounterCharactersFromDB(
+			ArrayList<String> charactersNames, SQLiteDatabase db) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public synchronized void deleteCharactersFromDB(String[] characters, SQLiteDatabase db){

@@ -295,7 +295,7 @@ public class EncounterLobbyActivity extends Activity {
 		DBHelper dbHelper = new DBHelper(this);
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
-		dbHelper.loadCharactersFromDB(db);
+		dbHelper.loadAllCharactersFromDB(db);
 
 		initializeViews();
 		
