@@ -98,6 +98,8 @@ public class MainActivity extends Activity {
 		
 		initializeViews();
 		
+		
+		
 		arrayOfModifierTargets = new String[dndCharacterArrayList.size()];	
 		
 		fillModifierTypesSpinner();
@@ -372,6 +374,8 @@ public class MainActivity extends Activity {
 		DBHelper dbHelper = new DBHelper(this);
 		
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+		dbHelper.saveCurrentEncounter(dndCharacterArrayList, activeCharacter, db);
 		
 		dbHelper.saveCharactersToDB(db);
 		dbHelper.close();

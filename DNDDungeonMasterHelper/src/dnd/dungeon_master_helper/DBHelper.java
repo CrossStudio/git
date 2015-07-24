@@ -1,5 +1,6 @@
 package dnd.dungeon_master_helper;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -159,16 +160,36 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 
 	public synchronized void saveCurrentEncounter(ArrayList<DNDCharacter> characters, DNDCharacter activeCharacter, SQLiteDatabase db){
-		String[] charactersIDs = getCharactersIDs(characters, db);
-		putEncounterInfoToDB(charactersIDs, activeCharacter, db);
+		//TODO
+		putEncounterInfoToDB(characters, activeCharacter, db);
 	}
 	
+
+	//TODO
 	private String[] getCharactersIDs(ArrayList<DNDCharacter> characters, SQLiteDatabase db) {
+		
+		String [] charactersNames = new String[characters.size()];
+		
+		String placeholders = "";
+		
+		for (int i = 0; i < characters.size(); i++){
+			charactersNames[i] = characters.get(i).getCharName();
+			if (i == 0){
+				placeholders += "?";
+			}
+			else {
+				placeholders += ",?";
+			}
+		}
+		
 		String sqlQuery = "select characters.id "
 				+ "from characters "
-				+ "where characters.name in ";
-		Cursor cursor = db.rawQuery(sqlQuery, (String[]) characters.toArray());
+				+ "where characters.name in (" + placeholders +")";
+		
+		Cursor cursor = db.rawQuery(sqlQuery, charactersNames);
+		
 		String[] charactersIDs = new String[characters.size()];
+		
 		if (cursor.moveToFirst()){
 			int count = 0;
 			do {
@@ -178,6 +199,23 @@ public class DBHelper extends SQLiteOpenHelper {
 		return charactersIDs;
 	}
 
+	private void putEncounterInfoToDB(ArrayList<DNDCharacter> characters, DNDCharacter activeCharacter, SQLiteDatabase db) {
+		String listOfCharacters = "";
+		for (DNDCharacter character : characters){
+			if (characters.indexOf(character) != 0){
+				listOfCharacters += "\n" + character.getCharName();
+			}
+			else {
+				listOfCharacters += character.getCharName();
+			}
+		}
+		ContentValues cv = new ContentValues();
+		cv.put("characters", listOfCharacters);
+		cv.put("activecharacter", activeCharacter.getCharName());
+		
+		long rowID = db.insertOrThrow("encounter", null, cv);
+	}
+	
 	public synchronized void loadCharactersFromDB(SQLiteDatabase db){
 		db.beginTransaction();
 		loadCharactersParamsFromDB(db);
