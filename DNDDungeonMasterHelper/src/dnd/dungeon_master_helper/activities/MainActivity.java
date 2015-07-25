@@ -1,12 +1,10 @@
 package dnd.dungeon_master_helper.activities;
 
-import java.sql.SQLInput;
 import java.util.ArrayList;
 import java.util.Collections;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -91,6 +89,10 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		Intent intent = getIntent();
+		if (intent.getStringExtra("activity").equals("encounterLobby")){
+			activeCharacter = null;
+		}
 	}
 
 	@Override

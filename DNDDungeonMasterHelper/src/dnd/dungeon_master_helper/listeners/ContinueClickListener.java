@@ -30,6 +30,7 @@ public class ContinueClickListener implements OnClickListener {
 		}
 		
 		Intent intent = new Intent(activity, MainActivity.class);
+		intent.putExtra("activity", "mainMenu");
 		activity.startActivity(intent);
 	}
 

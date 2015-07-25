@@ -32,7 +32,6 @@ public class AddPowerActivity extends Activity {
 	public void onCreate(Bundle savedState){
 		super.onCreate(savedState);
 		setContentView(R.layout.power_creation);
-		setTitle("Create New Power");
 	
 		initializeViews();
 		

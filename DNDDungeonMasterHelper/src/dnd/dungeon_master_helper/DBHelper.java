@@ -60,6 +60,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	
 	public synchronized void saveCharactersToDB(SQLiteDatabase db){
 		for (DNDCharacter character : characters){
+			Log.d("myLog", character.getCharName() + " is being saved");
 			db.beginTransaction();
 				saveCharacterParamsToDB(character, db);
 			db.setTransactionSuccessful();
@@ -72,20 +73,9 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 	
 	private synchronized void saveCharacterParamsToDB(DNDCharacter character, SQLiteDatabase db){
-		Log.d("myLog", "Entered saveCharacterParamsToDB()");
 		String modifiers = "";
-		Log.d("myLog", character.getCharName() + "'s list of modifiers: " + character.getListOfAppliedModifiers());
 		for (String modifier : character.getListOfAppliedModifiers()){
-			Log.d("myLog", "Modifier " + character.getListOfAppliedModifiers().indexOf(modifier) + ": " + modifier);
 			modifiers += modifier;
-			/*if (character.getListOfAppliedModifiers().indexOf(modifier) == 0){
-				modifiers += modifier;
-			}
-			else {
-				modifiers += "\n" + modifier;
-			}*/
-			Log.d("myLog", "Modifiers string: " + modifiers);
-			Log.d("myLog", "---Modifiers string ended---");
 		}
 		
 		String currentHPLog = "";
@@ -96,7 +86,7 @@ public class DBHelper extends SQLiteOpenHelper {
 			else {
 				currentHPLog  += "\n" + logItem;
 			}
-			Log.d("myLog", currentHPLog);
+
 		}
 		
 		ContentValues cv = new ContentValues();
@@ -231,7 +221,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
  
 	private synchronized void loadAllCharactersParamsFromDB(SQLiteDatabase db) {
-		DNDCharacter.getAllCharacters().clear();
+		characters.clear();
 		
 		Cursor cursor = db.query("characters",null,null,null,null,null,null);
 		
@@ -280,7 +270,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		
 		if (cursor.moveToFirst()){
 			do {
-				for (DNDCharacter character : DNDCharacter.getAllCharacters()){
+				for (DNDCharacter character : characters){
 					if (character.getCharName().equals(cursor.getString(1))){
 						
 						String type = cursor.getString(3);

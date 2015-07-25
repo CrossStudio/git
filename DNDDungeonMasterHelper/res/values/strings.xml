@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">DNDDungeonMasterHelper</string>
+    <string name="app_name">DMHelper</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="main_menu_activity">Main Menu</string>
+    <string name="main_activity">Encounter</string>
+    <string name="encounter_lobby_activity">Encounter Lobby</string>
+    <string name="character_creation_activity">Character Creator</string>
+    <string name="add_power_activity">Add New Power</string>
 
 </resources>

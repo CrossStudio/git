@@ -96,6 +96,7 @@ public class EncounterLobbyActivity extends Activity {
 			}
 			
 		});
+		
 		lvAvailableCharacters.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		
 		/**
@@ -240,7 +241,7 @@ public class EncounterLobbyActivity extends Activity {
 	 * @param v - clicked view
 	 */
 	public void copyCharacterClickHandler(View v){
-		
+		Log.d("myLog", "Entering copyCharacterClickHandler");
 		LinearLayout vwParentRow = (LinearLayout)v.getParent();
 		
 		DNDCharacter clickedCharacter = DNDCharacter.getSelectedCharacters().get(lvSelectedCharacters.getPositionForView(vwParentRow));

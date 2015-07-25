@@ -15,7 +15,7 @@ public class GoToMainActivityClickListener implements OnClickListener {
 		activity = (Activity) v.getContext();
 		
 		Intent intent = new Intent(activity, MainActivity.class);
-
+		intent.putExtra("activity", "encounterLobby");
 		activity.startActivity(intent);
 	}
 
