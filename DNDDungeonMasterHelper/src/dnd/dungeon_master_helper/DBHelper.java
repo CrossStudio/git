@@ -3,6 +3,7 @@ package dnd.dungeon_master_helper;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 import dnd.dungeon_master_helper.activities.MainActivity;
 import android.content.ContentValues;
@@ -161,8 +162,9 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 
 	public synchronized void saveCurrentEncounter(ArrayList<DNDCharacter> characters, DNDCharacter activeCharacter, SQLiteDatabase db){
-		//TODO
-		putEncounterInfoToDB(characters, activeCharacter, db);
+		if (characters != null && characters.size() > 0){
+			putEncounterInfoToDB(characters, activeCharacter, db);
+		}
 	}
 	
 
@@ -309,28 +311,78 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * 
-	 * @param db
+	 * Loads characters that have been in the last encounter from database
+	 * @param db - database to look the characters in
 	 * @return arraylist of characters in loaded encounter with active character being the first item in the list
 	 */
 	public ArrayList<DNDCharacter> loadEncounterFromDB(SQLiteDatabase db){
 		ArrayList<String> charactersNames = getEncounterCharactersNamesFromDB(db);
-		return loadEncounterCharactersFromDB(charactersNames, db);
+		if (charactersNames == null || charactersNames.size() == 0){
+			return null;
+		}
+		return loadEncounterCharacters(charactersNames, db);
 	}
 	
-	private ArrayList<String> getEncounterCharactersNamesFromDB(
-			SQLiteDatabase db) {
-		// TODO Auto-generated method stub
+	private ArrayList<String> getEncounterCharactersNamesFromDB(SQLiteDatabase db) {
+		String sqlQuery = "select encounter.activecharacter, encounter.characters "
+				+ "from encounter ";
+		Cursor cursor = db.rawQuery(sqlQuery, null);
+		
+		ArrayList<String> charactersNames = new ArrayList<>();
+		
+		if (cursor.moveToFirst()){
+			charactersNames.add(cursor.getString(0));
+			ArrayList<String> dummyList = breakLongStringOfNames(cursor.getString(1));
+			if (dummyList != null){
+				charactersNames.addAll(dummyList);
+			}
+		}
+		
+		return charactersNames;
+	}
+
+	private ArrayList<String> breakLongStringOfNames(String  longStringOfNames) {
+		if (longStringOfNames != null && longStringOfNames.length() > 0){
+			return new ArrayList<String>(Arrays.asList(longStringOfNames.split("\\n")));
+		}
 		return null;
 	}
 
-	private ArrayList<DNDCharacter> loadEncounterCharactersFromDB(
-			ArrayList<String> charactersNames, SQLiteDatabase db) {
-		// TODO Auto-generated method stub
-		return null;
+	private ArrayList<DNDCharacter> loadEncounterCharacters(ArrayList<String> charactersNames, SQLiteDatabase db) {
+		ArrayList<DNDCharacter> encounterCharacters = new ArrayList<DNDCharacter>();
+		
+		ArrayList<DNDCharacter> allCharacters = DNDCharacter.getAllCharacters();
+		
+		for (DNDCharacter encounterCharacter : allCharacters){
+			for (String dbCharacterName : charactersNames.subList(1, charactersNames.size())){
+				if (encounterCharacter.getCharName().equals(dbCharacterName)){
+					encounterCharacters.add(encounterCharacter);
+					if (dbCharacterName.equals(charactersNames.get(0))){
+						MainActivity.activeCharacter = encounterCharacter;
+					}
+				}
+			}
+		}
+		/**
+		 * Check for the situation when one or more of the encounter characters have been removed from characters
+		 * but still exists in the encounter table of db
+		 */
+		if (encounterCharacters.size() != charactersNames.size() - 1){
+			clearEncounter(db);
+			return null;
+		}
+		return encounterCharacters;
 	}
 
-	public synchronized void deleteCharactersFromDB(String[] characters, SQLiteDatabase db){
+	/**
+	 * Deletes all the entries in the encounter table
+	 * @param db - database to be queried
+	 */
+	public void clearEncounter(SQLiteDatabase db) {
+		int numRows = db.delete("encounter", null, null);
+	}
+
+	public synchronized void deleteChosenCharactersFromDB(String[] characters, SQLiteDatabase db){
 		int numRows = db.delete("characters", "name IN (" + new String(new char[characters.length-1]).
 				replace("\0","?,") + "?)", characters);
 		

@@ -1,5 +1,6 @@
 package dnd.dungeon_master_helper.activities;
 
+import java.sql.SQLInput;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -98,7 +99,9 @@ public class MainActivity extends Activity {
 		
 		initializeViews();
 		
-		
+		DBHelper helper = new DBHelper(this);
+		SQLiteDatabase db = helper.getWritableDatabase();
+		helper.clearEncounter(db);
 		
 		arrayOfModifierTargets = new String[dndCharacterArrayList.size()];	
 		
@@ -111,7 +114,9 @@ public class MainActivity extends Activity {
 		if (dndCharacterArrayList.size() > 0)
 		{
 			sortCharactersByInitiative();
-			activeCharacter = dndCharacterArrayList.get(0);
+			if (activeCharacter == null){
+				activeCharacter = dndCharacterArrayList.get(0);
+			}
 			tvActiveCharacter.setText(activeCharacter.getCharName() + " (" + activeCharacter.getCharClass() + ")");
 			loadActiveCharacterParams();
 			loadActiveCharacterPowers();

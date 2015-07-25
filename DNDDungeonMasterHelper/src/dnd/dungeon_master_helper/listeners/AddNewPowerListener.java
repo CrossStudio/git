@@ -40,8 +40,6 @@ public class AddNewPowerListener implements OnClickListener {
 	 * Sets current currentCharacter parameters
 	 */
 	private void setCharacterParameters() {
-		Log.d("myLog", "---setCharacterParameters() in CharacterCreationActivity---");
-		Log.d("myLog", "currentCharacter = " + currentCharacter);
 		currentCharacter.setCharName(CharacterCreationActivity.etCharName.getText().toString());
 		currentCharacter.setCharClass(CharacterCreationActivity.spCharClass.getSelectedItem().toString());
 		if (CharacterCreationActivity.etMaxHP.getText().length() > 0){

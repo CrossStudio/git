@@ -1,9 +1,14 @@
 package dnd.dungeon_master_helper.listeners;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.View;
 import android.view.View.OnClickListener;
+import dnd.dungeon_master_helper.DBHelper;
+import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.activities.MainActivity;
 
 public class ContinueClickListener implements OnClickListener {
@@ -13,6 +18,16 @@ public class ContinueClickListener implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		activity = (Activity) v.getContext();
+		
+		DBHelper helper = new DBHelper(activity);
+		SQLiteDatabase db = helper.getWritableDatabase();
+		ArrayList<DNDCharacter> encounterCharacters = helper.loadEncounterFromDB(db);
+		
+		if (encounterCharacters != null){
+			ArrayList<DNDCharacter> dummyCharacters = DNDCharacter.getSelectedCharacters();
+			dummyCharacters.clear();
+			dummyCharacters.addAll(encounterCharacters);
+		}
 		
 		Intent intent = new Intent(activity, MainActivity.class);
 		activity.startActivity(intent);

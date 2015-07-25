@@ -1,14 +1,17 @@
 package dnd.dungeon_master_helper.activities;
 
+import java.util.ArrayList;
+
+import android.app.Activity;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+import android.widget.Button;
+import dnd.dungeon_master_helper.DBHelper;
+import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.R;
-import dnd.dungeon_master_helper.R.id;
-import dnd.dungeon_master_helper.R.layout;
 import dnd.dungeon_master_helper.listeners.ContinueClickListener;
 import dnd.dungeon_master_helper.listeners.EncounterClickListener;
 import dnd.dungeon_master_helper.listeners.HelpClickListener;
-import android.app.Activity;
-import android.os.Bundle;
-import android.widget.Button;
 
 public class MainMenuActivity extends Activity {
 
@@ -20,6 +23,11 @@ public class MainMenuActivity extends Activity {
 	protected void onCreate(Bundle savedBundle){
 		super.onCreate(savedBundle);
 		setContentView(R.layout.main_menu);
+		
+		DBHelper dbHelper = new DBHelper(this);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		
+		dbHelper.loadAllCharactersFromDB(db);
 		
 		initializeViews();
 		

@@ -9,10 +9,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import dnd.dungeon_master_helper.DNDCharacter;
-import dnd.dungeon_master_helper.Power;
-import dnd.dungeon_master_helper.PowerType;
 import dnd.dungeon_master_helper.R;
 
 public class AddPowerActivity extends Activity {
@@ -24,6 +24,7 @@ public class AddPowerActivity extends Activity {
 	RadioGroup rgPowerType;
 	EditText etPowerTitle;
 	EditText etPowerAmount;
+	LinearLayout llPowerAmount;
 	
 	DNDCharacter currentCharacter;
 	
@@ -32,16 +33,29 @@ public class AddPowerActivity extends Activity {
 		super.onCreate(savedState);
 		setContentView(R.layout.power_creation);
 		setTitle("Create New Power");
-
+	
 		initializeViews();
+		
+		checkIfAtWillChosen();
 	}
+
+
 
 	private void initializeViews() {
 		btnPowerCancel = (Button) findViewById(R.id.btnPowerCancel);
 		btnPowerAdd = (Button) findViewById(R.id.btnPowerAdd);
-		rgPowerType = (RadioGroup) findViewById(R.id.rgPowerType);
 		etPowerTitle = (EditText) findViewById(R.id.etPowerTitle);
 		etPowerAmount = (EditText) findViewById(R.id.etPowerAmount);
+		llPowerAmount = (LinearLayout) findViewById(R.id.llPowerAmount);
+		
+		rgPowerType = (RadioGroup) findViewById(R.id.rgPowerType);
+		rgPowerType.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				checkIfAtWillChosen();
+			}
+		});
 		
 		btnPowerCancel.setOnClickListener(new OnClickListener() {
 			
@@ -84,5 +98,16 @@ public class AddPowerActivity extends Activity {
 				editor.commit();
 			}
 		});
+	}
+	
+	private void checkIfAtWillChosen() {
+		
+		if (rgPowerType.getCheckedRadioButtonId() == (R.id.rbAtWill)){
+			llPowerAmount.setVisibility(View.INVISIBLE);
+		}
+		else {
+			llPowerAmount.setVisibility(View.VISIBLE);
+		}
+		
 	}
 }

@@ -139,7 +139,7 @@ public class EncounterLobbyActivity extends Activity {
 				removeItemsFromList();
 				dbHelper = new DBHelper(getBaseContext());
 				SQLiteDatabase db = dbHelper.getWritableDatabase();
-				dbHelper.deleteCharactersFromDB(arrayOfCharacterNamesForDeletion, db);
+				dbHelper.deleteChosenCharactersFromDB(arrayOfCharacterNamesForDeletion, db);
 			}
 
 			/**
@@ -291,11 +291,6 @@ public class EncounterLobbyActivity extends Activity {
 	
 	public void onResume(){
 		super.onResume();
-		
-		DBHelper dbHelper = new DBHelper(this);
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		
-		dbHelper.loadAllCharactersFromDB(db);
 
 		initializeViews();
 		
