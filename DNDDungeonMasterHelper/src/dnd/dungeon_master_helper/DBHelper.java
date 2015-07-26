@@ -1,17 +1,15 @@
 package dnd.dungeon_master_helper;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 
-import dnd.dungeon_master_helper.activities.MainActivity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import dnd.dungeon_master_helper.activities.MainActivity;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -36,23 +34,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.d("myLog", " --- onUpgrade database from " + oldVersion
-		          + " to " + newVersion + " version --- ");
-		if (oldVersion == 1 && newVersion == 2){
-			
-			db.beginTransaction();
-			try {
-				db.execSQL("alter table characters add column class text;");
-				db.execSQL("alter table characters add column maxhp integer;");
-				db.execSQL("alter table characters add column currenthp integer;");
-				db.setTransactionSuccessful();
-			}
-			finally {
-				db.endTransaction();
-			}
-			
-		}
+		
 	}
+	
 	@Override
 	public void onOpen(SQLiteDatabase db){
 		super.onOpen(db);
