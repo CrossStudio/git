@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import dnd.dungeon_master_helper.DBHelper;
 import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.R;
@@ -40,12 +41,15 @@ public class EncounterLobbyActivity extends Activity {
 	static ListView lvSelectedCharacters;
 	
 	DBHelper dbHelper;
+	SQLiteDatabase db;
 	
 	@Override
 	protected void onCreate(Bundle savedBundle){
 		super.onCreate(savedBundle);
 		setContentView(R.layout.encounter_lobby);		
 		
+		dbHelper = new DBHelper(this);
+		db = dbHelper.getWritableDatabase();
 	}
 	
 	private void initializeViews() {
@@ -249,16 +253,63 @@ public class EncounterLobbyActivity extends Activity {
 		DNDCharacter character = DNDCharacter.getDummyCharacter();
 		character.copyCharacter(clickedCharacter);
 		
-		DNDCharacter.addNewCharacterToGame(character);
+		String newName = addDigitToName(character.getCharName());
 		
-		ArrayList<DNDCharacter> selectedCharacters = DNDCharacter.getSelectedCharacters();
-		selectedCharacters.add(character);
-		
+		if (newName != null){
+			character.setCharName(newName);
+			DNDCharacter.addNewCharacterToGame(character);
+			
+			ArrayList<DNDCharacter> selectedCharacters = DNDCharacter.getSelectedCharacters();
+			selectedCharacters.add(character);
+		}
+
 		DNDCharacter.removeDummyCharacter();
 		
 		refreshSelectedCharactersList();
 	}
 	
+    
+    /**
+     * Adds 1 to character's name if original character had no digits at the end of his name
+     * or increases the number at the end of his name by 1
+     * @param charName - name to be taken as an original
+     * @return - altered name with digit added or number incremented
+     */
+    private String addDigitToName(String charName) {
+    	String newName = "";
+	    	try {
+	    		int digit = Integer.parseInt(charName.substring(charName.length()-1, charName.length()));
+	    		newName = charName.substring(0, (charName.length()-1)) + ++digit;
+	    		if (checkForDuplicateNames(newName, DNDCharacter.getAllCharacters())){
+	    			return newName;
+	    		}
+	    		else {
+	    			Toast.makeText(this, newName + " is already playing", Toast.LENGTH_SHORT).show();
+	    			return null;
+	    		}
+	    	}
+	    	catch (NumberFormatException ex) {
+	    		newName = charName + "1";
+	    		if (checkForDuplicateNames(newName, DNDCharacter.getAllCharacters())){
+	    			return newName;
+	    		}
+	    		else {
+	    			Toast.makeText(this, newName + " is already playing", Toast.LENGTH_SHORT).show();
+	    			return null;
+	    		}
+	    	}
+	}
+	
+	private boolean checkForDuplicateNames(String newName, ArrayList<DNDCharacter> allCharacters) {
+		for (DNDCharacter character : allCharacters){
+			if (character.getCharName().equals(newName)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+
 	/**
 	 * Removes currentCharacter from the selected characters list
 	 * @param v - remove button of the currentCharacter that will be removed
@@ -282,11 +333,7 @@ public class EncounterLobbyActivity extends Activity {
 		super.onPause();
 		refreshSelectedCharacterParams();
 		
-		dbHelper = new DBHelper(this);
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		
 		dbHelper.saveCharactersToDB(db);
-		dbHelper.close();
 
 	}
 	

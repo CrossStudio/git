@@ -162,7 +162,7 @@ public class DNDCharacter implements Serializable{
      * @return copy of a given currentCharacter
      */
     public DNDCharacter copyCharacter(DNDCharacter characterToBeCopied){
-    	
+
     	this.charName = characterToBeCopied.getCharName();
 		this.charClass = characterToBeCopied.getCharClass();
 		this.charHPMax = characterToBeCopied.getCharHPMax();
@@ -174,8 +174,8 @@ public class DNDCharacter implements Serializable{
     	
     	return characterToBeCopied;
     }
-    
-    /**
+
+	/**
      * Basic getter of list of allCharacters
      * @return list of all allCharacters in the game
      */
