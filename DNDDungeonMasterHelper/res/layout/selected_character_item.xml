@@ -4,8 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
-    <EditText
-        android:id="@+id/etSelCharacterName"
+    <TextView
+        android:id="@+id/tvSelCharacterName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"

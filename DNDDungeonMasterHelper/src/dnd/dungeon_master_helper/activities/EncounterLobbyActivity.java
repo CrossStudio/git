@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import dnd.dungeon_master_helper.DBHelper;
 import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.R;
@@ -220,7 +221,7 @@ public class EncounterLobbyActivity extends Activity {
 		ArrayList<DNDCharacter> selectedCharacters = DNDCharacter.getSelectedCharacters();
 		
 		String[] takeDataFromKey = {"name", "class", "current HP", "initiative"};
-		int[] writeDataToKey = {R.id.etSelCharacterName, R.id.tvSelCharacterClass, R.id.etSelCharacterHP, R.id.etSelCharacterInit};
+		int[] writeDataToKey = {R.id.tvSelCharacterName, R.id.tvSelCharacterClass, R.id.etSelCharacterHP, R.id.etSelCharacterInit};
 		
 		for (DNDCharacter selectedCharacter : selectedCharacters){
 			mapCharacterData = new HashMap<>();
@@ -241,7 +242,6 @@ public class EncounterLobbyActivity extends Activity {
 	 * @param v - clicked view
 	 */
 	public void copyCharacterClickHandler(View v){
-		Log.d("myLog", "Entering copyCharacterClickHandler");
 		LinearLayout vwParentRow = (LinearLayout)v.getParent();
 		
 		DNDCharacter clickedCharacter = DNDCharacter.getSelectedCharacters().get(lvSelectedCharacters.getPositionForView(vwParentRow));
@@ -314,12 +314,12 @@ public class EncounterLobbyActivity extends Activity {
 	public static void refreshSelectedCharacterParams() {
 		for (int i = 0; i < lvSelectedCharacters.getChildCount(); i++){
 			View listItem = lvSelectedCharacters.getChildAt(i);
-			EditText etSelCharacterName = (EditText) listItem.findViewById(R.id.etSelCharacterName);
+			TextView tvSelCharacterName = (TextView) listItem.findViewById(R.id.tvSelCharacterName);
 			EditText etSelCharacterHP = (EditText) listItem.findViewById(R.id.etSelCharacterHP);
 			EditText etSelCharacterInit = (EditText) listItem.findViewById(R.id.etSelCharacterInit);
 			
 			DNDCharacter character = DNDCharacter.getSelectedCharacters().get(i);
-			character.setCharName(etSelCharacterName.getText().toString());
+			character.setCharName(tvSelCharacterName.getText().toString());
 			character.setCharHPCurrent(Integer.valueOf(etSelCharacterHP.getText().toString()));
 			character.setCharInitiativeEncounter(Integer.valueOf(etSelCharacterInit.getText().toString()));
 		}
