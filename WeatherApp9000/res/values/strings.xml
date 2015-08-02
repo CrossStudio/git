@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">WeatherApp9000</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="cityLabel">City</string><string name="weatherLabel">Weather</string>
+    
+    <string name="temperatureLabel">Temperature</string>
+    <string name="pressureLabel">Pressure</string>
+    <string name="humidityLabel">Humidity</string>
+    <string name="iconDescription">Current weather icon</string>
+    <string name="dummyCity">London</string>
+    <string name="dummyWeather">Cloudy</string>
+    <string name="dummyTemperature">+23C</string>
+    <string name="dummyPressure">1023</string>
+    <string name="dummyHumidity">80%</string>
+    <string name="actionbarHint">Enter city here</string>
+
+</resources>
