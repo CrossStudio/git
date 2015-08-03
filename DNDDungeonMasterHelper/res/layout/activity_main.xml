@@ -18,8 +18,7 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Initiative Order: " >
+            android:layout_height="wrap_content">
         </TextView>
     </LinearLayout>
 
@@ -149,7 +148,7 @@
         android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_below="@+id/etCharModifiers"
-	    android:layout_above="@+id/btnNextCharacter">
+	    android:layout_above="@+id/llMainButtons">
 	    <LinearLayout 
 	        android:orientation="vertical"
 	        android:id="@+id/llCharPowersMain"
@@ -158,13 +157,27 @@
 	        
 	    </LinearLayout>
 	</ScrollView>
-    <Button
-        android:id="@+id/btnNextCharacter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Next Character" />
+	<LinearLayout 
+	    android:id="@+id/llMainButtons"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal"
+	    android:layout_alignParentBottom="true"
+	    android:gravity="center">
+	    <Button
+	        android:id="@+id/btnNextCharacter"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:text="Next Character"
+	        android:layout_weight="0.5" />
+	    <Button 
+	        android:id="@+id/btnAddCharacterFromMain"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:text="Add Character"
+	        android:layout_weight="0.5"/>
+	    	    
+	</LinearLayout>
     
 
 </RelativeLayout>

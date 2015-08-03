@@ -16,6 +16,7 @@ import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.Power;
 import dnd.dungeon_master_helper.activities.CharacterCreationActivity;
 import dnd.dungeon_master_helper.activities.EncounterLobbyActivity;
+import dnd.dungeon_master_helper.activities.MainActivity;
 
 public class AddNewCharacterListener implements OnClickListener {
 
@@ -24,6 +25,19 @@ public class AddNewCharacterListener implements OnClickListener {
 	
 	SharedPreferences prefs;
 	DNDCharacter currentCharacter;
+	
+	public static final String CREATION_FROM_MAIN = "main";
+	public static final String CREATION_FROM_LOBBY = "lobby";
+	
+	public static String creationMode = "";
+	
+	public AddNewCharacterListener(){
+		
+	}
+	
+	public AddNewCharacterListener(String creationMode){
+		this.creationMode = creationMode;
+	}
 	
 	@Override
 	public void onClick(View v) {
@@ -44,7 +58,14 @@ public class AddNewCharacterListener implements OnClickListener {
 			
 			DNDCharacter.removeDummyCharacter();
 			
-			Intent intent = new Intent(activity, EncounterLobbyActivity.class);
+			Intent intent;
+			
+			if (creationMode.equals(CREATION_FROM_MAIN)){
+				intent = new Intent(activity, MainActivity.class);
+			}
+			else {
+				intent = new Intent(activity, EncounterLobbyActivity.class);
+			}
 			activity.startActivity(intent);
 		}
 		else {
@@ -60,7 +81,10 @@ public class AddNewCharacterListener implements OnClickListener {
 	 * @param charMaxHP - maximum health points of the currentCharacter
 	 */
 	private void addNewCharacterToGame(DNDCharacter character) {	
-		DNDCharacter newCharacter = DNDCharacter.addNewCharacterToGame(character);
+		DNDCharacter.addNewCharacterToGame(character);
+		if (creationMode.equals(CREATION_FROM_MAIN)){
+			DNDCharacter.getSelectedCharacters().add(character);
+		}
 		Toast.makeText(activity, character.getCharName() + " created", Toast.LENGTH_SHORT).show();
 	}
 

@@ -35,7 +35,7 @@ public class AddPowerActivity extends Activity {
 	
 		initializeViews();
 		
-		checkIfAtWillChosen();
+		//checkIfAtWillChosen();
 	}
 
 
@@ -48,13 +48,13 @@ public class AddPowerActivity extends Activity {
 		llPowerAmount = (LinearLayout) findViewById(R.id.llPowerAmount);
 		
 		rgPowerType = (RadioGroup) findViewById(R.id.rgPowerType);
-		rgPowerType.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		/*rgPowerType.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				checkIfAtWillChosen();
 			}
-		});
+		});*/
 		
 		btnPowerCancel.setOnClickListener(new OnClickListener() {
 			
@@ -99,7 +99,7 @@ public class AddPowerActivity extends Activity {
 		});
 	}
 	
-	private void checkIfAtWillChosen() {
+	/*private void checkIfAtWillChosen() {
 		
 		if (rgPowerType.getCheckedRadioButtonId() == (R.id.rbAtWill)){
 			llPowerAmount.setVisibility(View.INVISIBLE);
@@ -108,5 +108,5 @@ public class AddPowerActivity extends Activity {
 			llPowerAmount.setVisibility(View.VISIBLE);
 		}
 		
-	}
+	}*/
 }

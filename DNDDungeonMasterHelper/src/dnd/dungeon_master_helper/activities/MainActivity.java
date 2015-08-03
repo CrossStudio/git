@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -44,6 +45,8 @@ public class MainActivity extends Activity {
 	static LinearLayout llInitiativeOrder;
 	
 	static Button btnNextCharacter;
+	
+	static Button btnAddCharacterFromMain;
 	
 	static Button btnAddModifier;
 	
@@ -90,7 +93,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		Intent intent = getIntent();
-		if (intent.getStringExtra("activity").equals("encounterLobby")){
+		if (intent.getStringExtra("activity") != null && intent.getStringExtra("activity").equals("encounterLobby")){
 			activeCharacter = null;
 		}
 	}
@@ -244,7 +247,7 @@ public class MainActivity extends Activity {
 		llCharPowers.removeAllViews();
 		ArrayList<Power> powers = activeCharacter.getCharPowers();
 		for (final Power power : powers){
-			LinearLayout item = (LinearLayout) inflater.inflate(R.layout.power_item, llCharPowers, false);
+			LinearLayout item = (LinearLayout) inflater.inflate(R.layout.power_item_main, llCharPowers, false);
 			
 			TextView tvPowerTitle = (TextView) item.findViewById(R.id.tvPowerTitle);
 			tvPowerTitle.setText(power.getTitle());
@@ -252,6 +255,7 @@ public class MainActivity extends Activity {
 			TextView tvPowerType = (TextView) item.findViewById(R.id.tvPowerType);
 			tvPowerType.setText(power.getType()+"");
 			
+			LinearLayout llPowerCheckBoxes = (LinearLayout) item.findViewById(R.id.llPowerCheckBoxes);
 			
 			LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 			params.gravity = Gravity.CENTER_VERTICAL;
@@ -267,7 +271,7 @@ public class MainActivity extends Activity {
 					usedPowerCounter--;
 				}
 				
-				item.addView(cbPowerAmount);
+				llPowerCheckBoxes.addView(cbPowerAmount);
 
 				cbPowerAmount.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 					
@@ -362,7 +366,19 @@ public class MainActivity extends Activity {
 		etModifierValue = (EditText) findViewById(R.id.etModifierValue);
 		spinModifierType = (Spinner) findViewById(R.id.spinModifierType);
 		spinModifierTarget = (Spinner) findViewById(R.id.spinModifierTarget);
-		
+		btnAddCharacterFromMain = (Button) findViewById(R.id.btnAddCharacterFromMain);
+		btnAddCharacterFromMain.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MainActivity.this, CharacterCreationActivity.class);
+				intent.putExtra("activity", "MainActivity");
+				SharedPreferences prefs = MainActivity.this.getSharedPreferences("CurrentCharacter", MainActivity.this.MODE_PRIVATE);
+				prefs.edit().clear().commit();
+				startActivity(intent);
+				
+			}
+		});
 		
 		
 		btnAddModifier.setOnClickListener(new AddModifierClickListener());

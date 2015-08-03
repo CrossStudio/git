@@ -3,20 +3,23 @@ package dnd.dungeon_master_helper.activities;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.LinearLayout.LayoutParams;
 import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.Power;
 import dnd.dungeon_master_helper.PowerType;
@@ -37,6 +40,10 @@ public class CharacterCreationActivity extends Activity {
 	public static EditText etCurrentInitiative;
 	public static EditText etMaxHP;
 	public static Spinner spCharClass;
+	public static final String CREATION_FROM_MAIN = "main";
+	public static final String CREATION_FROM_LOBBY = "lobby";
+	
+	public static String creationMode = "";
 	
 	String classes[] = {"Cleric", "Fighter", "Paladin", "Ranger", "Rogue", "Warlock", "Warlord", "Wizard", "Monster"};
 	
@@ -44,6 +51,18 @@ public class CharacterCreationActivity extends Activity {
 	public void onCreate(Bundle savedBundle){
 		super.onCreate(null);
 		setContentView(R.layout.character_creation);
+		Intent intent = getIntent();
+		
+		if (intent.getStringExtra("activity") != null){
+			if (intent.getStringExtra("activity").equals("MainActivity")){
+				Log.d("myLog", "Created from Main");
+				creationMode = CREATION_FROM_MAIN;
+			}
+			else {
+				Log.d("myLog", "Created from elsewhere");
+				creationMode = CREATION_FROM_LOBBY;
+			}
+		}
 	}
 
 	/**
@@ -57,7 +76,7 @@ public class CharacterCreationActivity extends Activity {
 		etMaxHP = (EditText) findViewById(R.id.etMaxHP);
 		spCharClass = (Spinner) findViewById(R.id.spCharClass);
 		
-		btnAddNewCharacter.setOnClickListener(new AddNewCharacterListener());
+		btnAddNewCharacter.setOnClickListener(new AddNewCharacterListener(creationMode));
 		btnAddNewPower.setOnClickListener(new AddNewPowerListener());
 		
 		spCharClass.setOnItemSelectedListener(new CharClassSelectedListener());
@@ -225,8 +244,8 @@ public class CharacterCreationActivity extends Activity {
 		LayoutInflater inflater = getLayoutInflater();
 		LinearLayout llCharPowers = (LinearLayout) findViewById(R.id.llCharPowersCreation);
 		llCharPowers.removeAllViews();
-		ArrayList<Power> powers = currentCharacter.getCharPowers();
-		for (Power power : powers){
+		final ArrayList<Power> powers = currentCharacter.getCharPowers();
+		for (final Power power : powers){
 			Log.d("myLog", "---Inside a loop of drawCurrentCharacterPowers(); CharacterCreationActivity---");
 			LinearLayout item = (LinearLayout) inflater.inflate(R.layout.power_item, llCharPowers, false);
 			
@@ -236,6 +255,15 @@ public class CharacterCreationActivity extends Activity {
 			TextView tvPowerType = (TextView) item.findViewById(R.id.tvPowerType);
 			tvPowerType.setText(power.getType()+"");
 			
+			Button btnDeletePower = (Button) item.findViewById(R.id.btnDeletePower);
+			btnDeletePower.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					powers.remove(power);
+					drawCurrentCharacterPowers();
+				}
+			});
 			
 			LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 			params.gravity = Gravity.CENTER_VERTICAL;
