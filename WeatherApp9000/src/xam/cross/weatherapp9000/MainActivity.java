@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -44,6 +45,14 @@ public class MainActivity extends Activity implements OnMapReadyCallback {
     private static final String TAG_MAIN_PRESSURE = "pressure";
     private static final String TAG_MAIN_HUMIDITY = "humidity";
  
+    private static String weatherId;
+    private static String weatherMain;
+    private static String weatherDescription;
+    private static String weatherIcon;
+    private static String mainTemp;
+    private static String mainPressure;
+    private static String mainHumidity;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,8 +62,8 @@ public class MainActivity extends Activity implements OnMapReadyCallback {
         
         new GetWeather().execute();
         
-        //MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.fMap);
-        //mapFragment.getMapAsync(this);
+        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.fMap);
+        mapFragment.getMapAsync(this);
 
     }
 
@@ -134,34 +143,29 @@ public class MainActivity extends Activity implements OnMapReadyCallback {
                     for (int i = 0; i < weather.length(); i++) {
                         JSONObject c = weather.getJSONObject(i);
                          
-                        String weatherId = c.getString(TAG_WEATHER_ID);
-                        String weatherMain = c.getString(TAG_WEATHER_MAIN);
-                        String weatherDescription = c.getString(TAG_WEATHER_DESCRIPTION);
-                        String weatherIcon = c.getString(TAG_WEATHER_ICON);
+                        weatherId = c.getString(TAG_WEATHER_ID);
+                        weatherMain = c.getString(TAG_WEATHER_MAIN);
+                        weatherDescription = c.getString(TAG_WEATHER_DESCRIPTION);
+                        weatherIcon = c.getString(TAG_WEATHER_ICON);
                         
                         Log.d("myLog", "Weather id = " + weatherId);
                         Log.d("myLog", "Weather main = " + weatherMain);
                         Log.d("myLog", "Weather description = " + weatherDescription);
                         Log.d("myLog", "Weather icon = " + weatherIcon);
                         
-                        tvWeatherDescription.setText(weatherDescription);
-
-                        ivWeatherIcon.setImageURI(Uri.parse(getWeatherIcon(weatherIcon)));
+                        
                    
                     }
                     
-                    String mainTemp = main.getString(TAG_MAIN_TEMP);
-                    String mainPressure = main.getString(TAG_MAIN_PRESSURE);
-                    String mainHumidity = main.getString(TAG_MAIN_HUMIDITY);
+                    mainTemp = main.getString(TAG_MAIN_TEMP);
+                    mainPressure = main.getString(TAG_MAIN_PRESSURE);
+                    mainHumidity = main.getString(TAG_MAIN_HUMIDITY);
                     
                     Log.d("myLog", "Main temperature = " + mainTemp);
                     Log.d("myLog", "Main pressure = " + mainPressure);
                     Log.d("myLog", "Main humidity = " + mainHumidity);
                     
-                    tvCity.setText(etInput.getText().toString());
-                    tvTemperature.setText(mainTemp);
-                    tvPressure.setText(mainPressure);
-                    tvHumidity.setText(mainHumidity);
+                    
           
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -176,7 +180,13 @@ public class MainActivity extends Activity implements OnMapReadyCallback {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+            tvWeatherDescription.setText(weatherDescription);
 
+            ivWeatherIcon.setImageURI(Uri.parse(getWeatherIcon(weatherIcon)));
+            tvCity.setText(etInput.getText().toString());
+            tvTemperature.setText(mainTemp);
+            tvPressure.setText(mainPressure);
+            tvHumidity.setText(mainHumidity);
         }
  
     }
