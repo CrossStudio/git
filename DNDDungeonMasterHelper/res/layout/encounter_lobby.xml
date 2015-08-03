@@ -2,9 +2,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-
-    
-
     <TextView 
         android:id="@+id/tvAvailableCharactersLabel"
         android:layout_height="wrap_content"
@@ -16,14 +13,15 @@
 	    
 	    android:id="@+id/svAvailableCharacters"
 	    android:layout_width="match_parent"
-	    android:layout_height="200dp">
+	    android:layout_height="200dp"
+	    android:layout_below="@+id/tvAvailableCharactersLabel">
 	    
 	    <LinearLayout
 	        android:id="@+id/llAvailableCharacters"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:orientation="vertical"
-	        android:layout_below="@+id/tvAvailableCharactersLabel" >
+	         >
 	
 	    </LinearLayout>
 	</ScrollView>

@@ -37,8 +37,7 @@ public class EncounterLobbyActivity extends Activity {
 
 	Button btnAddCharacter;
 	Button btnStartEncounter;
-	
-	ListView lvAvailableCharacters;
+
 	static ListView lvSelectedCharacters;
 	
 	DBHelper dbHelper;
@@ -59,8 +58,7 @@ public class EncounterLobbyActivity extends Activity {
 		
 		btnAddCharacter.setOnClickListener(new GoToCharacterCreationListener());
 		btnStartEncounter.setOnClickListener(new GoToMainActivityClickListener());
-		
-		lvAvailableCharacters = (ListView) findViewById(R.id.lvAvailableCharacters);
+
 		lvSelectedCharacters = (ListView) findViewById(R.id.lvSelectedCharacters);
 		
 	}
