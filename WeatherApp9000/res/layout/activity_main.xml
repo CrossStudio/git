@@ -5,16 +5,26 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal">
 
-    <EditText
-        android:inputType="text"
-        android:id="@+id/etInput"
+    <LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/actionbarHint"
-        android:layout_weight="0.1" />
-    <fragment 
-        android:id="@+id/fMap"
-        android:name="com.google.android.gms.maps.MapFragment"
+        android:orientation="horizontal">
+        <EditText
+	        android:inputType="text"
+	        android:id="@+id/etInput"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/actionbarHint"
+	        android:layout_weight="0.1"/>
+        <Button 
+            android:id="@+id/btnGetWeather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/getWeatherButton"/>
+    </LinearLayout>
+    
+    <WebView 
+        android:id="@+id/wvMap"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="0.6" />
@@ -45,8 +55,7 @@
 	            android:layout_width="0dp"
 	        	android:layout_height="wrap_content"
 	        	android:layout_weight="0.5"
-	        	android:gravity="center"
-	        	android:text="@string/dummyCity"/>
+	        	android:gravity="center"/>
         </LinearLayout>
         <LinearLayout 
             android:layout_width="fill_parent"
@@ -64,8 +73,7 @@
 	            android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:gravity="center"
-	        	android:text="@string/dummyWeather"/>
+                android:gravity="center"/>
         </LinearLayout>
         <LinearLayout 
             android:layout_width="fill_parent"
@@ -83,8 +91,7 @@
 	            android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:gravity="center"
-	        	android:text="@string/dummyTemperature"/>
+                android:gravity="center"/>
         </LinearLayout>
         <LinearLayout 
             android:layout_width="fill_parent"
@@ -102,8 +109,7 @@
 	            android:layout_width="0dp"
 	            android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:gravity="center"
-	        	android:text="@string/dummyPressure"/>
+                android:gravity="center"/>
         </LinearLayout>
         <LinearLayout 
             android:layout_width="fill_parent"
@@ -121,8 +127,7 @@
 	            android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:gravity="center"
-	        	android:text="@string/dummyHumidity"/>
+                android:gravity="center"/>
         </LinearLayout>
         
         

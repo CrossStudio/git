@@ -21,51 +21,49 @@ public class ServiceHandler {
 	public final static int GET = 0;
 	public final static int POST = 1;
 	
-	public ServiceHandler(){
-		
-	}
-	
+	/**
+	 * Overloaded makeServiceCall which calls makeServiceCall with null parameter in place of name value pairs
+	 * @param url - url to be used in http call
+	 * @param method - either GET or POST method
+	 * @return response from server as String
+	 */
 	public String makeServiceCall (String url, int method){
 		return this.makeServiceCall(url, method, null);
 	}
 	
+	/**
+	 * Makes a http call for a given url, method and parameters
+	 * @param url - url to be used in http call
+	 * @param method - either GET or POST method
+	 * @param parameters - parameters to be added to the http call
+	 * @return response from server as String
+	 */
 	public String makeServiceCall (String url, int method, List<NameValuePair> parameters){
 		try {
-			//http Client
 			DefaultHttpClient httpClient = new DefaultHttpClient();
 			HttpEntity httpEntity = null;
 			HttpResponse httpResponse = null;
 			
-			//Checking http request method type
-			if (method == POST){
-				HttpPost post = new HttpPost(url);
-				//adding post parameters
-				if (parameters != null){
-					post.setEntity(new UrlEncodedFormEntity(parameters));
-				}
-				
-				httpResponse = httpClient.execute(post);
-			}
-			else if (method == GET) {
-                // appending params to url
-                if (parameters != null) {
-                    String paramString = URLEncodedUtils
-                            .format(parameters, "utf-8");
-                    url += "?" + paramString;
-                }
-                HttpGet httpGet = new HttpGet(url);
- 
-                httpResponse = httpClient.execute(httpGet);
- 
+            if (parameters != null) {
+	            String paramString = URLEncodedUtils
+	                    .format(parameters, "utf-8");
+	            url += "?" + paramString;
             }
+            HttpGet httpGet = new HttpGet(url);
+ 
+            httpResponse = httpClient.execute(httpGet);
+
             httpEntity = httpResponse.getEntity();
             response = EntityUtils.toString(httpEntity);
  
-        } catch (UnsupportedEncodingException e) {
+        }
+		catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        } catch (ClientProtocolException e) {
+        }
+		catch (ClientProtocolException e) {
             e.printStackTrace();
-        } catch (IOException e) {
+        }
+		catch (IOException e) {
             e.printStackTrace();
         }
          

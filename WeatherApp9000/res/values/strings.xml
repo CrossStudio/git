@@ -16,5 +16,6 @@
     <string name="dummyPressure">1023</string>
     <string name="dummyHumidity">80%</string>
     <string name="actionbarHint">Enter city here</string>
+    <string name="getWeatherButton">Get Weather</string>
 
 </resources>

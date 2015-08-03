@@ -1,28 +1,32 @@
 package xam.cross.weatherapp9000;
 
+import java.io.InputStream;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-public class MainActivity extends Activity implements OnMapReadyCallback {
+public class MainActivity extends Activity{
+	
+	//Views names
 	
 	EditText etInput;
 	TextView tvCity;
@@ -31,9 +35,12 @@ public class MainActivity extends Activity implements OnMapReadyCallback {
 	TextView tvPressure;
 	TextView tvHumidity;
 	ImageView ivWeatherIcon;
- 
+	Button btnGetWeather;
+	WebView wvMap;
+	
     // JSON Node names
    
+	private static final String TAG_CITY_NAME = "name";
     private static final String TAG_COORD = "coord";
     private static final String TAG_WEATHER = "weather";
     private static final String TAG_WEATHER_ID = "id";
@@ -44,7 +51,8 @@ public class MainActivity extends Activity implements OnMapReadyCallback {
     private static final String TAG_MAIN_TEMP = "temp";
     private static final String TAG_MAIN_PRESSURE = "pressure";
     private static final String TAG_MAIN_HUMIDITY = "humidity";
- 
+    
+    private static String cityName;
     private static String weatherId;
     private static String weatherMain;
     private static String weatherDescription;
@@ -59,14 +67,12 @@ public class MainActivity extends Activity implements OnMapReadyCallback {
         setContentView(R.layout.activity_main);
         
         initializeViews();
-        
-        new GetWeather().execute();
-        
-        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.fMap);
-        mapFragment.getMapAsync(this);
 
     }
 
+    /**
+     * Initializes all views that are present within current MainActivity
+     */
     private void initializeViews() {
     	etInput = (EditText) findViewById(R.id.etInput);
     	tvCity = (TextView) findViewById(R.id.tvCity);
@@ -75,21 +81,18 @@ public class MainActivity extends Activity implements OnMapReadyCallback {
     	tvPressure = (TextView) findViewById(R.id.tvPressure);
     	tvHumidity = (TextView) findViewById(R.id.tvHumidity);
     	ivWeatherIcon = (ImageView) findViewById(R.id.ivWeatherIcon);
+    	btnGetWeather = (Button) findViewById(R.id.btnGetWeather);
+    	wvMap = (WebView) findViewById(R.id.wvMap);
+    	
+    	btnGetWeather.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				new GetWeather().execute();
+			}
+		});
 	}
 
-	@Override
-    public void onMapReady(GoogleMap map) {
-        LatLng sydney = new LatLng(-33.867, 151.206);
-
-        map.setMyLocationEnabled(true);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13));
-
-        map.addMarker(new MarkerOptions()
-                .title("Sydney")
-                .snippet("The most populous city in Australia.")
-                .position(sydney));
-
-    }
     
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -126,18 +129,17 @@ public class MainActivity extends Activity implements OnMapReadyCallback {
             ServiceHandler sh = new ServiceHandler();
  
             // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall("http://api.openweathermap.org/data/2.5/weather?q=London,uk", ServiceHandler.GET);
- 
-            Log.d("myLog", "> " + jsonStr);
+            String jsonStr = sh.makeServiceCall(getJSONqueryURL(etInput.getText().toString()), ServiceHandler.GET);
  
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
-                     
+                    
+                    cityName = jsonObj.getString(TAG_CITY_NAME);
+                    
                     // Getting JSON Array node
                     JSONArray weather = jsonObj.getJSONArray(TAG_WEATHER);
-                    JSONObject main = jsonObj.getJSONObject(TAG_MAIN);
-                    
+                    JSONObject main = jsonObj.getJSONObject(TAG_MAIN);               
                     
                     // looping through weather array
                     for (int i = 0; i < weather.length(); i++) {
@@ -147,31 +149,21 @@ public class MainActivity extends Activity implements OnMapReadyCallback {
                         weatherMain = c.getString(TAG_WEATHER_MAIN);
                         weatherDescription = c.getString(TAG_WEATHER_DESCRIPTION);
                         weatherIcon = c.getString(TAG_WEATHER_ICON);
-                        
-                        Log.d("myLog", "Weather id = " + weatherId);
-                        Log.d("myLog", "Weather main = " + weatherMain);
-                        Log.d("myLog", "Weather description = " + weatherDescription);
-                        Log.d("myLog", "Weather icon = " + weatherIcon);
-                        
-                        
-                   
+      
                     }
                     
                     mainTemp = main.getString(TAG_MAIN_TEMP);
                     mainPressure = main.getString(TAG_MAIN_PRESSURE);
-                    mainHumidity = main.getString(TAG_MAIN_HUMIDITY);
-                    
-                    Log.d("myLog", "Main temperature = " + mainTemp);
-                    Log.d("myLog", "Main pressure = " + mainPressure);
-                    Log.d("myLog", "Main humidity = " + mainHumidity);
-                    
-                    
-          
-                } catch (JSONException e) {
+                    mainHumidity = main.getString(TAG_MAIN_HUMIDITY);     
+                            
+                }
+                catch (JSONException e) {
                     e.printStackTrace();
                 }
-            } else {
-                Log.e("ServiceHandler", "Couldn't get any data from the url");
+                catch (IllegalArgumentException e){
+                	e.printStackTrace();
+                	Toast.makeText(MainActivity.this, "Please enter correct location", Toast.LENGTH_LONG).show();
+                }
             }
  
             return null;
@@ -182,16 +174,48 @@ public class MainActivity extends Activity implements OnMapReadyCallback {
             super.onPostExecute(result);
             tvWeatherDescription.setText(weatherDescription);
 
-            ivWeatherIcon.setImageURI(Uri.parse(getWeatherIcon(weatherIcon)));
-            tvCity.setText(etInput.getText().toString());
+            new DownloadImageTask(ivWeatherIcon).execute(getWeatherIconURL(weatherIcon));
+            tvCity.setText(cityName);
             tvTemperature.setText(mainTemp);
             tvPressure.setText(mainPressure);
             tvHumidity.setText(mainHumidity);
+            wvMap.setWebViewClient(new WebViewClient());
+            WebSettings webSettings= wvMap.getSettings();
+            webSettings.setJavaScriptEnabled(true);
+            wvMap.loadUrl(getCityOnMapURL(cityName));
         }
  
     }
-
-	public String getWeatherIcon(String weatherIcon) {
+    
+    /**
+     * Returns url which will be called for JSON response
+     * @param city - city of your choice for which weather will be looked
+     * @return url which will be called for JSON response
+     */
+    private static String getJSONqueryURL(String city){
+    	String queryURL = "http://api.openweathermap.org/data/2.5/weather?q=";
+    	city = city.replace(" ", "%20");
+    	queryURL += city;
+    	return queryURL;
+    }
+    
+    /**
+     * Returns url which will be called to draw google map for a correct location
+     * @param city - location on which google maps will be centered
+     * @return url which will be called to draw google map for a correct location
+     */
+    private static String getCityOnMapURL(String city){
+    	String cityOnMapURL = "https://www.google.com/maps/place/";
+    	cityOnMapURL += city;
+    	return cityOnMapURL;
+    }
+    
+    /**
+     * Returns url which will be used to get weather icon
+     * @param weatherIcon - weather icon id
+     * @return url which will be used to get weather icon
+     */
+	private static String getWeatherIconURL(String weatherIcon) {
 		String iconUrl = "http://api.openweathermap.org/img/w/";
 		
 		iconUrl += weatherIcon;
@@ -199,6 +223,31 @@ public class MainActivity extends Activity implements OnMapReadyCallback {
 		iconUrl += ".png";
 		
 		return iconUrl;
+	}
+	
+	
+	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+	    ImageView bmImage;
+
+	    public DownloadImageTask(ImageView bmImage) {
+	        this.bmImage = bmImage;
+	    }
+
+	    protected Bitmap doInBackground(String... urls) {
+	        String urlDisplay = urls[0];
+	        Bitmap dummyBitmap = null;
+	        try {
+	            InputStream in = new java.net.URL(urlDisplay).openStream();
+	            dummyBitmap = BitmapFactory.decodeStream(in);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        return dummyBitmap;
+	    }
+
+	    protected void onPostExecute(Bitmap result) {
+	        bmImage.setImageBitmap(result);
+	    }
 	}
 	
 }
