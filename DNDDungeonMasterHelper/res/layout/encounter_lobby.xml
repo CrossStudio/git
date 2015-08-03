@@ -12,20 +12,27 @@
         android:text="Available characters:"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
-
-    <ListView
-        android:id="@+id/lvAvailableCharacters"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_below="@+id/tvAvailableCharactersLabel" >
-
-    </ListView>
+	<ScrollView 
+	    
+	    android:id="@+id/svAvailableCharacters"
+	    android:layout_width="match_parent"
+	    android:layout_height="200dp">
+	    
+	    <LinearLayout
+	        android:id="@+id/llAvailableCharacters"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical"
+	        android:layout_below="@+id/tvAvailableCharactersLabel" >
+	
+	    </LinearLayout>
+	</ScrollView>
     <TextView 
         android:id="@+id/tvSelectedCharactersLabel"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:text="Selected characters:"
-        android:layout_below="@+id/lvAvailableCharacters"
+        android:layout_below="@+id/svAvailableCharacters"
         android:layout_centerHorizontal="true"/>
 
 	<ListView

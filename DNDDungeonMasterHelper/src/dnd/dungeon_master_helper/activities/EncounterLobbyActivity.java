@@ -47,7 +47,7 @@ public class EncounterLobbyActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedBundle){
 		super.onCreate(savedBundle);
-		setContentView(R.layout.encounter_lobby_dummy);		
+		setContentView(R.layout.encounter_lobby);		
 		
 		dbHelper = new DBHelper(this);
 		db = dbHelper.getWritableDatabase();
@@ -65,147 +65,7 @@ public class EncounterLobbyActivity extends Activity {
 		
 	}
 	
-	/**
-	 * Fills the ListView which holds all available characters with characters previously loaded from the database
-	 */
-	private void refreshAvailableCharactersList(){
-		
-		final List<Map<String,String>> listCharactersDataToFillList = new ArrayList<>();
-		Map<String, String> mapCharacterData;
-		
-		String[] takeDataFromKey = {"name", "class"};
-		int[] writeDataToKey = {R.id.tvAvCharacterName, R.id.tvAvCharacterClass};
-		
-		final ArrayList<DNDCharacter> availableCharacters = DNDCharacter.getNotSelectedCharacters();
-		
-		for (DNDCharacter character : availableCharacters){
-			mapCharacterData = new HashMap<>();
-			mapCharacterData.put("name", character.getCharName());
-			mapCharacterData.put("class", "(" + character.getCharClass() + ")");
-			listCharactersDataToFillList.add(mapCharacterData);
-		}
-		
-		final SimpleAdapter adapter = new SimpleAdapter(this, listCharactersDataToFillList, R.layout.available_character_item, takeDataFromKey, writeDataToKey);
-		lvAvailableCharacters.setAdapter(adapter);
-		lvAvailableCharacters.setOnItemClickListener(new OnItemClickListener(){
-			
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
-				int idCharacterClicked = lvAvailableCharacters.getPositionForView(v);
-				DNDCharacter clickedCharacter = availableCharacters.get(idCharacterClicked);
-
-				addCharacterToSelectedCharactersList(clickedCharacter);
-				availableCharacters.remove(clickedCharacter);
-				listCharactersDataToFillList.remove(idCharacterClicked);
-				adapter.notifyDataSetChanged();
-
-			}
-			
-		});
-		
-		lvAvailableCharacters.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-		
-		/**
-		 * Adds context action bar upon long click on the list item. CAB lets you delete multiple list items at once
-		 * both from the list and from the database
-		 */
-		lvAvailableCharacters.setMultiChoiceModeListener(new MultiChoiceModeListener(){
-			
-			private ArrayList<Integer> listOfIndicesForDeletion = new ArrayList<>();
-			private String[] arrayOfCharacterNamesForDeletion;
-			
-			@Override
-			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-				// Respond to clicks on the actions in the CAB
- 
-		        switch (item.getItemId()) {
-		            case R.id.action_delete:
-		            	fillArrayOfCharacterNamesForDeletion();
-		            	deleteSelectedItems();
-		                mode.finish(); // Action picked, so close the CAB
-		                return true;
-		            default:
-		                return false;
-		        }
-			}
-			/**
-			 * Populates an array of names of characters that will be deleted
-			 */
-			private void fillArrayOfCharacterNamesForDeletion() {
-				arrayOfCharacterNamesForDeletion = new String[listOfIndicesForDeletion.size()];
-				int counter = 0;
-				for (int i : listOfIndicesForDeletion){
-					arrayOfCharacterNamesForDeletion[counter] = availableCharacters.get(i).getCharName();
-					counter++;
-				}
-			}
-			/**
-			 * Removes selected items from the list of available characters as well as from the database
-			 */
-			private void deleteSelectedItems() {
-				removeItemsFromList();
-				dbHelper = new DBHelper(getBaseContext());
-				SQLiteDatabase db = dbHelper.getWritableDatabase();
-				dbHelper.deleteChosenCharactersFromDB(arrayOfCharacterNamesForDeletion, db);
-			}
-
-			/**
-			 * Removes selected items from the list
-			 */
-			private void removeItemsFromList() {
-				Collections.sort(listOfIndicesForDeletion);
-				for (int i = listOfIndicesForDeletion.size() - 1; i >= 0 ; i--){
-					int indexOfCharacterToDelete = listOfIndicesForDeletion.get(i);
-					DNDCharacter characterToDelete = availableCharacters.get(indexOfCharacterToDelete);
-					listCharactersDataToFillList.remove(indexOfCharacterToDelete);
-					DNDCharacter.getAllCharacters().remove(characterToDelete);
-					availableCharacters.remove(characterToDelete);
-				}
-				listOfIndicesForDeletion.clear();
-				((SimpleAdapter) lvAvailableCharacters.getAdapter()).notifyDataSetChanged();
-				
-			}
-			
-			@Override
-			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-				MenuInflater inflater = mode.getMenuInflater();
-		        inflater.inflate(R.menu.encounter_lobby_action_bar, menu);
-		        return true;
-			}
-
-			@Override
-			public void onDestroyActionMode(ActionMode mode) {
-				for (int i=0; i < lvAvailableCharacters.getChildCount(); i++){
-					lvAvailableCharacters.getChildAt(i).setAlpha(1);
-				}
-				listOfIndicesForDeletion.clear();
-			}
-
-			@Override
-			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-				int firstPosition = lvAvailableCharacters.getFirstVisiblePosition();
-				View selectedView = lvAvailableCharacters.getChildAt(position - firstPosition);
-
-				if (checked){
-					selectedView.setAlpha(0.3f);
-					listOfIndicesForDeletion.add(position);
-				}
-				else {
-					selectedView.setAlpha(1);
-					listOfIndicesForDeletion.remove((Object)position);
-				}
-			}
-			
-		});
-		
-	}
-
+	
 	/**
 	 * Adds chosen currentCharacter to the list of selected characters
 	 * @param clickedCharacter
@@ -326,7 +186,7 @@ public class EncounterLobbyActivity extends Activity {
 		
 		selectedCharacters.remove(clickedCharacter);
 		availableCharacters.add(clickedCharacter);
-		refreshAvailableCharactersList();
+		refreshAvailableCharacters();
 		refreshSelectedCharactersList();
 	}
 	
@@ -350,7 +210,7 @@ public class EncounterLobbyActivity extends Activity {
 		
 		availableCharacters.addAll(DNDCharacter.getAllCharacters());
 		
-		refreshAvailableCharactersList();
+		refreshAvailableCharacters();
 		
 		DNDCharacter.getSelectedCharacters().clear();
 		refreshSelectedCharactersList();
@@ -374,36 +234,60 @@ public class EncounterLobbyActivity extends Activity {
 		}
 	}
 	
-	private void fillAvailableCharacters(){
+	private void refreshAvailableCharacters(){
 		LayoutInflater inflater = getLayoutInflater();
-		LinearLayout llAvailableCharacters = (LinearLayout) findViewById(R.id.llAvailableCharacters);
+		final LinearLayout llAvailableCharacters = (LinearLayout) findViewById(R.id.llAvailableCharacters);
+		llAvailableCharacters.removeAllViews();
 		for (DNDCharacter character : DNDCharacter.getNotSelectedCharacters()){
 			LinearLayout llCharacterItem = (LinearLayout) inflater.inflate(R.layout.available_character_item, null);
-			TextView tvAvCharacterName = (TextView) llAvailableCharacters.findViewById(R.id.tvAvCharacterName);
-			TextView tvAvCharacterClass = (TextView) llAvailableCharacters.findViewById(R.id.tvAvCharacterClass);
-			Button btnDeleteFromAvailable = (Button) llAvailableCharacters.findViewById(R.id.btnDeleteFromAvailable);
+			TextView tvAvCharacterName = (TextView) llCharacterItem.findViewById(R.id.tvAvCharacterName);
+			TextView tvAvCharacterClass = (TextView) llCharacterItem.findViewById(R.id.tvAvCharacterClass);
+			Button btnAddCharacterToEncounter = (Button) llCharacterItem.findViewById(R.id.btnAddCharacterToEncounter);
+			Button btnDeleteFromAvailable = (Button) llCharacterItem.findViewById(R.id.btnDeleteFromAvailable);
 			
 			tvAvCharacterName.setText(character.getCharName());
-			tvAvCharacterClass.setText(character.getCharClass());
+			tvAvCharacterClass.setText("(" + character.getCharClass() + ")");
 			btnDeleteFromAvailable.setOnClickListener(new OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {
 					//TODO
+					ArrayList<DNDCharacter> availableCharacters = DNDCharacter.getNotSelectedCharacters();
+					ArrayList<DNDCharacter> allCharacters = DNDCharacter.getAllCharacters();
+					DNDCharacter clickedCharacter = null;
+					for (int i = 0; i < llAvailableCharacters.getChildCount(); i++){
+						if (v.getParent().equals(llAvailableCharacters.getChildAt(i))){
+							clickedCharacter = availableCharacters.get(i);
+							availableCharacters.remove(clickedCharacter);
+							allCharacters.remove(clickedCharacter);
+							dbHelper.deleteChosenCharactersFromDB(new String[]{clickedCharacter.getCharName()}, db);
+							refreshAvailableCharacters();
+							break;
+						}
+					}
+				}
+			});
+			
+			btnAddCharacterToEncounter.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					ArrayList<DNDCharacter> availableCharacters = DNDCharacter.getNotSelectedCharacters();
+					DNDCharacter clickedCharacter = null;
+					for (int i = 0; i < llAvailableCharacters.getChildCount(); i++){
+						if (v.getParent().equals(llAvailableCharacters.getChildAt(i))){
+							clickedCharacter = availableCharacters.get(i);
+							addCharacterToSelectedCharactersList(clickedCharacter);
+							availableCharacters.remove(clickedCharacter);
+							refreshAvailableCharacters();
+							break;
+						}
+					}
 					
 				}
 			});
 			
-			llCharacterItem.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					
-					ArrayList<DNDCharacter> availableCharacters = DNDCharacter.getNotSelectedCharacters();
-					addCharacterToSelectedCharactersList(clickedCharacter);
-					availableCharacters.remove(clickedCharacter);
-				}
-			});
+			llAvailableCharacters.addView(llCharacterItem);
 		}
 	}
 	
