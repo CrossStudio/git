@@ -10,12 +10,13 @@ import java.util.Map;
 import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ActionMode;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -46,7 +47,7 @@ public class EncounterLobbyActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedBundle){
 		super.onCreate(savedBundle);
-		setContentView(R.layout.encounter_lobby);		
+		setContentView(R.layout.encounter_lobby_dummy);		
 		
 		dbHelper = new DBHelper(this);
 		db = dbHelper.getWritableDatabase();
@@ -116,10 +117,10 @@ public class EncounterLobbyActivity extends Activity {
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				// Respond to clicks on the actions in the CAB
-		        fillArrayOfCharacterNamesForDeletion();
-		        
+ 
 		        switch (item.getItemId()) {
 		            case R.id.action_delete:
+		            	fillArrayOfCharacterNamesForDeletion();
 		            	deleteSelectedItems();
 		                mode.finish(); // Action picked, so close the CAB
 		                return true;
@@ -202,6 +203,7 @@ public class EncounterLobbyActivity extends Activity {
 			}
 			
 		});
+		
 	}
 
 	/**
@@ -371,4 +373,38 @@ public class EncounterLobbyActivity extends Activity {
 			character.setCharInitiativeEncounter(Integer.valueOf(etSelCharacterInit.getText().toString()));
 		}
 	}
+	
+	private void fillAvailableCharacters(){
+		LayoutInflater inflater = getLayoutInflater();
+		LinearLayout llAvailableCharacters = (LinearLayout) findViewById(R.id.llAvailableCharacters);
+		for (DNDCharacter character : DNDCharacter.getNotSelectedCharacters()){
+			LinearLayout llCharacterItem = (LinearLayout) inflater.inflate(R.layout.available_character_item, null);
+			TextView tvAvCharacterName = (TextView) llAvailableCharacters.findViewById(R.id.tvAvCharacterName);
+			TextView tvAvCharacterClass = (TextView) llAvailableCharacters.findViewById(R.id.tvAvCharacterClass);
+			Button btnDeleteFromAvailable = (Button) llAvailableCharacters.findViewById(R.id.btnDeleteFromAvailable);
+			
+			tvAvCharacterName.setText(character.getCharName());
+			tvAvCharacterClass.setText(character.getCharClass());
+			btnDeleteFromAvailable.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					//TODO
+					
+				}
+			});
+			
+			llCharacterItem.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					ArrayList<DNDCharacter> availableCharacters = DNDCharacter.getNotSelectedCharacters();
+					addCharacterToSelectedCharactersList(clickedCharacter);
+					availableCharacters.remove(clickedCharacter);
+				}
+			});
+		}
+	}
+	
 }
