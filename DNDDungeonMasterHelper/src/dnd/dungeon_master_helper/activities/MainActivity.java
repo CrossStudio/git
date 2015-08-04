@@ -324,7 +324,7 @@ public class MainActivity extends Activity {
 		/**
 		 * Check whether there are no characters in the initiative line yet (there have to be only one object - initiative line nametag)
 		 */
-		if (llInitiativeOrder.getChildCount() == 1){
+		if (llInitiativeOrder.getChildCount() == 0){
 			for (DNDCharacter character : dndCharacterArrayList)
 			{
 				View inflatedInitOrderCharName = inflater.inflate(R.layout.init_order_char_name, null, false);

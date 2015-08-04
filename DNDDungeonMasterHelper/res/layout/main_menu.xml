@@ -18,11 +18,5 @@
             android:id="@+id/btnNewEncounter"
             android:text="New Encounter"
             android:layout_below="@+id/btnContinue"/>
-        <Button 
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnHelp"
-            android:text="Help"
-            android:layout_below="@+id/btnNewEncounter"/>
     </RelativeLayout>
 </RelativeLayout>

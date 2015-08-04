@@ -14,13 +14,15 @@
 	    android:id="@+id/svAvailableCharacters"
 	    android:layout_width="match_parent"
 	    android:layout_height="200dp"
-	    android:layout_below="@+id/tvAvailableCharactersLabel">
+	    android:layout_below="@+id/tvAvailableCharactersLabel"
+	    android:background="@drawable/black_border">
 	    
 	    <LinearLayout
 	        android:id="@+id/llAvailableCharacters"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:orientation="vertical"
+	        
 	         >
 	
 	    </LinearLayout>
@@ -38,7 +40,8 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="200dp"
 	    android:layout_below="@+id/tvSelectedCharactersLabel"
-	    android:layout_centerHorizontal="true" >
+	    android:layout_centerHorizontal="true"
+	    android:background="@drawable/black_border" >
 
     </ListView>
     <Button

@@ -1,17 +1,13 @@
 package dnd.dungeon_master_helper.activities;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.Button;
 import dnd.dungeon_master_helper.DBHelper;
-import dnd.dungeon_master_helper.DNDCharacter;
 import dnd.dungeon_master_helper.R;
 import dnd.dungeon_master_helper.listeners.ContinueClickListener;
 import dnd.dungeon_master_helper.listeners.EncounterClickListener;
-import dnd.dungeon_master_helper.listeners.HelpClickListener;
 
 public class MainMenuActivity extends Activity {
 
@@ -39,11 +35,11 @@ public class MainMenuActivity extends Activity {
 	private void initializeViews() {
 		btnContinue = (Button) findViewById(R.id.btnContinue);
 		btnNewEncounter = (Button) findViewById(R.id.btnNewEncounter);
-		btnHelp = (Button) findViewById(R.id.btnHelp);
+		//btnHelp = (Button) findViewById(R.id.btnHelp);
 		
 		btnContinue.setOnClickListener(new ContinueClickListener());
 		btnNewEncounter.setOnClickListener(new EncounterClickListener());
-		btnHelp.setOnClickListener(new HelpClickListener());
+		//btnHelp.setOnClickListener(new HelpClickListener());
 	}
 	
 	
