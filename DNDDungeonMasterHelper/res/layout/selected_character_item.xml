@@ -65,13 +65,19 @@
         android:layout_width="0dp"
         android:layout_weight="0.175"
 	    android:layout_height="wrap_content"
-	    android:text="~"
+	    android:text="Make copy"
+	    android:textSize="10dp"
+        android:minHeight="20dp"
+        android:padding="0dp"
 	    android:onClick="copyCharacterClickHandler"/>
 	<Button 
 	    android:id="@+id/btnRemoveSelCharacter"
         android:layout_width="0dp"
         android:layout_weight="0.175"
 	    android:layout_height="wrap_content"
-	    android:text="X"
+	    android:text="Remove"
+	    android:textSize="10dp"
+        android:minHeight="20dp"
+        android:padding="0dp"
 	    android:onClick="removeCharacterClickHandler"/>
 </LinearLayout>

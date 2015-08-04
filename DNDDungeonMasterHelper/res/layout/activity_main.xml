@@ -170,12 +170,14 @@
 	        android:layout_width="0dp"
 	        android:layout_height="wrap_content"
 	        android:text="Next Character"
+	        android:textSize="12dp"
 	        android:layout_weight="0.5" />
 	    <Button 
 	        android:id="@+id/btnAddCharacterFromMain"
 	        android:layout_width="0dp"
 	        android:layout_height="wrap_content"
-	        android:text="Add Character"
+	        android:text="Add New Character"
+	        android:textSize="12dp"
 	        android:layout_weight="0.5"/>
 	    	    
 	</LinearLayout>
