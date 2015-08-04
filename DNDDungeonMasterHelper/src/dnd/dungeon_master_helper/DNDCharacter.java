@@ -85,7 +85,7 @@ public class DNDCharacter implements Serializable{
     	this.charInitiativeEncounter = charInitiativeEncounter;
     	this.charHPMax = charMaxHP;
     	this.charHPCurrent = this.charHPMax;
-    	this.charHPBloodied = this.charHPMax / 2;
+    	this.charHPBloodied = charMaxHP / 2;
     }
     
     /**
@@ -104,7 +104,7 @@ public class DNDCharacter implements Serializable{
     	this.charInitiativeEncounter = charInitiativeEncounter;
     	this.charHPMax = charMaxHP;
     	this.charHPCurrent = charCurrentHP;
-    	this.charHPBloodied = this.charHPMax / 2;
+    	this.charHPBloodied = charMaxHP / 2;
     	this.listOfAppliedModifiers = modifiers;
     	this.charHPChanges = curHPLog;
     }
@@ -167,7 +167,7 @@ public class DNDCharacter implements Serializable{
 		this.charClass = characterToBeCopied.getCharClass();
 		this.charHPMax = characterToBeCopied.getCharHPMax();
 		this.charHPCurrent = characterToBeCopied.getCharHPCurrent();
-		this.charHPBloodied = this.charHPMax / 2;
+		this.charHPBloodied = characterToBeCopied.getCharHPMax() / 2;
 		this.listOfAppliedModifiers = new ArrayList<>(characterToBeCopied.getListOfAppliedModifiers());
 		this.charPowers = copyCharPowers(characterToBeCopied.getCharPowers());
 		this.charHPChanges = new ArrayList<>(characterToBeCopied.getCharHPChanges());
@@ -221,6 +221,10 @@ public class DNDCharacter implements Serializable{
      */
     public int getCharBloodiedValue(){
     	return this.charHPBloodied;
+    }
+    
+    public void setCharBloodiedValue(int bloodiedValue){
+    	this.charHPBloodied = bloodiedValue;
     }
     
     /**

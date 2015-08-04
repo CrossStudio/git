@@ -104,6 +104,7 @@ public class AddNewCharacterListener implements OnClickListener {
 		if (CharacterCreationActivity.etMaxHP.getText().length() > 0){
 			currentCharacter.setCharHPMax(Integer.parseInt(CharacterCreationActivity.etMaxHP.getText().toString()));
 			currentCharacter.setCharHPCurrent(currentCharacter.getCharHPMax());
+			currentCharacter.setCharBloodiedValue(currentCharacter.getCharHPMax() / 2);
 		}
 		if (CharacterCreationActivity.etCurrentInitiative.getText().length() > 0){
 			currentCharacter.setCharInitiativeEncounter(Integer.parseInt(CharacterCreationActivity.etCurrentInitiative.getText().toString()));
