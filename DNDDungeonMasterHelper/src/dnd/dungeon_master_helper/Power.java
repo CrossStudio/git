@@ -28,6 +28,12 @@ public class Power implements Serializable{
 		this.setCurrentAmount(curAmount);
 	}
 
+	public static Power copy(Power powerToCopy){
+		Power newPower = new Power(powerToCopy.getTitle(), powerToCopy.getType(), 
+				powerToCopy.getMaxAmount(), powerToCopy.getCurrentAmount());
+		return newPower;
+	}
+	
 	/**
 	 * @return the title
 	 */

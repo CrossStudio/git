@@ -110,7 +110,8 @@ public class DBHelper extends SQLiteOpenHelper {
 			cvToPowersTable.put("type", power.getType().toString());
 			cvToPowersTable.put("maxamount", power.getMaxAmount());
 			cvToPowersTable.put("encamount", power.getCurrentAmount());
-			int numRows = db.update("powers", cvToPowersTable, "powers.title = ?", new String[]{power.getTitle()});
+			int numRows = db.update("powers", cvToPowersTable, 
+					"powers.title = ? and powers.characterid = ?", new String[]{power.getTitle(), ""+characterID});
 			if (numRows == 0){
 				db.insert("powers", null, cvToPowersTable);
 			}

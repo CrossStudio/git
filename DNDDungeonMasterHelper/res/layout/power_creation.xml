@@ -20,7 +20,7 @@
 		    android:layout_width="0dp"
 		    android:layout_height="wrap_content"
 			android:layout_weight="0.8"
-		    android:text="Power title"/>
+		    android:hint="Power title"/>
 	</LinearLayout>
 	<LinearLayout 
 		android:id="@+id/llPowerType"

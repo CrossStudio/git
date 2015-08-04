@@ -169,11 +169,19 @@ public class DNDCharacter implements Serializable{
 		this.charHPCurrent = characterToBeCopied.getCharHPCurrent();
 		this.charHPBloodied = this.charHPMax / 2;
 		this.listOfAppliedModifiers = new ArrayList<>(characterToBeCopied.getListOfAppliedModifiers());
-		this.charPowers = new ArrayList<>(characterToBeCopied.getCharPowers());
+		this.charPowers = copyCharPowers(characterToBeCopied.getCharPowers());
 		this.charHPChanges = new ArrayList<>(characterToBeCopied.getCharHPChanges());
     	
     	return characterToBeCopied;
     }
+
+	private ArrayList<Power> copyCharPowers(ArrayList<Power> charPowers) {
+		ArrayList<Power> newPowerList = new ArrayList<>();
+		for (Power power : charPowers){
+			newPowerList.add(Power.copy(power));
+		}
+		return newPowerList;
+	}
 
 	/**
      * Basic getter of list of allCharacters

@@ -101,8 +101,6 @@ public class CharacterCreationActivity extends Activity {
 	 * Sets current currentCharacter parameters
 	 */
 	private void setCharacterParameters() {
-		Log.d("myLog", "---setCharacterParameters() in CharacterCreationActivity---");
-		Log.d("myLog", "currentCharacter = " + currentCharacter);
 		currentCharacter.setCharName(etCharName.getText().toString());
 		currentCharacter.setCharClass(spCharClass.getSelectedItem().toString());
 		if (etMaxHP.getText().length() > 0){
@@ -203,15 +201,11 @@ public class CharacterCreationActivity extends Activity {
 		ArrayList<Power> powers = currentCharacter.getCharPowers();
 		for (int i = 0; i < powers.size(); i++){
 			Power power = powers.get(i);
-			Log.d("myLog", "powerTitle" + i + " = " + power.getTitle());
-			Log.d("myLog", "powerType" + i + " = " + power.getType().toString());
-			Log.d("myLog", "powerAmount" + i + " = " + power.getMaxAmount());
 		}
 		
 
 		if (prefs.contains("newPowerTitle")){
 			
-			Log.d("myLog", "Inside loadCharPowers; found NewPower preferences");
 			String title = prefs.getString("newPowerTitle", "");
 			
 			int typeID = prefs.getInt("newPowerTypeID", -1);
@@ -231,7 +225,6 @@ public class CharacterCreationActivity extends Activity {
 					powers.add(new Power(title, PowerType.DAILY, maxAmount, curAmount));
 					break;
 			}
-			Log.d("myLog", "Added new Power: " + powers.get(powers.size()-1).getTitle());
 			Editor editor = prefs.edit();
 			editor.clear().commit();
 		}
@@ -246,7 +239,6 @@ public class CharacterCreationActivity extends Activity {
 		llCharPowers.removeAllViews();
 		final ArrayList<Power> powers = currentCharacter.getCharPowers();
 		for (final Power power : powers){
-			Log.d("myLog", "---Inside a loop of drawCurrentCharacterPowers(); CharacterCreationActivity---");
 			LinearLayout item = (LinearLayout) inflater.inflate(R.layout.power_item, llCharPowers, false);
 			
 			TextView tvPowerTitle = (TextView) item.findViewById(R.id.tvPowerTitle);
@@ -254,6 +246,8 @@ public class CharacterCreationActivity extends Activity {
 			
 			TextView tvPowerType = (TextView) item.findViewById(R.id.tvPowerType);
 			tvPowerType.setText(power.getType()+"");
+			
+			LinearLayout llPowerCheckBoxes = (LinearLayout) item.findViewById(R.id.llPowerCheckBoxes);
 			
 			Button btnDeletePower = (Button) item.findViewById(R.id.btnDeletePower);
 			btnDeletePower.setOnClickListener(new OnClickListener() {
@@ -271,7 +265,7 @@ public class CharacterCreationActivity extends Activity {
 			for (int i = 0; i < power.getMaxAmount(); i++){
 				CheckBox cbPowerAmount = new CheckBox(this);
 				cbPowerAmount.setLayoutParams(params);
-				item.addView(cbPowerAmount);
+				llPowerCheckBoxes.addView(cbPowerAmount);
 			}
 			llCharPowers.addView(item);
 			

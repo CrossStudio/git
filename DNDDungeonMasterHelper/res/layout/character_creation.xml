@@ -29,7 +29,8 @@
 	            android:id="@+id/etCharName"
 	            android:layout_width="0dp"
 	            android:layout_height="wrap_content"
-	            android:layout_weight="0.8"/>
+	            android:layout_weight="0.8"
+	            android:hint="Enter name"/>
 	    </LinearLayout>
 	
 	    <LinearLayout
@@ -70,6 +71,7 @@
 	            android:layout_width="0dp"
 	            android:layout_height="wrap_content"
 	            android:layout_weight="0.8"
+	            android:hint="Enter initiative"
 	            android:inputType="number">
 	
 	        </EditText>
@@ -92,6 +94,7 @@
 	            android:layout_width="0dp"
 	            android:layout_height="wrap_content"
 	            android:layout_weight="0.8"
+	            android:hint="Enter maximum HP"
 	            android:inputType="number"/>
 	    </LinearLayout>        
     </LinearLayout>
@@ -114,13 +117,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
-        android:text="Add Power"/>
+        android:text="Add New Power"
+        android:textSize="14sp"/>
     <Button
         android:id="@+id/btnAddNewCharacter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:text="Add Character" />
+        android:text="Create Character"
+        android:textSize="14sp" />
 
 </RelativeLayout>
