@@ -9,5 +9,6 @@
     <string name="encounter_lobby_activity">Encounter Lobby</string>
     <string name="character_creation_activity">Character Creator</string>
     <string name="add_power_activity">Add New Power</string>
+    <string name="dm_helper">DM Helper</string>
 
 </resources>
