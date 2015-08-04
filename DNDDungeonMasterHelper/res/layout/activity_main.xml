@@ -8,9 +8,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="dnd.dungeon_master_helper.activities.MainActivity" >
 
-
-    
-	
     <TextView
         android:id="@+id/tvActiveCharName"
         android:layout_width="wrap_content"
@@ -54,7 +51,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="25dp"
 	        android:text="Heal"
-	        android:textSize="12dp"
+	        android:textSize="12sp"
 	        android:padding="0dp"
 	        />
 	    <Button 
@@ -62,7 +59,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="25dp"
 	        android:text="Damage"
-	        android:textSize="12dp"
+	        android:textSize="12sp"
 	        android:padding="0dp"
 	        />
 		<TextView 
@@ -115,7 +112,9 @@
    	 	    android:layout_width="wrap_content"
    	 	    android:layout_height="wrap_content"
    	 	    android:layout_weight="1"
-   	 	    android:text="Add"/>
+   	 	    android:text="Add Modifier"
+   	 	    android:textSize="12sp"
+   	 	    android:minHeight="25dp"/>
 
     </LinearLayout>
     
@@ -170,14 +169,14 @@
 	        android:layout_width="0dp"
 	        android:layout_height="wrap_content"
 	        android:text="Next Character"
-	        android:textSize="12dp"
+	        android:textSize="13sp"
 	        android:layout_weight="0.5" />
 	    <Button 
 	        android:id="@+id/btnAddCharacterFromMain"
 	        android:layout_width="0dp"
 	        android:layout_height="wrap_content"
 	        android:text="Add New Character"
-	        android:textSize="12dp"
+	        android:textSize="13sp"
 	        android:layout_weight="0.5"/>
 	    	    
 	</LinearLayout>
@@ -195,7 +194,8 @@
 	        android:layout_height="wrap_content"
 	        android:gravity="center"
 	        android:layout_gravity="center"
-	        android:orientation="horizontal">
+	        android:orientation="horizontal"
+	        android:layout_marginTop="3dp">
     	</LinearLayout>
     </HorizontalScrollView>
 </RelativeLayout>
