@@ -1,6 +1,6 @@
-package dnd.dungeon_master_helper.listeners;
+package dnd.dungeon_master_helper2.listeners;
 
-import dnd.dungeon_master_helper.activities.EncounterLobbyActivity;
+import dnd.dungeon_master_helper2.activities.EncounterLobbyActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;

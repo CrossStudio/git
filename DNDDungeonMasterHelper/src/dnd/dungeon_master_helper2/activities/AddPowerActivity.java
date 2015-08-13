@@ -1,4 +1,4 @@
-package dnd.dungeon_master_helper.activities;
+package dnd.dungeon_master_helper2.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,8 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import dnd.dungeon_master_helper.DNDCharacter;
-import dnd.dungeon_master_helper.R;
+import dnd.dungeon_master_helper2.DNDCharacter;
+import dnd.dungeon_master_helper2.R;
 
 public class AddPowerActivity extends Activity {
 

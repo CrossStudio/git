@@ -1,4 +1,4 @@
-package dnd.dungeon_master_helper;
+package dnd.dungeon_master_helper2;
 
 import java.io.Serializable;
 

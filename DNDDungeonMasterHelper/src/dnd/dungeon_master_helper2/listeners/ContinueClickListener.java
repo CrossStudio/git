@@ -1,4 +1,4 @@
-package dnd.dungeon_master_helper.listeners;
+package dnd.dungeon_master_helper2.listeners;
 
 import java.util.ArrayList;
 
@@ -8,9 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
-import dnd.dungeon_master_helper.DBHelper;
-import dnd.dungeon_master_helper.DNDCharacter;
-import dnd.dungeon_master_helper.activities.MainActivity;
+import dnd.dungeon_master_helper2.DBHelper;
+import dnd.dungeon_master_helper2.DNDCharacter;
+import dnd.dungeon_master_helper2.activities.MainActivity;
 
 public class ContinueClickListener implements OnClickListener {
 

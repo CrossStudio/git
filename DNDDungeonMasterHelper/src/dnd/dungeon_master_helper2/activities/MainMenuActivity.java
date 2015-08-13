@@ -1,13 +1,14 @@
-package dnd.dungeon_master_helper.activities;
+package dnd.dungeon_master_helper2.activities;
 
 import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.Button;
-import dnd.dungeon_master_helper.DBHelper;
-import dnd.dungeon_master_helper.R;
-import dnd.dungeon_master_helper.listeners.ContinueClickListener;
-import dnd.dungeon_master_helper.listeners.EncounterClickListener;
+import dnd.dungeon_master_helper2.DBHelper;
+import dnd.dungeon_master_helper2.R;
+import dnd.dungeon_master_helper2.listeners.ContinueClickListener;
+import dnd.dungeon_master_helper2.listeners.EncounterClickListener;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 

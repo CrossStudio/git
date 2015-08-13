@@ -1,4 +1,4 @@
-package dnd.dungeon_master_helper.listeners;
+package dnd.dungeon_master_helper2.listeners;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -9,9 +9,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
-import dnd.dungeon_master_helper.DNDCharacter;
-import dnd.dungeon_master_helper.R;
-import dnd.dungeon_master_helper.activities.MainActivity;
+import dnd.dungeon_master_helper2.DNDCharacter;
+import dnd.dungeon_master_helper2.R;
+import dnd.dungeon_master_helper2.activities.MainActivity;
 
 public class DamageClickListener implements OnClickListener {
 

@@ -1,4 +1,4 @@
-package dnd.dungeon_master_helper.activities;
+package dnd.dungeon_master_helper2.activities;
 
 import java.util.ArrayList;
 
@@ -19,13 +19,13 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Spinner;
 import android.widget.TextView;
-import dnd.dungeon_master_helper.DNDCharacter;
-import dnd.dungeon_master_helper.Power;
-import dnd.dungeon_master_helper.PowerType;
-import dnd.dungeon_master_helper.R;
-import dnd.dungeon_master_helper.listeners.AddNewCharacterListener;
-import dnd.dungeon_master_helper.listeners.AddNewPowerListener;
-import dnd.dungeon_master_helper.listeners.CharClassSelectedListener;
+import dnd.dungeon_master_helper2.DNDCharacter;
+import dnd.dungeon_master_helper2.Power;
+import dnd.dungeon_master_helper2.PowerType;
+import dnd.dungeon_master_helper2.R;
+import dnd.dungeon_master_helper2.listeners.AddNewCharacterListener;
+import dnd.dungeon_master_helper2.listeners.AddNewPowerListener;
+import dnd.dungeon_master_helper2.listeners.CharClassSelectedListener;
 
 public class CharacterCreationActivity extends Activity {
 	

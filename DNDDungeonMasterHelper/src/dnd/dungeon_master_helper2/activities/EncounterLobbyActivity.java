@@ -1,4 +1,4 @@
-package dnd.dungeon_master_helper.activities;
+package dnd.dungeon_master_helper2.activities;
 
 
 import java.util.ArrayList;
@@ -19,11 +19,11 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import dnd.dungeon_master_helper.DBHelper;
-import dnd.dungeon_master_helper.DNDCharacter;
-import dnd.dungeon_master_helper.R;
-import dnd.dungeon_master_helper.listeners.GoToCharacterCreationListener;
-import dnd.dungeon_master_helper.listeners.GoToMainActivityClickListener;
+import dnd.dungeon_master_helper2.DBHelper;
+import dnd.dungeon_master_helper2.DNDCharacter;
+import dnd.dungeon_master_helper2.R;
+import dnd.dungeon_master_helper2.listeners.GoToCharacterCreationListener;
+import dnd.dungeon_master_helper2.listeners.GoToMainActivityClickListener;
 
 public class EncounterLobbyActivity extends Activity {
 

@@ -1,4 +1,4 @@
-package dnd.dungeon_master_helper;
+package dnd.dungeon_master_helper2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +8,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import dnd.dungeon_master_helper.activities.MainActivity;
+import dnd.dungeon_master_helper2.activities.MainActivity;
 
 public class DBHelper extends SQLiteOpenHelper {
 

@@ -1,7 +1,7 @@
-package dnd.dungeon_master_helper.listeners;
+package dnd.dungeon_master_helper2.listeners;
 
-import dnd.dungeon_master_helper.DNDCharacter;
-import dnd.dungeon_master_helper.activities.CharacterCreationActivity;
+import dnd.dungeon_master_helper2.DNDCharacter;
+import dnd.dungeon_master_helper2.activities.CharacterCreationActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
