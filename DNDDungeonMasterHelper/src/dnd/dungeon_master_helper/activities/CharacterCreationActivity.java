@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,11 +54,9 @@ public class CharacterCreationActivity extends Activity {
 		
 		if (intent.getStringExtra("activity") != null){
 			if (intent.getStringExtra("activity").equals("MainActivity")){
-				Log.d("myLog", "Created from Main");
 				creationMode = CREATION_FROM_MAIN;
 			}
 			else {
-				Log.d("myLog", "Created from elsewhere");
 				creationMode = CREATION_FROM_LOBBY;
 			}
 		}

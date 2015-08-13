@@ -1,61 +1,62 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center" >
 
     <TextView 
         android:id="@+id/tvAvailableCharactersLabel"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.05"
         android:layout_width="wrap_content"
-        android:text="Available characters:"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:text="Available characters:"/>
 	<ScrollView 
 	    
 	    android:id="@+id/svAvailableCharacters"
 	    android:layout_width="match_parent"
-	    android:layout_height="200dp"
-	    android:layout_below="@+id/tvAvailableCharactersLabel"
+	    android:layout_height="0dp"
+	    android:layout_weight="0.35"
 	    android:background="@drawable/black_border">
 	    
 	    <LinearLayout
 	        android:id="@+id/llAvailableCharacters"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:orientation="vertical"
-	        
-	         >
-	
+	        android:orientation="vertical" 
+	        >
 	    </LinearLayout>
 	</ScrollView>
     <TextView 
         android:id="@+id/tvSelectedCharactersLabel"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.05"
         android:layout_width="wrap_content"
-        android:text="Selected characters:"
-        android:layout_below="@+id/svAvailableCharacters"
-        android:layout_centerHorizontal="true"/>
+        android:text="Selected characters:"/>
 
 	<ListView
 	    android:id="@+id/lvSelectedCharacters"
 	    android:layout_width="match_parent"
-	    android:layout_height="200dp"
-	    android:layout_below="@+id/tvSelectedCharactersLabel"
-	    android:layout_centerHorizontal="true"
+	    android:layout_height="0dp"
+	    android:layout_weight="0.35"
 	    android:background="@drawable/black_border" >
 
     </ListView>
-    <Button
-        android:id="@+id/btnAddCharacter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/lvSelectedCharacters"
-        android:text="New Character" />
-     <Button 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnStartEncounter"
-        android:text="Start Encounter"
-        android:layout_below="@+id/lvSelectedCharacters"
-        android:layout_alignParentRight="true"/>
-</RelativeLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:gravity="center">
+        <Button
+	        android:id="@+id/btnAddCharacter"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="New Character" />
+	     <Button 
+	        android:layout_width="wrap_content"
+	        android:id="@+id/btnStartEncounter"
+	        android:text="Start Encounter"
+	        android:layout_height="wrap_content"/>
+    </LinearLayout>
+    
+</LinearLayout>

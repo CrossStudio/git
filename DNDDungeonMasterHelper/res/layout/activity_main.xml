@@ -76,7 +76,7 @@
     
 
     <LinearLayout
-        android:id="@+id/llSpinModifierParameters"
+        android:id="@+id/llModifierParameters"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -91,20 +91,25 @@
             android:textSize="6pt"/>
         <Spinner
             android:id="@+id/spinModifierType"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
+        <TextView 
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:text="vs"/>
 
    	 	<Spinner
    	 	    android:id="@+id/spinModifierTarget"
-   	 	    android:layout_width="wrap_content"
+   	 	    android:layout_width="0dp"
    	 	    android:layout_height="wrap_content"
    	 	    android:layout_weight="1" />
    	 	<Button 
    	 	    android:id="@+id/btnAddModifier"
-   	 	    android:layout_width="wrap_content"
+   	 	    android:layout_width="0dp"
    	 	    android:layout_height="wrap_content"
-   	 	    android:layout_weight="1"
+   	 	    android:layout_weight="1.2"
    	 	    android:text="Add Modifier"
    	 	    android:textSize="12sp"
    	 	    android:minHeight="25dp"/>
@@ -119,7 +124,7 @@
 	    android:layout_weight="0.6">
 	    <EditText
 	        android:id="@+id/etCharModifiers"
-	        android:layout_width="fill_parent"
+	        android:layout_width="match_parent"
 	        android:layout_height="0dp"
 	        android:layout_weight="0.5"
 	        android:ems="10"
@@ -128,21 +133,27 @@
 	        android:layout_marginBottom="3dp">
 
 	    </EditText>
-	    <ScrollView 
-
-	        android:layout_width="fill_parent"
-		    android:layout_height="0dp"
-		    android:layout_weight="0.5">
-		    <LinearLayout 
-		        android:orientation="vertical"
-		        android:id="@+id/llCharPowersMain"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:minHeight="40dp"
-		        android:background="@drawable/black_border">
-		        
-		    </LinearLayout>
-	</ScrollView>
+	    <LinearLayout
+	        android:orientation="vertical"
+	        android:layout_height="0dp"
+	        android:layout_weight="0.5"
+	        android:layout_width="match_parent"
+	        android:background="@drawable/black_border">
+	    	<ScrollView 
+		        android:layout_width="match_parent"
+			    android:layout_height="match_parent">
+			    <LinearLayout 
+			        android:orientation="vertical"
+			        android:id="@+id/llCharPowersMain"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:minHeight="40dp"
+			        >
+			        
+			    </LinearLayout>
+	        </ScrollView>
+	    </LinearLayout>
+	    	
 	</LinearLayout>
     
 	<LinearLayout 

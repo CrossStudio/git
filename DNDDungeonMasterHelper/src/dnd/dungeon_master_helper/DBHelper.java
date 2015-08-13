@@ -8,7 +8,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 import dnd.dungeon_master_helper.activities.MainActivity;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -44,7 +43,6 @@ public class DBHelper extends SQLiteOpenHelper {
 	
 	public synchronized void saveCharactersToDB(SQLiteDatabase db){
 		for (DNDCharacter character : characters){
-			Log.d("myLog", character.getCharName() + " is being saved");
 			db.beginTransaction();
 				saveCharacterParamsToDB(character, db);
 			db.setTransactionSuccessful();
@@ -89,7 +87,6 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 	
 	private synchronized void saveCharacterPowersToDB(DNDCharacter character, SQLiteDatabase db){
-		Log.d("myLog", "Entered saveCharacterPowersToDB()");
 		ContentValues cvToPowersTable = null;
 		ArrayList<Power> charPowers = character.getCharPowers();
 		
@@ -116,7 +113,6 @@ public class DBHelper extends SQLiteOpenHelper {
 				db.insert("powers", null, cvToPowersTable);
 			}
 		}
-		Log.d("myLog", "Leaving saveCharacterPowersToDB()");
 	}
 	
 	public synchronized boolean checkForDuplicates(String charName, SQLiteDatabase db) {
@@ -377,7 +373,6 @@ public class DBHelper extends SQLiteOpenHelper {
 		if (cursor.moveToFirst()){
 			do {
 				int numRows = db.delete("powers", "powers.id = ?", new String[]{cursor.getInt(0)+""});
-				Log.d("myLog", "Number of rows deleted = " + numRows);
 			}
 			while (cursor.moveToNext());
 		}

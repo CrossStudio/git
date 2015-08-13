@@ -8,6 +8,8 @@ import dnd.dungeon_master_helper.DBHelper;
 import dnd.dungeon_master_helper.R;
 import dnd.dungeon_master_helper.listeners.ContinueClickListener;
 import dnd.dungeon_master_helper.listeners.EncounterClickListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 public class MainMenuActivity extends Activity {
 
@@ -26,7 +28,13 @@ public class MainMenuActivity extends Activity {
 		dbHelper.loadAllCharactersFromDB(db);
 		
 		initializeViews();
-		
+
+		/*
+		 * Google ad
+		 */
+		AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 	}
 
 	/**

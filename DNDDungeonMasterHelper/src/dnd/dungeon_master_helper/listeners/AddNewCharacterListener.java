@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -97,8 +96,6 @@ public class AddNewCharacterListener implements OnClickListener {
 	 * Sets current currentCharacter parameters
 	 */
 	private void setCharacterParameters() {
-		Log.d("myLog", "---setCharacterParameters() in CharacterCreationActivity---");
-		Log.d("myLog", "currentCharacter = " + currentCharacter);
 		currentCharacter.setCharName(CharacterCreationActivity.etCharName.getText().toString());
 		currentCharacter.setCharClass(CharacterCreationActivity.spCharClass.getSelectedItem().toString());
 		if (CharacterCreationActivity.etMaxHP.getText().length() > 0){

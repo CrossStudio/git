@@ -3,7 +3,6 @@ package dnd.dungeon_master_helper;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import android.util.Log;
 
 /**
  * Class represents a general currentCharacter from DND game with loads of parameters along with their getters and setters
@@ -428,7 +427,6 @@ public class DNDCharacter implements Serializable{
 	public static DNDCharacter getDummyCharacter() {
 		if (dummyCharacter == null){
 			dummyCharacter = createDummyCharacter();
-			Log.d("myLog", "New Dummy Character created!");
 		}
 		return dummyCharacter;
 	}

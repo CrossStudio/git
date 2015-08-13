@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -147,8 +146,6 @@ public class MainActivity extends Activity {
 	public void loadActiveCharacterParams() {
 		tvHPCurrentValue.setText(""+activeCharacter.getCharHPCurrent());
 		tvHPMaxValue.setText(""+activeCharacter.getCharHPMax());
-		Log.d("myLog", "Characters max HP = " + activeCharacter.getCharHPMax());
-		Log.d("myLog", "Characters bloodied HP = " + activeCharacter.getCharBloodiedValue());
 		tvBloodiedValue.setText("" + activeCharacter.getCharBloodiedValue());
 		checkForBloodied();
 		
@@ -298,10 +295,10 @@ public class MainActivity extends Activity {
 	 * Fills String array of modifier with initial values
 	 */
 	private void fillModifierStringCombo() {
-		modifierToAdd[0] = " ";
+		modifierToAdd[0] = "";
 		modifierToAdd[1] = " ";
 		modifierToAdd[2] = " vs ";
-		modifierToAdd[3] = " ";		
+		modifierToAdd[3] = " ";
 	}
 
 	/**

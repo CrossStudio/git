@@ -2,7 +2,6 @@ package dnd.dungeon_master_helper.listeners;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

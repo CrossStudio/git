@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import dnd.dungeon_master_helper.DNDCharacter;
