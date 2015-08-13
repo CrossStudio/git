@@ -1,0 +1,207 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="dnd.dungeon_master_helper.activities.MainActivity"
+    android:gravity="center_horizontal"
+    android:padding="3dp" >
+
+    <TextView
+        android:id="@+id/tvActiveCharName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textSize="20sp"
+        android:text="Active Character" />
+    <LinearLayout 
+        android:id="@+id/llHPBlock"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <TextView 
+	        android:id="@+id/tvHPLabel"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="5dp"
+	        android:text="HP:"/>
+	    <TextView 
+	        android:id="@+id/tvHPCurrentValue"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="5dp"
+	        android:text="30"
+	        />
+	    <TextView 
+	        android:id="@+id/tvHPMaxValue"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="-5dp"
+	        android:layout_marginTop="-7dp"
+	        android:text="40"
+	        android:textSize="10sp"
+	        />
+	    <Button 
+	        android:id="@+id/btnHeal"
+	        android:layout_width="wrap_content"
+	        android:layout_height="25dp"
+	        android:text="Heal"
+	        android:textSize="12sp"
+	        android:padding="0dp"
+	        />
+	    <Button 
+	        android:id="@+id/btnDamage"
+	        android:layout_width="wrap_content"
+	        android:layout_height="25dp"
+	        android:text="Damage"
+	        android:textSize="12sp"
+	        android:padding="0dp"
+	        />
+		<TextView 
+	        android:id="@+id/tvBloodiedLabel"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="5dp"
+	        android:text="Bloodied"
+	        />
+		<TextView 
+		    android:id="@+id/tvBloodiedValue"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="5dp"
+	        android:text="15"
+		    />
+    </LinearLayout>
+    
+
+    <LinearLayout
+        android:id="@+id/llModifierParameters"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <EditText 
+            android:id="@+id/etModifierValue"
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:inputType="numberSigned"
+            android:textSize="6pt"/>
+        <Spinner
+            android:id="@+id/spinModifierType"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+        <TextView 
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:text="vs"/>
+
+   	 	<Spinner
+   	 	    android:id="@+id/spinModifierTarget"
+   	 	    android:layout_width="0dp"
+   	 	    android:layout_height="wrap_content"
+   	 	    android:layout_weight="1" />
+   	 	<Button 
+   	 	    android:id="@+id/btnAddModifier"
+   	 	    android:layout_width="0dp"
+   	 	    android:layout_height="wrap_content"
+   	 	    android:layout_weight="1.2"
+   	 	    android:text="Add Modifier"
+   	 	    android:textSize="12sp"
+   	 	    android:minHeight="25dp"/>
+
+    </LinearLayout>
+    
+	<LinearLayout 
+	    android:id="@+id/llModifiersAndPowers"
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="0dp"
+	    android:layout_weight="0.6">
+	    <EditText
+	        android:id="@+id/etCharModifiers"
+	        android:layout_width="match_parent"
+	        android:layout_height="0dp"
+	        android:layout_weight="0.5"
+	        android:ems="10"
+	        android:inputType="textMultiLine" 
+	        android:background="@drawable/black_border"
+	        android:layout_marginBottom="3dp">
+
+	    </EditText>
+	    <LinearLayout
+	        android:orientation="vertical"
+	        android:layout_height="0dp"
+	        android:layout_weight="0.5"
+	        android:layout_width="match_parent"
+	        android:background="@drawable/black_border">
+	    	<ScrollView 
+		        android:layout_width="match_parent"
+			    android:layout_height="match_parent">
+			    <LinearLayout 
+			        android:orientation="vertical"
+			        android:id="@+id/llCharPowersMain"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:minHeight="40dp"
+			        >
+			        
+			    </LinearLayout>
+	        </ScrollView>
+	    </LinearLayout>
+	    	
+	</LinearLayout>
+    
+	<LinearLayout 
+	    android:id="@+id/llMainButtons"
+	    android:layout_width="match_parent"
+	    android:layout_height="0dp"
+	    android:layout_weight="0.15"
+	    android:orientation="horizontal"
+	    android:gravity="center">
+	    <Button
+	        android:id="@+id/btnNextCharacter"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:text="Next Character"
+	        android:textSize="13sp"
+	        android:layout_weight="0.5" />
+	    <Button 
+	        android:id="@+id/btnAddCharacterFromMain"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:text="Add New Character"
+	        android:textSize="13sp"
+	        android:layout_weight="0.5"/>
+	    	    
+	</LinearLayout>
+    
+	<LinearLayout
+	    android:orientation="horizontal"
+	    android:layout_width="wrap_content"
+	    android:layout_height="0dp"
+		android:layout_weight="0.15"
+	    android:gravity="center"
+	    android:background="@drawable/black_border">
+	    
+	
+		<HorizontalScrollView 
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:scrollbarStyle="outsideInset">
+		       <LinearLayout
+		        android:id="@+id/llInitiativeOrder"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal"
+		        android:layout_gravity="center_vertical"
+		        android:layout_marginTop="3dp"
+		        android:scrollbarStyle="outsideInset">
+		   	</LinearLayout>
+		</HorizontalScrollView>
+	</LinearLayout>
+</LinearLayout>

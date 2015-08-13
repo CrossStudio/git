@@ -1,0 +1,131 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlCharacterCreationActivity"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#fff3f3f3" 
+    android:padding="3dp">
+
+    <LinearLayout 
+        android:id="@+id/llCharCreationParams"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/black_border"
+        android:layout_marginBottom="3dp">
+		<LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:gravity="center">
+	
+	        <TextView
+	            android:id="@+id/textView2"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="0.2"
+	            android:text="Name"/>
+	
+	        <EditText
+	            android:id="@+id/etCharName"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="0.8"
+	            android:hint="Enter name"/>
+	    </LinearLayout>
+	
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:orientation="horizontal" >
+	
+	        <TextView
+	            android:id="@+id/textView1"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:text="Class"
+	            android:layout_weight = "0.2"/>
+	
+	        <Spinner
+	            android:id="@+id/spCharClass"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="0.8"/>
+	    </LinearLayout>
+	
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:orientation="horizontal" >
+	
+	        <TextView
+	            android:id="@+id/textView3"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="0.2"
+	            android:text="Initiative" />
+	
+	        <EditText
+	            android:id="@+id/etCurrentInitiative"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="0.8"
+	            android:hint="Enter initiative"
+	            android:inputType="number">
+	
+	        </EditText>
+	    </LinearLayout>
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:orientation="horizontal" >
+	
+	        <TextView
+	            android:id="@+id/textView4"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="0.2"
+	            android:text="Max HP"/>
+	
+	        <EditText
+	            android:id="@+id/etMaxHP"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="0.8"
+	            android:hint="Enter maximum HP"
+	            android:inputType="number"/>
+	    </LinearLayout>        
+    </LinearLayout>
+	<ScrollView 
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/llCharCreationParams"
+	    android:layout_above="@+id/btnAddNewCharacter"
+	    android:background="@drawable/black_border">
+	    <LinearLayout 
+	        android:orientation="vertical"
+	        android:id="@+id/llCharPowersCreation"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content">
+	    </LinearLayout>
+     </ScrollView>    
+	<Button 
+	    android:id="@+id/btnAddNewPower"
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:text="Add New Power"
+        android:textSize="14sp"/>
+    <Button
+        android:id="@+id/btnAddNewCharacter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:text="Create Character"
+        android:textSize="14sp" />
+
+</RelativeLayout>
