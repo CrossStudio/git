@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="dnd.dungeon_master_helper"
+    package="dnd.dungeon_master_helper2"
     android:versionCode="1"
     android:versionName="1" >
 
     <uses-sdk
-        android:minSdkVersion="15"
+        android:minSdkVersion="16"
         android:targetSdkVersion="21" />
 	<!-- Include required permissions for Google Mobile Ads to run-->
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -22,7 +22,7 @@
         android:value="@integer/google_play_services_version" />
         
         <activity 
-            android:name=".activities.MainMenuActivity"
+            android:name="dnd.dungeon_master_helper2.activities.MainMenuActivity"
             android:label="@string/dm_helper" 
             android:screenOrientation="portrait">
             <intent-filter>
@@ -32,19 +32,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MainActivity"
+            android:name="dnd.dungeon_master_helper2.activities.MainActivity"
             android:label="@string/main_activity"
             android:screenOrientation="portrait"
             >
         </activity>
-        <activity android:name=".activities.CharacterCreationActivity"
+        <activity android:name="dnd.dungeon_master_helper2.activities.CharacterCreationActivity"
             android:label="@string/character_creation_activity"
             android:screenOrientation="portrait"></activity>
         
-        <activity android:name=".activities.EncounterLobbyActivity"
+        <activity android:name="dnd.dungeon_master_helper2.activities.EncounterLobbyActivity"
             android:label="@string/encounter_lobby_activity"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".activities.AddPowerActivity"
+        <activity android:name="dnd.dungeon_master_helper2.activities.AddPowerActivity"
             android:label="@string/add_power_activity"
             android:theme="@android:style/Theme.Holo.Dialog"
             android:screenOrientation="portrait"></activity>

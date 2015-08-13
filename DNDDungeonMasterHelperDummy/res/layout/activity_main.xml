@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="dnd.dungeon_master_helper.activities.MainActivity"
+    tools:context="dnd.dungeon_master_helper2.activities.MainActivity"
     android:gravity="center_horizontal"
     android:padding="3dp" >
 
